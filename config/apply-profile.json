@@ -1,0 +1,30 @@
+{
+  "personal": {
+    "first_name": "Ajay",
+    "last_name": "Marimuthu",
+    "email": "ajay9f01@gmail.com",
+    "phone": "+91-7010409697",
+    "location": "Chennai, India",
+    "city": "Chennai",
+    "country": "India",
+    "github": "https://github.com/ajayf773",
+    "linkedin": "",
+    "portfolio": "https://github.com/ajayf773"
+  },
+  "work_authorization": {
+    "us_authorized": false,
+    "require_sponsorship": true,
+    "india_authorized": true,
+    "eu_authorized": false,
+    "willing_to_relocate": true
+  },
+  "preferences": {
+    "salary_expectation_usd": "$90,000 - $120,000 / year",
+    "notice_period_days": 15,
+    "available_start_date": "Immediate"
+  },
+  "custom_answers": {
+    "why_ai_engineer": "I specialize in building production-grade AI & Python ETL pipelines, reducing manual data workflows from hours to minutes using Vertex AI and LLM orchestration.",
+    "top_achievement": "Architected an AI-powered ETL system that cut manual processing time from 35 hours to 15 minutes with 99.5% data accuracy."
+  }
+}

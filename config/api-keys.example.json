@@ -1,0 +1,17 @@
+{
+  "gemini": [
+    "AIzaSyD2...",
+    "AIzaSyB3...",
+    "AIzaSyC4..."
+  ],
+  "claude": "sk-ant-api03-...",
+  "deepseek": "sk-...",
+  "kimi": "sk-...",
+  "openai": "sk-proj-...",
+  "apify": {
+    "linkedin": "apify_api_...",
+    "indeed": "apify_api_...",
+    "naukri": "apify_api_...",
+    "indonesia": "apify_api_..."
+  }
+}
