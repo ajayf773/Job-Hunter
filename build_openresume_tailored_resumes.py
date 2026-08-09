@@ -3,6 +3,7 @@ import os
 import sys
 import glob
 import re
+import json
 import subprocess
 import pandas as pd
 
@@ -36,13 +37,14 @@ def parse_report_file(report_num):
             "domain": domain,
             "function": func,
             "tldr": tldr,
-            "path": report_path
+            "path": report_path,
+            "content": content[:2500]
         }
     except Exception as e:
         return None
 
-def generate_tailored_summary(role, report_info):
-    """Generate role-tailored professional summary based on report domain & function"""
+def generate_ai_tailored_json(report_num, company, role, report_info):
+    """Call Gemini AI model balancer via node script or smart report parser to produce tailored JSON payload"""
     base_summary = "AI Automation & Business Intelligence Engineer with 4+ years of experience designing Python automation, streamlining business processes, and building data-driven solutions."
     
     domain = report_info.get("domain", "") if report_info else ""
@@ -50,20 +52,100 @@ def generate_tailored_summary(role, report_info):
     role_lower = role.lower()
 
     if "agent" in role_lower or "llm" in role_lower or "genai" in role_lower or "agent" in domain.lower():
-        tailored = f"{base_summary} Specializing in developing agentic AI workflows, LLM/Vertex AI integration, and Python ETL pipelines that transform complex manual operations into scalable automated systems."
+        headline = f"{role} — GenAI & Agentic AI Specialist"
+        summary = f"{base_summary} Specializing in developing agentic AI workflows, LLM/Vertex AI integration, and Python ETL pipelines that transform complex manual operations into scalable automated systems."
+        exp_bullets = [
+            "Analyzed and validated vehicle specifications from OEM documentation for global automotive databases.",
+            "Identified business opportunities through database traffic analysis, competitor benchmarking, and trim-level differentiation.",
+            "Validated WLTP ranges, CO2 emissions, EV battery specifications, pricing, and optional equipment for enterprise datasets.",
+            "Managed large-scale Excel datasets and resolved data inconsistencies for global automotive markets."
+        ]
+        proj_bullets = [
+            "Built an AI-powered Python ETL pipeline to automatically extract, normalize, validate, and transform structured vehicle specification data from unstructured OEM brochures.",
+            "Integrated Vertex AI Gemini, local LLMs, REST APIs, and semantic AI workflows to automate feature extraction, entity matching, attribute normalization, and validation.",
+            "Reduced a manual workflow from approximately 35 hours to 15 minutes through intelligent automation, significantly improving processing efficiency and data consistency.",
+            "Designed a modular and extensible architecture capable of supporting multiple OEM document formats, scalable validation rules, and future AI model integration."
+        ]
+        ai_skills = ["Agentic AI Workflows", "Vertex AI Gemini Platform", "LLMs & Local Small Models", "REST APIs & JSON Pipelines", "Generative AI Automation"]
     elif "data" in role_lower or "bi" in role_lower or "analytics" in role_lower or "data" in domain.lower():
-        tailored = f"{base_summary} Specialized in automotive product data validation, ETL pipelines, SQL/Power BI analytics, and automated specification benchmarking for enterprise databases."
-    elif "backend" in role_lower or "software" in role_lower or "platform" in role_lower:
-        tailored = f"{base_summary} Focused on robust Python backend automation, REST API integration, data pipeline architecture, and enterprise AI workflow deployment."
+        headline = f"{role} — Data Pipeline & BI Engineer"
+        summary = f"{base_summary} Specialized in automotive product data validation, ETL pipelines, SQL/Power BI analytics, and automated specification benchmarking for enterprise databases."
+        exp_bullets = [
+            "Engineered automated data validation rules for vehicle specifications extracted from OEM technical documentation.",
+            "Analyzed trim-level differentiation, pricing matrices, and WLTP CO2 emission datasets to identify business growth channels.",
+            "Benchmarked OEM competitor datasets across global vehicle platforms to maintain 100% data integrity.",
+            "Created automated Excel macros, SQL queries, and validation pipelines for large-scale product catalogs."
+        ]
+        proj_bullets = [
+            "Developed an automated Python ETL data pipeline extracting and transforming unstructured OEM catalog attributes into structured database schemas.",
+            "Implemented automated validation algorithms to verify WLTP ranges, EV battery stats, and pricing attributes.",
+            "Optimized data extraction runtime from 35 hours to 15 minutes, ensuring reliable data delivery.",
+            "Designed scalable data pipelines integrating Python, SQL, REST APIs, and Power BI dashboards."
+        ]
+        ai_skills = ["Data Extraction & ETL", "Python Automation", "SQL & Database Management", "Power BI Analytics", "REST APIs & Data Models"]
     else:
-        tailored = f"{base_summary} Experienced in developing ETL pipelines, integrating AI and APIs into business workflows, and transforming time-intensive manual operations into scalable automated systems."
+        headline = f"{role} — AI & Systems Engineer"
+        summary = f"{base_summary} Experienced in developing ETL pipelines, integrating AI and APIs into business workflows, and transforming time-intensive manual operations into scalable automated systems."
+        exp_bullets = [
+            "Analyzed and validated vehicle specifications from OEM documentation for global automotive databases.",
+            "Identified business opportunities through database traffic analysis, competitor benchmarking, and trim-level differentiation.",
+            "Validated WLTP ranges, CO2 emissions, EV battery specifications, pricing, and optional equipment.",
+            "Managed large-scale Excel datasets and resolved data inconsistencies for the automotive market."
+        ]
+        proj_bullets = [
+            "Built an AI-powered Python ETL pipeline to automatically extract, normalize, validate, and transform structured vehicle specification data.",
+            "Integrated Vertex AI Gemini, local LLMs, REST APIs, and semantic AI workflows to automate feature extraction and validation.",
+            "Reduced a manual workflow from approximately 35 hours to 15 minutes through intelligent automation.",
+            "Designed a modular architecture supporting multiple OEM document formats and future AI model integration."
+        ]
+        ai_skills = ["LLMs & AI Platform Integration", "Python Automation", "REST APIs & Microservices", "ETL Pipelines & Validation", "Workflow Optimization"]
 
-    return tailored
+    payload = {
+        "name": "AJAY MARIMUTHU",
+        "title": headline,
+        "email": "ajay9f01@gmail.com",
+        "phone": "+91-9489101583 | +91-7010409697 (WA)",
+        "location": "Chennai, India",
+        "github": "github.com/ajayf773",
+        "summary": summary,
+        "experience": [
+            {
+                "company": "Merit Data & Technology Pvt. Ltd.",
+                "role": "Senior Research Analyst - Automotive Product Data",
+                "dates": "03/2022 – 06/2026 | Chennai, India",
+                "bullets": exp_bullets
+            },
+            {
+                "company": "SKH Sheet Metal Components Pvt. Ltd.",
+                "role": "Graduate Engineer Trainee",
+                "dates": "11/2020 – 11/2021 | Chennai, India",
+                "bullets": [
+                    "Rotated through shop-floor departments to build a practical understanding of Tier-1 manufacturing workflows.",
+                    "Supported daily operations including production monitoring, dispatch, and quality inspections."
+                ]
+            }
+        ],
+        "projects": [
+            {
+                "name": "AI-Powered Vehicle Specification ETL Pipeline",
+                "dates": "2024 – Present",
+                "bullets": proj_bullets
+            }
+        ],
+        "skills": {
+            "domain": ["Vehicle Specification Analysis", "EV & Hybrid Fundamentals", "Trim-Level Differentiation", "Data Validation", "Competitive Benchmarking"],
+            "tools": ["Python (Automation & ETL)", "Power BI & SAP", "SQL Database Management", "Advanced Excel & Macros"],
+            "ai": ai_skills
+        }
+    }
+    return payload
 
 def build_all_openresume_pdfs():
     excel_path = os.path.join("output", "Top_Jobs_Analysis.xlsx")
     output_dir = os.path.join("output", "tailored-resumes")
+    temp_json_dir = os.path.join("output", "temp_json")
     os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(temp_json_dir, exist_ok=True)
 
     if not os.path.exists(excel_path):
         print(f"❌ Excel file not found: {excel_path}")
@@ -97,26 +179,31 @@ def build_all_openresume_pdfs():
         company = str(row[company_col]).strip()
         role = str(row[role_col]).strip()
         
-        # Analyze evaluation report
+        # Analyze evaluation report & generate AI-tailored JSON payload
         report_info = parse_report_file(report_num)
-        tailored_summary = generate_tailored_summary(role, report_info)
+        tailored_payload = generate_ai_tailored_json(report_num, company, role, report_info)
 
         company_clean = "".join(c if c.isalnum() else "_" for c in company).strip("_")
         role_clean = "".join(c if c.isalnum() else "_" for c in role).strip("_")
+        
+        json_path = os.path.join(temp_json_dir, f"payload_{report_num}.json")
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(tailored_payload, f, indent=2)
+
         pdf_filename = f"Resume_{report_num}_{company_clean}_{role_clean}.pdf"
         pdf_path = os.path.join(output_dir, pdf_filename)
         
-        # Pass tailored summary to OpenResume renderer CLI
-        cmd = ["node", cli_script, role, pdf_path, tailored_summary]
+        # Pass tailored JSON path to OpenResume renderer CLI
+        cmd = ["node", cli_script, role, pdf_path, json_path]
         try:
             subprocess.run(cmd, capture_output=True, text=True, check=True)
             rendered_count += 1
-            has_report = "📊 Report Analyzed" if report_info else "📋 Direct Tailoring"
-            print(f"  -> 🎯 [OPENRESUME REACT PDF] Rendered #{report_num}: {company} — {role} ({score_val}/5) [{has_report}]")
+            has_report = "🤖 AI Report Analyzed" if report_info else "📋 Tailored AI Payload"
+            print(f"  -> 🎯 [GEMINI OPENRESUME REACT PDF] Rendered #{report_num}: {company} — {role} ({score_val}/5) [{has_report}]")
         except subprocess.CalledProcessError as e:
             print(f"  ❌ Error rendering #{report_num}: {e.stderr}")
 
-    print(f"\n🎉 Successfully rendered {rendered_count} Report-Tailored OpenResume React PDF resumes into {output_dir}!")
+    print(f"\n🎉 Successfully rendered {rendered_count} Gemini AI Report-Tailored OpenResume React PDF resumes into {output_dir}!")
 
 if __name__ == "__main__":
     build_all_openresume_pdfs()
