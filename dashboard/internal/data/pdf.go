@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/santifer/career-ops/dashboard/internal/model"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/model"
 )
 
 // PDFManifestEntry is one row of data/pdf-index.tsv, written by
@@ -17,8 +17,8 @@ import (
 // matcher via their recorded paths.
 type PDFManifestEntry struct {
 	ReportNumber string
-	PDFPath      string // relative to the career-ops root
-	HTMLPath     string // relative to the career-ops root, "" if unknown
+	PDFPath      string // relative to the job-hunter-ai root
+	HTMLPath     string // relative to the job-hunter-ai root, "" if unknown
 	Format       string // "letter" or "a4"
 	Date         string // YYYY-MM-DD generation date
 }

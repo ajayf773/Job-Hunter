@@ -160,7 +160,7 @@ jobsData.sort((a, b) => b.score - a.score);
 console.log(`📊 Creating Native Microsoft Excel Workbook (.xlsx) for ${jobsData.length} top jobs...`);
 
 const workbook = new ExcelJS.Workbook();
-workbook.creator = 'Career-Ops Pipeline';
+workbook.creator = 'job-hunter-ai Pipeline';
 workbook.lastModifiedBy = 'Ajay Marimuthu';
 
 const worksheet = workbook.addWorksheet('Top Jobs', {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * analyze-patterns.mjs — Rejection Pattern Detector for career-ops
+ * analyze-patterns.mjs — Rejection Pattern Detector for job-hunter-ai
  *
  * Parses applications.md + all linked reports, extracts dimensions
  * (archetype, seniority, remote, gaps, scores), classifies outcomes,
@@ -19,11 +19,11 @@ import { fileURLToPath } from 'url';
 import { load as yamlLoad } from 'js-yaml';
 import { resolveColumns, parseTrackerRow, normalizeVia } from './tracker-parse.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const APPS_FILE = existsSync(join(CAREER_OPS, 'data/applications.md'))
-  ? join(CAREER_OPS, 'data/applications.md')
-  : join(CAREER_OPS, 'applications.md');
-const REPORTS_DIR = join(CAREER_OPS, 'reports');
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
+const APPS_FILE = existsSync(join(job_hunter_ai, 'data/applications.md'))
+  ? join(job_hunter_ai, 'data/applications.md')
+  : join(job_hunter_ai, 'applications.md');
+const REPORTS_DIR = join(job_hunter_ai, 'reports');
 
 const MACHINE_SUMMARY_FIELDS = new Set([
   'company',
@@ -655,9 +655,9 @@ function analyze() {
     let reportPath = null;
     if (reportMatch) {
       const fromTracker = join(dirname(APPS_FILE), reportMatch[1]);
-      const candidate = existsSync(fromTracker) ? fromTracker : join(CAREER_OPS, reportMatch[1]);
+      const candidate = existsSync(fromTracker) ? fromTracker : join(job_hunter_ai, reportMatch[1]);
       
-      const repoRelative = relative(CAREER_OPS, candidate).split(sep).join('/');
+      const repoRelative = relative(job_hunter_ai, candidate).split(sep).join('/');
       if (repoRelative.startsWith('reports/') && !repoRelative.includes('..')) {
         reportPath = existsSync(candidate) ? candidate : null;
       }

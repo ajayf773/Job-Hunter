@@ -1,6 +1,6 @@
-# career-ops-plugin-{{NAME}}
+# job-hunter-ai-plugin-{{NAME}}
 
-A community plugin for [career-ops](https://github.com/santifer/career-ops).
+A community plugin for [job-hunter-ai](https://github.com/santifer/job-hunter-ai).
 
 ## What it does
 
@@ -9,11 +9,11 @@ TODO: one paragraph.
 ## Install
 
 ```bash
-# Once it's in the career-ops registry:
+# Once it's in the job-hunter-ai registry:
 node plugins.mjs add {{NAME}}
 
 # Before listing (install directly from your repo at a pinned commit):
-node plugins.mjs add <your-github-user>/career-ops-plugin-{{NAME}} --sha <40-hex-commit>
+node plugins.mjs add <your-github-user>/job-hunter-ai-plugin-{{NAME}} --sha <40-hex-commit>
 ```
 
 Then enable + consent:
@@ -30,8 +30,8 @@ node plugins.mjs enable {{NAME}} --confirm  # grants it
 
 ## Get it listed as approved
 
-Open a registry PR against career-ops (see
-[docs/PLUGINS.md](https://github.com/santifer/career-ops/blob/main/docs/PLUGINS.md)).
+Open a registry PR against job-hunter-ai (see
+[docs/PLUGINS.md](https://github.com/santifer/job-hunter-ai/blob/main/docs/PLUGINS.md)).
 
 ## License
 

@@ -10,11 +10,11 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/santifer/career-ops/dashboard/internal/data"
-	"github.com/santifer/career-ops/dashboard/internal/i18n"
-	"github.com/santifer/career-ops/dashboard/internal/model"
-	"github.com/santifer/career-ops/dashboard/internal/theme"
-	"github.com/santifer/career-ops/dashboard/internal/ui/screens"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/data"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/i18n"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/model"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/theme"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/ui/screens"
 )
 
 type viewState int
@@ -75,12 +75,12 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 
 	case screens.PipelineLoadReportMsg:
-		archetype, tldr, remote, comp := data.LoadReportSummary(msg.CareerOpsPath, msg.ReportPath)
+		archetype, tldr, remote, comp := data.LoadReportSummary(msg.JobHunterAIPath, msg.ReportPath)
 		m.pipeline.EnrichReport(msg.ReportPath, archetype, tldr, remote, comp)
 		return m, nil
 
 	case screens.PipelineUpdateStatusMsg:
-		err := data.UpdateApplicationStatus(msg.CareerOpsPath, msg.App, msg.NewStatus)
+		err := data.UpdateApplicationStatus(msg.JobHunterAIPath, msg.App, msg.NewStatus)
 		if err != nil {
 			// Log the error but still reload data to keep UI consistent
 			fmt.Fprintf(os.Stderr, "WARN: status update failed: %v\n", err)
@@ -90,7 +90,7 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case screens.PipelineUpdateStatusAndNotesMsg:
 		// Issue 1380: atomic status + notes write from the discard reason picker.
-		err := data.UpdateApplicationStatusAndNotes(msg.CareerOpsPath, msg.App, msg.NewStatus, msg.NotesAppend)
+		err := data.UpdateApplicationStatusAndNotes(msg.JobHunterAIPath, msg.App, msg.NewStatus, msg.NotesAppend)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "WARN: status+notes update failed: %v\n", err)
 		}
@@ -204,7 +204,7 @@ func openCmd(target string) tea.Cmd {
 	}
 }
 
-// runGeneratePDF shells out to node generate-pdf.mjs in the career-ops root,
+// runGeneratePDF shells out to node generate-pdf.mjs in the job-hunter-ai root,
 // opens the resulting PDF on success, and reports the outcome back to the
 // pipeline screen as a PipelinePDFGeneratedMsg. Runs in a tea.Cmd goroutine,
 // so the UI stays responsive while Chromium renders.
@@ -218,12 +218,12 @@ func runGeneratePDF(msg screens.PipelineGeneratePDFMsg) tea.Cmd {
 			args = append(args, "--report="+msg.ReportNumber)
 		}
 		cmd := exec.Command("node", args...)
-		cmd.Dir = msg.CareerOpsPath
+		cmd.Dir = msg.JobHunterAIPath
 		out, err := cmd.CombinedOutput()
 		if err != nil {
 			return screens.PipelinePDFGeneratedMsg{Err: summarizeCmdError(err, out)}
 		}
-		pdfAbs := filepath.Join(msg.CareerOpsPath, filepath.FromSlash(msg.PDFPath))
+		pdfAbs := filepath.Join(msg.JobHunterAIPath, filepath.FromSlash(msg.PDFPath))
 		if err := openWithDefaultApp(pdfAbs); err != nil {
 			return screens.PipelinePDFGeneratedMsg{Err: fmt.Sprintf("PDF generated but could not open: %v", err)}
 		}
@@ -256,7 +256,7 @@ func (m appModel) View() string {
 }
 
 func main() {
-	pathFlag := flag.String("path", ".", "Path to career-ops directory")
+	pathFlag := flag.String("path", ".", "Path to job-hunter-ai directory")
 	langFlag := flag.String("lang", "", "Language for UI (en, tr). Defaults to auto-detect/en.")
 	flag.Parse()
 

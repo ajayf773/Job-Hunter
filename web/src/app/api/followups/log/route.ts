@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { careerOpsRoot } from "@/lib/career-ops";
+import { careerOpsRoot } from "@/lib/job-hunter-ai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

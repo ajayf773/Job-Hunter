@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import type { Page, Frame } from "playwright-core";
 import { resolveCli } from "@/lib/clis";
-import { careerOpsRoot } from "@/lib/career-ops";
+import { careerOpsRoot } from "@/lib/job-hunter-ai";
 import { dropNewTabs } from "./diagnose";
 import type { DriveStep } from "./issue";
 

@@ -47,7 +47,7 @@
  *      node check-table-freshness.mjs --today 2026-10-02 (deterministic date for tests)
  *      node check-table-freshness.mjs --self-test
  *
- * Issue #2036 — github.com/santifer/career-ops
+ * Issue #2036 — github.com/santifer/job-hunter-ai
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
@@ -56,8 +56,8 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import yaml from 'js-yaml';
 import { flagValue } from './lib/cli-flags.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const TEMPLATES_DIR = join(CAREER_OPS, 'templates');
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
+const TEMPLATES_DIR = join(job_hunter_ai, 'templates');
 const DEFAULT_MAX_AGE_MONTHS = 12;
 
 // --- CLI args ---
@@ -244,7 +244,7 @@ function loadTables(dir = TEMPLATES_DIR) {
 // partially parsed or silently swallowed: months stays null (default applies)
 // and a warning entry reports the rejected value.
 function loadConfigMaxAge() {
-  const profilePath = join(CAREER_OPS, 'config/profile.yml');
+  const profilePath = join(job_hunter_ai, 'config/profile.yml');
   if (!existsSync(profilePath)) return { months: null, warning: null };
   try {
     const profile = yaml.load(readFileSync(profilePath, 'utf-8'));
@@ -272,7 +272,7 @@ function loadConfigMaxAge() {
 function printSummary(result, todayStr, maxAgeMonths) {
   const { tablesScanned, rowsChecked, findings, warnings } = result;
   console.log(`\n${'='.repeat(78)}`);
-  console.log('  Table Freshness — career-ops');
+  console.log('  Table Freshness — job-hunter-ai');
   console.log(`  today: ${todayStr} | review threshold: ${maxAgeMonths} months | tables: ${tablesScanned} | rows: ${rowsChecked}`);
   console.log(`${'='.repeat(78)}\n`);
 

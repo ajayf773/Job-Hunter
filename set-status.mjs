@@ -77,8 +77,8 @@ import {
   normalizeCompany, cell, CLI_EXIT, makeCliFailWith, acquireTrackerLockForCli,
 } from './tracker-utils.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const STATES_FILE = join(CAREER_OPS, 'templates/states.yml');
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
+const STATES_FILE = join(job_hunter_ai, 'templates/states.yml');
 
 // LOCK_TIMEOUT is not destructured here — that exit path is raised inside
 // acquireTrackerLockForCli() itself (tracker-utils.mjs), via CLI_EXIT.LOCK_TIMEOUT.
@@ -215,7 +215,7 @@ if (!newStatus) {
 
 // ── tracker access ───────────────────────────────────────────────
 
-const APPS_FILE = resolveTrackerPath(CAREER_OPS);
+const APPS_FILE = resolveTrackerPath(job_hunter_ai);
 if (!existsSync(APPS_FILE)) {
   failWith(EXIT_NOT_FOUND, 'no-tracker', `No tracker found at ${APPS_FILE}`);
 }
@@ -479,7 +479,7 @@ if (changed && !flags.dryRun) {
 // Observation trail only: the tracker stays the source of truth for STATE,
 // the ledger records WHEN transitions happened. A failed append is a warning,
 // never a failure — the status write above already succeeded. Sibling of the
-// tracker file so CAREER_OPS_TRACKER redirects (tests, custom layouts) keep
+// tracker file so job_hunter_ai_TRACKER redirects (tests, custom layouts) keep
 // the ledger next to the tracker it describes. Inside the lock window, so
 // concurrent writers can't interleave lines.
 let statusLogged = false;

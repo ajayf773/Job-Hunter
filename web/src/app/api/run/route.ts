@@ -2,14 +2,14 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { resolveCli } from "@/lib/clis";
-import { careerOpsRoot, readMemory } from "@/lib/career-ops";
+import { careerOpsRoot, readMemory } from "@/lib/job-hunter-ai";
 import { acquireTrackerWrite, releaseTrackerWrite } from "@/lib/core/run-registry";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 800; // a real oferta evaluation / pdf-mode CV tailoring + render is heavy and multi-step
 
-// The web ORCHESTRATES the real career-ops engine — it does NOT reimplement it.
+// The web ORCHESTRATES the real job-hunter-ai engine — it does NOT reimplement it.
 // kind "evaluate" runs the REAL modes/oferta.md and persists the canonical
 // artifacts (A–F report + tracker row) via the SAME scripts the CLI uses
 // (reserve-report-num.mjs → reports/ → batch/tracker-additions/ → merge-tracker.mjs),
@@ -25,7 +25,7 @@ End with EXACTLY one final line: VERDICT: {0-5 signal strength}/5 — {why it he
 Target: ${input}`;
   }
   if (kind === "pdf") {
-    return `You are generating the user's ATS-optimized, TAILORED CV PDF for application #${input}, headless, on their machine. Run the REAL career-ops "pdf" mode — follow modes/pdf.md EXACTLY (do not improvise a format).
+    return `You are generating the user's ATS-optimized, TAILORED CV PDF for application #${input}, headless, on their machine. Run the REAL job-hunter-ai "pdf" mode — follow modes/pdf.md EXACTLY (do not improvise a format).
 1. Read modes/pdf.md, cv.md, config/profile.yml, and the evaluation report at reports/${input}-*.md (for the JD keywords + analysis).
 2. Tailor the CV per modes/pdf.md: inject the JD's keywords into the summary + first bullets, reorder experience by relevance, build the competency grid, pick the top 3–4 projects. NEVER invent skills — only reword REAL experience using the JD's vocabulary.
 3. Fill templates/cv-template.html's {{...}} placeholders with the tailored content; write the HTML to /tmp/cv-{candidate}-{company}.html (candidate = the profile name in kebab-case).
@@ -36,7 +36,7 @@ Do not submit anything anywhere.
 End with EXACTLY one final line: VERDICT: {5 if the PDF was written, else 1}/5 — {the output/ path, ≤12 words}`;
   }
   if (kind === "fix-portal") {
-    return `A company's job-portal ATS slug is BROKEN — career-ops can no longer scan it, so it silently disappears from every future scan. Repair it (headless, on the user's machine):
+    return `A company's job-portal ATS slug is BROKEN — job-hunter-ai can no longer scan it, so it silently disappears from every future scan. Repair it (headless, on the user's machine):
 1. Run \`node verify-portals.mjs --add "${input}"\` — it probes Greenhouse/Ashby/Lever for the company's correct ATS slug and prints the suggested ats + slug.
 2. Open portals.yml, find the "${input}" entry under tracked_companies, and update its careers_url (and any api/slug field) to the suggested WORKING ATS URL. Change ONLY this one company; preserve all other YAML structure, comments and formatting exactly.
 3. Re-run \`node verify-portals.mjs\` and confirm "${input}" now shows ✅ live (not ❌).
@@ -45,7 +45,7 @@ If NO slug variant resolves, say so clearly and leave portals.yml unchanged. Nev
 End with EXACTLY one final line: VERDICT: {5 if now live, else 1}/5 — {what you changed, ≤12 words}`;
   }
   // evaluate (default) — run the REAL oferta mode + persist canonically
-  return `You are running the OFFICIAL career-ops job evaluation, HEADLESS, on the user's own machine. Today is ${today}. Run the REAL career-ops evaluation — do NOT improvise your own scoring.
+  return `You are running the OFFICIAL job-hunter-ai job evaluation, HEADLESS, on the user's own machine. Today is ${today}. Run the REAL job-hunter-ai evaluation — do NOT improvise your own scoring.
 
 1. Read modes/oferta.md and follow it EXACTLY (blocks A–F, G posting-legitimacy, and the Machine Summary). Ground the fit in THIS person: read cv.md, config/profile.yml and modes/_profile.md. Use WebFetch to read the posting (you are headless — Playwright is unavailable, so use WebFetch and mark the report header "Verification: unconfirmed (batch mode)").
 
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
   if (required && !fs.existsSync(path.join(careerOpsRoot(), required))) {
     return new Response(
       JSON.stringify({
-        error: `This needs a complete career-ops checkout (${required}). CAREER_OPS_ROOT has data only — point it at a full checkout.`,
+        error: `This needs a complete job-hunter-ai checkout (${required}). job_hunter_ai_ROOT has data only — point it at a full checkout.`,
       }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
@@ -232,7 +232,7 @@ export async function POST(req: Request) {
         if (!emittedText && !sawError && !cleanExit) {
           send({ type: "error", msg: "The CLI exited with an error — is it installed and authenticated?" });
         } else if (!emittedText && !sawError) {
-          send({ type: "error", msg: "The CLI produced no output — is it installed and authenticated? (career-ops is best on Claude Code.)" });
+          send({ type: "error", msg: "The CLI produced no output — is it installed and authenticated? (job-hunter-ai is best on Claude Code.)" });
         } else if (persists && !wroteReport) {
           // The worker ran but never wrote the report/tracker row (e.g. a CLI
           // without file-write authorization) — surface it instead of a fake score.

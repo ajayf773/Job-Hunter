@@ -1,17 +1,17 @@
 ---
-name: Sign the CareerOps Manifesto
+name: Sign the JobHunterAI Manifesto
 about: Add your signature to SIGNATURES.md
 title: 'sign: @your-username'
 labels: manifesto-signature
 ---
 
-<!-- Thank you for signing The CareerOps Manifesto.
-     Canonical page: https://career-ops.org/manifesto -->
+<!-- Thank you for signing The JobHunterAI Manifesto.
+     Canonical page: https://job-hunter-ai.org/manifesto -->
 
-> CareerOps is the practice of running a job search the way engineers run production: with evidence, with discipline, and with tools on the candidate's side of the table.
+> JobHunterAI is the practice of running a job search the way engineers run production: with evidence, with discipline, and with tools on the candidate's side of the table.
 >
 > — Coined by Santiago Fernández de Valderrama Aparicio in
-> [The CareerOps Manifesto](https://career-ops.org/manifesto), July 14, 2026.
+> [The JobHunterAI Manifesto](https://job-hunter-ai.org/manifesto), July 14, 2026.
 
 ## My signature
 

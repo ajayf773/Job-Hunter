@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * test-all.mjs — Comprehensive test suite for career-ops
+ * test-all.mjs — Comprehensive test suite for job-hunter-ai
  *
  * Run before merging any PR or pushing changes.
  * Tests: syntax, scripts, dashboard, data contract, personal data, paths.
@@ -37,7 +37,7 @@ import { flagValue, hasFlag } from './lib/cli-flags.mjs';
 /**
  * Read a repo-relative text file as UTF-8.
  *
- * @param {string} path - Path relative to the career-ops repository root.
+ * @param {string} path - Path relative to the job-hunter-ai repository root.
  * @returns {string} File contents.
  */
 function readFile(path) {
@@ -70,7 +70,7 @@ const normalizeEol = (text) => text.replace(/\r\n/g, '\n');
  * Use for doc-content reads that feed `\n`-anchored regex assertions.
  * Do NOT use where byte-exact content matters.
  *
- * @param {string} path - Path relative to the career-ops repository root.
+ * @param {string} path - Path relative to the job-hunter-ai repository root.
  * @returns {string} File contents with LF-only line endings.
  */
 const readTextLF = (path) => normalizeEol(readFile(path));
@@ -168,12 +168,12 @@ if (ONLY !== null) {
     console.log('  ❌ --only requires a path substring, e.g. --only providers/themuse');
     process.exit(1);
   }
-  console.log('\n🧪 career-ops test suite (--only ' + ONLY + ')\n');
+  console.log('\n🧪 job-hunter-ai test suite (--only ' + ONLY + ')\n');
   await runDiscovered(ONLY);
   finish();
 }
 
-console.log('\n🧪 career-ops test suite\n');
+console.log('\n🧪 job-hunter-ai test suite\n');
 
 // ── 1. SYNTAX CHECKS ────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ const scripts = [
   // data/applications.md (or data/pipeline.md) in place. On a provisioned working
   // copy with a real tracker present, running them without --dry-run mutates user
   // data. Harmless in this repo (no tracker shipped), risky for end users who run
-  // tests inside their active career-ops workspace.
+  // tests inside their active job-hunter-ai workspace.
   { name: 'normalize-statuses.mjs --dry-run', expectExit: 0 },
   { name: 'dedup-tracker.mjs --dry-run', expectExit: 0 },
   { name: 'merge-tracker.mjs --dry-run', expectExit: 0 },
@@ -335,7 +335,7 @@ try {
     // drops them wherever they occur, root included.
     'data',
     'reports',
-    '.career-ops-web',
+    '.job-hunter-ai-web',
     '.playwright-mcp',
     '.agents',
     'cdp-diff.patch',
@@ -378,7 +378,7 @@ try {
 }
 
 try {
-  const tmp = mkdtempSync(join(tmpdir(), 'career-ops-cv-facts-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-cv-facts-'));
   const hiddenScriptMetric = join(tmp, 'hidden-script-metric.html');
   const visibleMetric = join(tmp, 'visible-metric.html');
   writeFileSync(
@@ -979,7 +979,7 @@ if (!QUICK) {
     const outPath = join(dashboardBuildTmp, isWindows ? 'career-dashboard-test.exe' : 'career-dashboard-test');
     const goEnv = { ...process.env };
     if (isWindows && !goEnv.GOCACHE) {
-      goEnv.GOCACHE = join(tmpdir(), 'career-ops-go-build-cache');
+      goEnv.GOCACHE = join(tmpdir(), 'job-hunter-ai-go-build-cache');
     }
     if (goEnv.GOCACHE) {
       try { mkdirSync(goEnv.GOCACHE, { recursive: true }); } catch (e) {}
@@ -1013,13 +1013,13 @@ const systemFiles = [
   'modes/oferta.md', 'modes/pdf.md', 'modes/scan.md',
   'modes/heuristics/recruiter-side.md',
   'templates/states.yml', 'templates/cv-template.html',
-  '.claude/skills/career-ops/SKILL.md',
-  '.cursor/skills/career-ops/SKILL.md',
-  '.opencode/skills/career-ops/SKILL.md',
-  '.qwen/skills/career-ops/SKILL.md',
-  '.antigravitycli/skills/career-ops/SKILL.md',
-  '.grok/skills/career-ops/SKILL.md',
-  '.kimi/skills/career-ops/SKILL.md',
+  '.claude/skills/job-hunter-ai/SKILL.md',
+  '.cursor/skills/job-hunter-ai/SKILL.md',
+  '.opencode/skills/job-hunter-ai/SKILL.md',
+  '.qwen/skills/job-hunter-ai/SKILL.md',
+  '.antigravitycli/skills/job-hunter-ai/SKILL.md',
+  '.grok/skills/job-hunter-ai/SKILL.md',
+  '.kimi/skills/job-hunter-ai/SKILL.md',
 ];
 
 for (const f of systemFiles) {
@@ -1050,7 +1050,7 @@ for (const f of systemFiles) {
 // defect is actually about, and still catches #1051: a link-path blob never
 // equals the canonical blob. Reading the INDEX (not the filesystem) keeps this
 // true on Windows checkouts, where a symlink entry materializes as a text file.
-const CANONICAL_ENTRYPOINT = '.agents/skills/career-ops/SKILL.md';
+const CANONICAL_ENTRYPOINT = '.agents/skills/job-hunter-ai/SKILL.md';
 const stagedBlob = (path) => {
   const entry = run('git', ['ls-files', '-s', path]);
   if (entry === null || entry === '') return null;
@@ -1063,7 +1063,7 @@ if (!canonicalEntry) {
   fail(`Could not read git index entry for the canonical entrypoint ${CANONICAL_ENTRYPOINT}`);
 }
 
-const skillEntrypoints = systemFiles.filter((f) => f.endsWith('/skills/career-ops/SKILL.md'));
+const skillEntrypoints = systemFiles.filter((f) => f.endsWith('/skills/job-hunter-ai/SKILL.md'));
 for (const f of skillEntrypoints) {
   const staged = stagedBlob(f);
   if (!staged) {
@@ -1469,7 +1469,7 @@ try {
   const injectedPageCss = injectPrintPageCss('<html><head><title>CV</title></head><body></body></html>', 'letter');
   if (
     injectedPageCss.includes('@page { size: Letter; margin: var(--page-margin, 0.6in); }') &&
-    injectedPageCss.indexOf('career-ops-page-setup') < injectedPageCss.indexOf('</head>')
+    injectedPageCss.indexOf('job-hunter-ai-page-setup') < injectedPageCss.indexOf('</head>')
   ) {
     pass('PDF renderer injects CSS page size and margins before rendering');
   } else {
@@ -1486,7 +1486,7 @@ try {
   const doctypeNoHead = injectPrintPageCss('<!doctype html><html lang="en"><body></body></html>');
   if (
     doctypeNoHead.startsWith('<!doctype html>') &&
-    doctypeNoHead.includes('<html lang="en">\n<head>\n<style id="career-ops-page-setup">') &&
+    doctypeNoHead.includes('<html lang="en">\n<head>\n<style id="job-hunter-ai-page-setup">') &&
     doctypeNoHead.indexOf('<head>') < doctypeNoHead.indexOf('<body>')
   ) {
     pass('PDF renderer preserves doctype when injecting page CSS into full HTML without head');
@@ -1495,7 +1495,7 @@ try {
   }
 
   const fragmentPageCss = injectPrintPageCss('<section>CV</section>');
-  if (fragmentPageCss.startsWith('<style id="career-ops-page-setup">')) {
+  if (fragmentPageCss.startsWith('<style id="job-hunter-ai-page-setup">')) {
     pass('PDF renderer still prepends page CSS for HTML fragments');
   } else {
     fail('PDF renderer no longer handles HTML fragments with fallback CSS injection');
@@ -1519,7 +1519,7 @@ console.log('\n7b2. PDF renderer temporary-file cleanup');
 
 try {
   const { renderHtmlToPdf } = await import(pathToFileURL(join(ROOT, 'generate-pdf.mjs')).href);
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-pdf-cleanup-launch-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-pdf-cleanup-launch-'));
   const launchError = new Error('injected browser launch failure');
   let caught;
   try {
@@ -1531,7 +1531,7 @@ try {
     caught = error;
   }
   const leftovers = readdirSync(fixtureRoot)
-    .filter((name) => name.startsWith('.career-ops-render-'));
+    .filter((name) => name.startsWith('.job-hunter-ai-render-'));
   if (caught === launchError && leftovers.length === 0) {
     pass('PDF renderer removes temporary HTML when Chromium launch fails');
   } else {
@@ -1544,7 +1544,7 @@ try {
 
 try {
   const { renderHtmlToPdf } = await import(pathToFileURL(join(ROOT, 'generate-pdf.mjs')).href);
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-pdf-cleanup-page-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-pdf-cleanup-page-'));
   const pageError = new Error('injected newPage failure');
   let closeCalls = 0;
   let caught;
@@ -1560,7 +1560,7 @@ try {
     caught = error;
   }
   const leftovers = readdirSync(fixtureRoot)
-    .filter((name) => name.startsWith('.career-ops-render-'));
+    .filter((name) => name.startsWith('.job-hunter-ai-render-'));
   if (caught === pageError && closeCalls === 1 && leftovers.length === 0) {
     pass('PDF renderer closes Chromium and removes temporary HTML after launch');
   } else {
@@ -1645,7 +1645,7 @@ console.log('\n7d. Output language contract');
 const profileExample = readTextLF('config/profile.example.yml');
 const outputLanguageAgentsDoc = readTextLF('AGENTS.md');
 const outputLanguageClaudeDoc = readTextLF('CLAUDE.md');
-const careerOpsSkill = readTextLF('.agents/skills/career-ops/SKILL.md');
+const careerOpsSkill = readTextLF('.agents/skills/job-hunter-ai/SKILL.md');
 const batchPrompt = readTextLF('batch/batch-prompt.md');
 
 if (/language:\s*\n(?:\s*#.*\n)*\s*output:\s*["']?en["']?/.test(profileExample)) {
@@ -1723,9 +1723,9 @@ for (const [docName, docText] of marketModeDocs) {
 }
 
 if (/language\.output/.test(careerOpsSkill) && /human-facing output/i.test(careerOpsSkill)) {
-  pass('career-ops skill injects the output language rule');
+  pass('job-hunter-ai skill injects the output language rule');
 } else {
-  fail('career-ops skill does not inject the output language rule');
+  fail('job-hunter-ai skill does not inject the output language rule');
 }
 
 if (/Language Rule/i.test(batchPrompt) && /language\.output/.test(batchPrompt) && /write all human-facing output/i.test(batchPrompt)) {
@@ -2054,26 +2054,26 @@ if (
   fail('_custom.md read-path regressed: missing Sources of Truth row, honor rule in _shared.md, or the pre-generation read in pdf.md (#1388 would reopen)');
 }
 
-for (const skillPath of ['.claude/skills/career-ops/SKILL.md', '.agents/skills/career-ops/SKILL.md']) {
+for (const skillPath of ['.claude/skills/job-hunter-ai/SKILL.md', '.agents/skills/job-hunter-ai/SKILL.md']) {
   if (!fileExists(skillPath)) {
     fail(`${skillPath} is missing`);
     continue;
   }
   const skill = readFile(skillPath);
-  if (skill.includes('/career-ops latex')) {
-    pass(`${skillPath} exposes /career-ops latex in discovery menu`);
+  if (skill.includes('/job-hunter-ai latex')) {
+    pass(`${skillPath} exposes /job-hunter-ai latex in discovery menu`);
   } else {
-    fail(`${skillPath} does not expose /career-ops latex in discovery menu`);
+    fail(`${skillPath} does not expose /job-hunter-ai latex in discovery menu`);
   }
   if (
     skill.includes('email') &&
     skill.includes('| `email` | `email` |') &&
-    skill.includes('/career-ops email') &&
+    skill.includes('/job-hunter-ai email') &&
     /Standalone modes[\s\S]*Applies to:[^\n]*`email`/.test(skill)
   ) {
-    pass(`${skillPath} exposes /career-ops email in routing, discovery, and standalone loading`);
+    pass(`${skillPath} exposes /job-hunter-ai email in routing, discovery, and standalone loading`);
   } else {
-    fail(`${skillPath} does not fully expose /career-ops email`);
+    fail(`${skillPath} does not fully expose /job-hunter-ai email`);
   }
 }
 
@@ -2100,7 +2100,7 @@ if (
   fail('email mode missing required application-email behavior');
 }
 
-for (const skillPath of ['.claude/skills/career-ops/SKILL.md', '.agents/skills/career-ops/SKILL.md']) {
+for (const skillPath of ['.claude/skills/job-hunter-ai/SKILL.md', '.agents/skills/job-hunter-ai/SKILL.md']) {
   if (!fileExists(skillPath)) {
     fail(`${skillPath} is missing`);
     continue;
@@ -2599,11 +2599,11 @@ if (
   }
 }
 
-const routerSkill = readFile('.agents/skills/career-ops/SKILL.md');
+const routerSkill = readFile('.agents/skills/job-hunter-ai/SKILL.md');
 if (
   /argument-hint:.*offer-prep/.test(routerSkill) &&
   routerSkill.includes('| `offer-prep` | `offer-prep` |') &&
-  routerSkill.includes('/career-ops offer-prep') &&
+  routerSkill.includes('/job-hunter-ai offer-prep') &&
   /Applies to:.*`offer-prep`/.test(routerSkill) &&
   !/Modes delegated to subagent[\s\S]*offer-prep/.test(routerSkill)
 ) {
@@ -2885,13 +2885,13 @@ if (
   fail('upskill trust rule 7 (effort from stated length only) missing');
 }
 
-// Rule 8 — scope boundary: link to /career-ops training; never run training's scoring.
+// Rule 8 — scope boundary: link to /job-hunter-ai training; never run training's scoring.
 if (
-  upskillModeDoc.includes('/career-ops training {name}') &&
+  upskillModeDoc.includes('/job-hunter-ai training {name}') &&
   upskillModeDoc.includes('6-dimension scoring') &&
   upskillModeDoc.includes('`upskill` finds; `training` judges')
 ) {
-  pass('upskill trust rule 8: scope boundary — links to /career-ops training, never runs training scoring');
+  pass('upskill trust rule 8: scope boundary — links to /job-hunter-ai training, never runs training scoring');
 } else {
   fail('upskill trust rule 8 (scope boundary: upskill finds, training judges) missing');
 }
@@ -3091,7 +3091,7 @@ try {
 
 try {
   const { appendToPipeline } = await import(pathToFileURL(join(ROOT, 'scan.mjs')).href);
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-missing-pipeline-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-missing-pipeline-'));
   const originalCwd = process.cwd();
   try {
     mkdirSync(join(fixtureRoot, 'data'), { recursive: true });
@@ -3118,7 +3118,7 @@ try {
 try {
   const { appendToPipeline } = await import(pathToFileURL(join(ROOT, 'scan.mjs')).href);
   const { acquirePipelineLock, LockTimeoutError } = await import(pathToFileURL(join(ROOT, 'pipeline-lock.mjs')).href);
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-pipeline-lock-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-pipeline-lock-'));
   const originalCwd = process.cwd();
   let prevTimeout;
   let prevRetry;
@@ -3130,10 +3130,10 @@ try {
     // blocks on it (times out) rather than racing straight through to its
     // read-modify-write. The env overrides keep this assertion in the
     // milliseconds range instead of waiting out the module's real default.
-    prevTimeout = process.env.CAREER_OPS_PIPELINE_LOCK_TIMEOUT_MS;
-    prevRetry = process.env.CAREER_OPS_PIPELINE_LOCK_RETRY_MS;
-    process.env.CAREER_OPS_PIPELINE_LOCK_TIMEOUT_MS = '200';
-    process.env.CAREER_OPS_PIPELINE_LOCK_RETRY_MS = '20';
+    prevTimeout = process.env.job_hunter_ai_PIPELINE_LOCK_TIMEOUT_MS;
+    prevRetry = process.env.job_hunter_ai_PIPELINE_LOCK_RETRY_MS;
+    process.env.job_hunter_ai_PIPELINE_LOCK_TIMEOUT_MS = '200';
+    process.env.job_hunter_ai_PIPELINE_LOCK_RETRY_MS = '20';
     const held = await acquirePipelineLock(pipelinePath);
     try {
       await appendToPipeline([{ url: 'https://jobs.example.com/1', company: 'Acme', title: 'Engineer' }]);
@@ -3145,10 +3145,10 @@ try {
       held.release();
     }
   } finally {
-    if (prevTimeout === undefined) delete process.env.CAREER_OPS_PIPELINE_LOCK_TIMEOUT_MS;
-    else process.env.CAREER_OPS_PIPELINE_LOCK_TIMEOUT_MS = prevTimeout;
-    if (prevRetry === undefined) delete process.env.CAREER_OPS_PIPELINE_LOCK_RETRY_MS;
-    else process.env.CAREER_OPS_PIPELINE_LOCK_RETRY_MS = prevRetry;
+    if (prevTimeout === undefined) delete process.env.job_hunter_ai_PIPELINE_LOCK_TIMEOUT_MS;
+    else process.env.job_hunter_ai_PIPELINE_LOCK_TIMEOUT_MS = prevTimeout;
+    if (prevRetry === undefined) delete process.env.job_hunter_ai_PIPELINE_LOCK_RETRY_MS;
+    else process.env.job_hunter_ai_PIPELINE_LOCK_RETRY_MS = prevRetry;
     process.chdir(originalCwd);
     rmSync(fixtureRoot, { recursive: true, force: true });
   }
@@ -3201,7 +3201,7 @@ try {
     fail('normalizeUrlForDedup must not lowercase query values — gh_jid is identity-bearing');
   }
 
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-seen-urls-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-seen-urls-'));
   const originalCwd = process.cwd();
   try {
     mkdirSync(join(fixtureRoot, 'data'), { recursive: true });
@@ -3280,7 +3280,7 @@ try {
     fail('scan.mjs blacklist matching misses case/punctuation company variants');
   }
 
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-blacklist-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-blacklist-'));
   try {
     const absent = loadBlacklist(join(fixtureRoot, 'data', 'blacklist.md'));
     if (absent instanceof Map && absent.size === 0) {
@@ -3864,7 +3864,7 @@ try {
 console.log('\n10. Portals config validator');
 
 try {
-  const tmp = mkdtempSync(join(tmpdir(), 'career-ops-portals-validator-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-portals-validator-'));
   const validPath = join(tmp, 'valid.yml');
   const validProviderPluginPath = join(tmp, 'valid-provider-plugin.yml');
   const invalidProviderPath = join(tmp, 'invalid-provider.yml');
@@ -4463,7 +4463,7 @@ try {
   }
 
   // End-to-end CLI --dry-run must not write to disk.
-  const dryRunTmp = mkdtempSync(join(tmpdir(), 'career-ops-fix-slugs-dryrun-'));
+  const dryRunTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-fix-slugs-dryrun-'));
   const dryRunPortals = join(dryRunTmp, 'portals.yml');
   writeFileSync(dryRunPortals, fixture);
   const beforeDryRun = readFileSync(dryRunPortals, 'utf-8');
@@ -4580,25 +4580,25 @@ for (const [name, marker] of criticalRoutingContracts) {
   if (marker.test(agents)) pass(`AGENTS.md preserves ${name} routing for Claude`);
   else fail(`AGENTS.md is missing ${name} routing required by the Claude wrapper`);
 }
-const claudeSkillEntrypoint = readFile('.claude/skills/career-ops/SKILL.md');
-if (/\.agents\/skills\/career-ops\/SKILL\.md/.test(claudeSkillEntrypoint) || claudeSkillEntrypoint === readFile('.agents/skills/career-ops/SKILL.md')) {
-  pass('Claude skill invocation resolves to the canonical career-ops router');
+const claudeSkillEntrypoint = readFile('.claude/skills/job-hunter-ai/SKILL.md');
+if (/\.agents\/skills\/job-hunter-ai\/SKILL\.md/.test(claudeSkillEntrypoint) || claudeSkillEntrypoint === readFile('.agents/skills/job-hunter-ai/SKILL.md')) {
+  pass('Claude skill invocation resolves to the canonical job-hunter-ai router');
 } else {
-  fail('Claude skill invocation does not resolve to the canonical career-ops router');
+  fail('Claude skill invocation does not resolve to the canonical job-hunter-ai router');
 }
 
 // ── 12. SKILL SYMLINK INTEGRITY ─────────────────────────────
 
 console.log('\n12. Skill symlink integrity');
 
-const canonicalSkill = '.agents/skills/career-ops/SKILL.md';
+const canonicalSkill = '.agents/skills/job-hunter-ai/SKILL.md';
 const symlinks = [
-  '.claude/skills/career-ops/SKILL.md',
-  '.cursor/skills/career-ops/SKILL.md',
-  '.opencode/skills/career-ops/SKILL.md',
-  '.qwen/skills/career-ops/SKILL.md',
-  '.antigravitycli/skills/career-ops/SKILL.md',
-  '.grok/skills/career-ops/SKILL.md',
+  '.claude/skills/job-hunter-ai/SKILL.md',
+  '.cursor/skills/job-hunter-ai/SKILL.md',
+  '.opencode/skills/job-hunter-ai/SKILL.md',
+  '.qwen/skills/job-hunter-ai/SKILL.md',
+  '.antigravitycli/skills/job-hunter-ai/SKILL.md',
+  '.grok/skills/job-hunter-ai/SKILL.md',
 ];
 
 let canonicalReal = null;
@@ -4642,11 +4642,11 @@ if (
   /`codex`/.test(canonicalContent ?? '') &&
   /`codex exec/.test(canonicalContent ?? '') &&
   /prompt/i.test(canonicalContent ?? '') &&
-  /\/career-ops/.test(canonicalContent ?? '')
+  /\/job-hunter-ai/.test(canonicalContent ?? '')
 ) {
-  pass('career-ops skill router documents the Codex invocation model');
+  pass('job-hunter-ai skill router documents the Codex invocation model');
 } else {
-  fail('career-ops skill router is missing Codex invocation guidance');
+  fail('job-hunter-ai skill router is missing Codex invocation guidance');
 }
 
 console.log('\n12c. Codex documentation guidance');
@@ -4679,7 +4679,7 @@ if (
   /CODEX\.md/.test(agentsDoc) &&
   /codex exec/.test(agentsDoc) &&
   /Codex/i.test(agentsDoc) &&
-  /(slash commands?.*not guaranteed|prompt|\/career-ops.*unavailable)/i.test(agentsDoc)
+  /(slash commands?.*not guaranteed|prompt|\/job-hunter-ai.*unavailable)/i.test(agentsDoc)
 ) {
   pass('AGENTS.md includes CODEX.md and Codex-specific command guidance');
 } else {
@@ -4689,17 +4689,17 @@ if (
 console.log('\n12a. Skill entrypoint materialization');
 
 {
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-skills-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-skills-'));
   try {
-    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'career-ops');
-    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'career-ops');
-    const opencodeDir = join(fixtureRoot, '.opencode', 'skills', 'career-ops');
+    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'job-hunter-ai');
+    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'job-hunter-ai');
+    const opencodeDir = join(fixtureRoot, '.opencode', 'skills', 'job-hunter-ai');
     mkdirSync(canonicalDir, { recursive: true });
     mkdirSync(claudeDir, { recursive: true });
     mkdirSync(opencodeDir, { recursive: true });
 
-    const fixtureSkill = '---\nname: career-ops\n---\n\n# canonical skill\n';
-    const pointer = '../../../.agents/skills/career-ops/SKILL.md';
+    const fixtureSkill = '---\nname: job-hunter-ai\n---\n\n# canonical skill\n';
+    const pointer = '../../../.agents/skills/job-hunter-ai/SKILL.md';
     writeFileSync(join(canonicalDir, 'SKILL.md'), fixtureSkill);
     writeFileSync(join(claudeDir, 'SKILL.md'), pointer);
     writeFileSync(join(opencodeDir, 'SKILL.md'), pointer);
@@ -4707,8 +4707,8 @@ console.log('\n12a. Skill entrypoint materialization');
     const skills = await import(pathToFileURL(join(ROOT, 'scaffolder/bin/skill-entrypoints.mjs')).href);
     const materialized = skills.materializeSkillEntrypoints(fixtureRoot).sort();
     const expected = [
-      '.claude/skills/career-ops/SKILL.md',
-      '.opencode/skills/career-ops/SKILL.md',
+      '.claude/skills/job-hunter-ai/SKILL.md',
+      '.opencode/skills/job-hunter-ai/SKILL.md',
     ];
 
     if (JSON.stringify(materialized) === JSON.stringify(expected)) {
@@ -4736,7 +4736,7 @@ console.log('\n12a. Skill entrypoint materialization');
 // these files on filesystems without symlink support. A tracked-but-unlisted
 // entrypoint checks out as a pointer text file on Windows and stays that way:
 // the user opens their CLI and the skill is the literal string
-// "../../../.agents/skills/career-ops/SKILL.md". That is bug #1051, and it hit
+// "../../../.agents/skills/job-hunter-ai/SKILL.md". That is bug #1051, and it hit
 // a second time because Kimi shipped after the list was written and nobody
 // compared the two. Adding a CLI touches five wiring points; this asserts the
 // sixth instead of trusting a reviewer to remember it.
@@ -4746,7 +4746,7 @@ console.log('\n12a-bis. Every tracked skill entrypoint is materializable');
   try {
     const tracked = execSync('git ls-files', { cwd: ROOT, encoding: 'utf-8' })
       .split('\n')
-      .filter((p) => /^\.[^/]+\/skills\/career-ops\/SKILL\.md$/.test(p))
+      .filter((p) => /^\.[^/]+\/skills\/job-hunter-ai\/SKILL\.md$/.test(p))
       .filter((p) => !p.startsWith('.agents/')) // the canonical target, not an entrypoint
       .sort();
 
@@ -4773,15 +4773,15 @@ console.log('\n12a-bis. Every tracked skill entrypoint is materializable');
 console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
 
 {
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-ensure-skills-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-ensure-skills-'));
   try {
-    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'career-ops');
-    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'career-ops');
+    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'job-hunter-ai');
+    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'job-hunter-ai');
     mkdirSync(canonicalDir, { recursive: true });
     mkdirSync(claudeDir, { recursive: true });
 
-    const fixtureSkill = '---\nname: career-ops\n---\n\n# canonical skill\n';
-    const pointer = '../../../.agents/skills/career-ops/SKILL.md';
+    const fixtureSkill = '---\nname: job-hunter-ai\n---\n\n# canonical skill\n';
+    const pointer = '../../../.agents/skills/job-hunter-ai/SKILL.md';
     writeFileSync(join(canonicalDir, 'SKILL.md'), fixtureSkill);
     writeFileSync(join(claudeDir, 'SKILL.md'), pointer);
 
@@ -4801,7 +4801,7 @@ console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
       fail(`unexpected bootstrapped skill entrypoints: ${JSON.stringify(touched)}`);
     }
 
-    const grokSkill = readFileSync(join(fixtureRoot, '.grok', 'skills', 'career-ops', 'SKILL.md'), 'utf-8');
+    const grokSkill = readFileSync(join(fixtureRoot, '.grok', 'skills', 'job-hunter-ai', 'SKILL.md'), 'utf-8');
     const claudeSkill = readFileSync(join(claudeDir, 'SKILL.md'), 'utf-8');
     if (grokSkill === fixtureSkill && claudeSkill === fixtureSkill) {
       pass('ensureSkillEntrypoints materializes canonical skill content');
@@ -4867,7 +4867,7 @@ console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
   // ONLY update-system.mjs into an otherwise-empty dir (no scaffolder/) and
   // importing it. Before the lazy-import fix this threw ERR_MODULE_NOT_FOUND at
   // module load; it must now load standalone.
-  const isolatedRoot = mkdtempSync(join(tmpdir(), 'career-ops-updater-standalone-'));
+  const isolatedRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-updater-standalone-'));
   try {
     const updaterSource = readFileSync(join(ROOT, 'update-system.mjs'), 'utf-8');
     const isolatedUpdater = join(isolatedRoot, 'update-system.mjs');
@@ -4884,14 +4884,14 @@ console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
 }
 
 {
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-skills-unreadable-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-skills-unreadable-'));
   try {
-    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'career-ops');
-    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'career-ops');
+    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'job-hunter-ai');
+    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'job-hunter-ai');
     mkdirSync(canonicalDir, { recursive: true });
     mkdirSync(claudeDir, { recursive: true });
 
-    const pointer = '../../../.agents/skills/career-ops/SKILL.md';
+    const pointer = '../../../.agents/skills/job-hunter-ai/SKILL.md';
     mkdirSync(join(canonicalDir, 'SKILL.md'));
     writeFileSync(join(claudeDir, 'SKILL.md'), pointer);
 
@@ -4911,17 +4911,17 @@ console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
 }
 
 {
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-skills-entry-dir-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-skills-entry-dir-'));
   try {
-    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'career-ops');
-    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'career-ops');
-    const opencodeDir = join(fixtureRoot, '.opencode', 'skills', 'career-ops');
+    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'job-hunter-ai');
+    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'job-hunter-ai');
+    const opencodeDir = join(fixtureRoot, '.opencode', 'skills', 'job-hunter-ai');
     mkdirSync(canonicalDir, { recursive: true });
     mkdirSync(claudeDir, { recursive: true });
     mkdirSync(opencodeDir, { recursive: true });
 
-    const fixtureSkill = '---\nname: career-ops\n---\n\n# canonical skill\n';
-    const pointer = '../../../.agents/skills/career-ops/SKILL.md';
+    const fixtureSkill = '---\nname: job-hunter-ai\n---\n\n# canonical skill\n';
+    const pointer = '../../../.agents/skills/job-hunter-ai/SKILL.md';
     writeFileSync(join(canonicalDir, 'SKILL.md'), fixtureSkill);
     mkdirSync(join(claudeDir, 'SKILL.md'));
     writeFileSync(join(opencodeDir, 'SKILL.md'), pointer);
@@ -4929,7 +4929,7 @@ console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
     const skills = await import(pathToFileURL(join(ROOT, 'scaffolder/bin/skill-entrypoints.mjs')).href);
     const materialized = skills.materializeSkillEntrypoints(fixtureRoot);
     const opencodeSkill = readFileSync(join(opencodeDir, 'SKILL.md'), 'utf-8');
-    if (JSON.stringify(materialized) === JSON.stringify(['.opencode/skills/career-ops/SKILL.md']) && opencodeSkill === fixtureSkill) {
+    if (JSON.stringify(materialized) === JSON.stringify(['.opencode/skills/job-hunter-ai/SKILL.md']) && opencodeSkill === fixtureSkill) {
       pass('update-system skips non-file skill entrypoints while materializing valid pointers');
     } else {
       fail(`non-file skill entrypoint handling was unexpected: ${JSON.stringify(materialized)}`);
@@ -4944,7 +4944,7 @@ console.log('\n12b. Skill entrypoint bootstrap (npx / old releases)');
 console.log('\n12c. Materialized skill index mode');
 
 {
-  const fixtureRoot = mkdtempSync(join(tmpdir(), 'career-ops-skill-git-'));
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'job-hunter-ai-skill-git-'));
   const gitRun = (args, opts = {}) => execFileSync('git', args, {
     cwd: fixtureRoot,
     encoding: 'utf-8',
@@ -4958,15 +4958,15 @@ console.log('\n12c. Materialized skill index mode');
   });
 
   try {
-    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'career-ops');
-    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'career-ops');
-    const opencodeDir = join(fixtureRoot, '.opencode', 'skills', 'career-ops');
+    const canonicalDir = join(fixtureRoot, '.agents', 'skills', 'job-hunter-ai');
+    const claudeDir = join(fixtureRoot, '.claude', 'skills', 'job-hunter-ai');
+    const opencodeDir = join(fixtureRoot, '.opencode', 'skills', 'job-hunter-ai');
     mkdirSync(canonicalDir, { recursive: true });
     mkdirSync(claudeDir, { recursive: true });
     mkdirSync(opencodeDir, { recursive: true });
 
-    const fixtureSkill = '---\nname: career-ops\n---\n\n# canonical skill\n';
-    const pointer = '../../../.agents/skills/career-ops/SKILL.md';
+    const fixtureSkill = '---\nname: job-hunter-ai\n---\n\n# canonical skill\n';
+    const pointer = '../../../.agents/skills/job-hunter-ai/SKILL.md';
 
     gitRun(['init']);
     gitRun(['config', 'core.symlinks', 'false']);
@@ -4976,11 +4976,11 @@ console.log('\n12c. Materialized skill index mode');
     writeFileSync(join(canonicalDir, 'SKILL.md'), fixtureSkill);
     writeFileSync(join(claudeDir, 'SKILL.md'), pointer);
     writeFileSync(join(opencodeDir, 'SKILL.md'), pointer);
-    gitRun(['add', '--', '.agents/skills/career-ops/SKILL.md']);
+    gitRun(['add', '--', '.agents/skills/job-hunter-ai/SKILL.md']);
 
     const pointerBlob = gitRun(['hash-object', '-w', '--stdin'], { input: pointer });
-    gitRun(['update-index', '--add', '--cacheinfo', `120000,${pointerBlob},.claude/skills/career-ops/SKILL.md`]);
-    gitRun(['update-index', '--add', '--cacheinfo', `120000,${pointerBlob},.opencode/skills/career-ops/SKILL.md`]);
+    gitRun(['update-index', '--add', '--cacheinfo', `120000,${pointerBlob},.claude/skills/job-hunter-ai/SKILL.md`]);
+    gitRun(['update-index', '--add', '--cacheinfo', `120000,${pointerBlob},.opencode/skills/job-hunter-ai/SKILL.md`]);
 
     const updater = await import(pathToFileURL(join(ROOT, 'update-system.mjs')).href);
     const skills = await import(pathToFileURL(join(ROOT, 'scaffolder/bin/skill-entrypoints.mjs')).href);
@@ -4988,16 +4988,16 @@ console.log('\n12c. Materialized skill index mode');
     updater.prepareMaterializedSkillEntrypointsForStage(materialized, fixtureRoot);
     gitRun(['add', '--', '.claude/skills/', '.opencode/skills/']);
 
-    const claudeIndex = gitRun(['ls-files', '-s', '--', '.claude/skills/career-ops/SKILL.md']);
-    const opencodeIndex = gitRun(['ls-files', '-s', '--', '.opencode/skills/career-ops/SKILL.md']);
+    const claudeIndex = gitRun(['ls-files', '-s', '--', '.claude/skills/job-hunter-ai/SKILL.md']);
+    const opencodeIndex = gitRun(['ls-files', '-s', '--', '.opencode/skills/job-hunter-ai/SKILL.md']);
     if (claudeIndex.startsWith('100644 ') && opencodeIndex.startsWith('100644 ')) {
       pass('materialized skill entrypoints stage as regular files, not symlink blobs');
     } else {
       fail(`materialized skill entrypoints staged with wrong modes: ${JSON.stringify([claudeIndex, opencodeIndex])}`);
     }
 
-    const claudeBlob = gitRaw(['show', ':.claude/skills/career-ops/SKILL.md']);
-    const opencodeBlob = gitRaw(['show', ':.opencode/skills/career-ops/SKILL.md']);
+    const claudeBlob = gitRaw(['show', ':.claude/skills/job-hunter-ai/SKILL.md']);
+    const opencodeBlob = gitRaw(['show', ':.opencode/skills/job-hunter-ai/SKILL.md']);
     if (claudeBlob === fixtureSkill && opencodeBlob === fixtureSkill) {
       pass('materialized skill blobs contain canonical skill content');
     } else {
@@ -6602,7 +6602,7 @@ try {
         cwd: e2eTmp,
         encoding: 'utf-8',
         timeout: 30000,
-        env: { ...process.env, CAREER_OPS_PROFILE: '' },
+        env: { ...process.env, job_hunter_ai_PROFILE: '' },
       });
       const e2e = JSON.parse(e2eOut.trim());
       const byNum = new Map((e2e.entries || []).map(entry => [entry.num, entry]));
@@ -6825,7 +6825,7 @@ try {
   fail(`follow-up cadence module crashed: ${e.message}`);
 }
 
-// ── 14b. ADD-ENTRY (/career-ops add) ────────────────────────────────
+// ── 14b. ADD-ENTRY (/job-hunter-ai add) ────────────────────────────────
 
 console.log('\n14b. add-entry.mjs (dedup + insertion)');
 
@@ -6951,7 +6951,7 @@ try {
 
   // CLI wiring: --dry-run reports without writing; a real run writes and is then
   // idempotent. Exercised against isolated fixture files via env overrides.
-  const cliTmp = mkdtempSync(join(tmpdir(), 'career-ops-add-cli-'));
+  const cliTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-add-cli-'));
   try {
     const cvPath = join(cliTmp, 'cv.md');
     const adPath = join(cliTmp, 'article-digest.md');
@@ -6961,7 +6961,7 @@ try {
       cv: { section: 'Projects', dedupKey: 'CliProj', entry: '- **CliProj** (OSS) -- desc' },
       articleDigest: { dedupKey: 'CliProj', entry: '## CliProj -- Tagline\n\n**Hero metrics:** x' },
     }));
-    const env = { ...process.env, CAREER_OPS_CV: cvPath, CAREER_OPS_ARTICLE_DIGEST: adPath };
+    const env = { ...process.env, job_hunter_ai_CV: cvPath, job_hunter_ai_ARTICLE_DIGEST: adPath };
 
     execFileSync(NODE, [join(ROOT, 'add-entry.mjs'), payloadPath, '--dry-run'], { env, encoding: 'utf-8' });
     if (!readFileSync(cvPath, 'utf-8').includes('CliProj') && !existsSync(adPath)) pass('add-entry CLI --dry-run writes nothing');
@@ -7036,7 +7036,7 @@ try {
   }
 
   // End-to-end migration against a fictional fixture tracker (no personal data)
-  const tmpDir = mkdtempSync(join(tmpdir(), 'career-ops-migrate-'));
+  const tmpDir = mkdtempSync(join(tmpdir(), 'job-hunter-ai-migrate-'));
   try {
     mkdirSync(join(tmpDir, 'data'));
     mkdirSync(join(tmpDir, 'reports'));
@@ -7049,7 +7049,7 @@ try {
       '| 12 | 2026-01-04 | Acme | Engineer | 4.2/5 | Evaluated | ✅ | [12](reports/012-acme-2026-01-04.md) | ok |\n');
 
     // Migrate by pointing the script at the fixture tracker via env override.
-    run(NODE, ['merge-tracker.mjs', '--migrate'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker } });
+    run(NODE, ['merge-tracker.mjs', '--migrate'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker } });
     const after = readFileSync(tracker, 'utf-8');
     if (after.includes('[12](../reports/012-acme-2026-01-04.md)')) {
       pass('migration rewrites fixture tracker links to ../reports/...');
@@ -7061,7 +7061,7 @@ try {
   }
 
   const { resolveReportPath } = await import(pathToFileURL(join(ROOT, 'followup-cadence.mjs')).href);
-  const followupTmp = mkdtempSync(join(tmpdir(), 'career-ops-followup-link-'));
+  const followupTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-followup-link-'));
   try {
     mkdirSync(join(followupTmp, 'data'), { recursive: true });
     mkdirSync(join(followupTmp, 'reports'), { recursive: true });
@@ -7090,48 +7090,48 @@ try {
 // ── RESERVE-REPORT-NUM RANGE RESERVATION (#1426) ────────────────
 // Manual multi-agent fan-outs need N report numbers up front. --count N
 // reserves a contiguous range (per-slot atomic sentinels); tests run against
-// a temp dir via the CAREER_OPS_REPORTS_DIR override.
+// a temp dir via the job_hunter_ai_REPORTS_DIR override.
 console.log('\n🧪 Testing reserve-report-num env override and range reservation...');
 try {
   const RESERVE = join(ROOT, 'reserve-report-num.mjs');
   const reserveRun = (args, dir, tracker = join(dir, 'applications.md')) => execFileSync(NODE, [RESERVE, ...args], {
     encoding: 'utf-8',
-    env: { ...process.env, CAREER_OPS_REPORTS_DIR: dir, CAREER_OPS_TRACKER: tracker },
+    env: { ...process.env, job_hunter_ai_REPORTS_DIR: dir, job_hunter_ai_TRACKER: tracker },
   }).trim();
 
   // Importing the module must expose the same allocator used by the CLI,
   // without running the CLI as an import side effect.
-  const apiTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-api-'));
+  const apiTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-api-'));
   const apiTracker = join(apiTmp, 'applications.md');
   const apiProbe = execFileSync(NODE, ['--input-type=module', '--eval', `
     const api = await import(${JSON.stringify(pathToFileURL(RESERVE).href)});
     const { existsSync, readFileSync } = await import('node:fs');
     const { join } = await import('node:path');
     const nums = await api.reserveReportNumbers(1, {
-      reportsDir: process.env.CAREER_OPS_REPORTS_DIR,
-      trackerPath: process.env.CAREER_OPS_TRACKER,
+      reportsDir: process.env.job_hunter_ai_REPORTS_DIR,
+      trackerPath: process.env.job_hunter_ai_TRACKER,
     });
-    const sentinel = join(process.env.CAREER_OPS_REPORTS_DIR, '001-RESERVED.md');
+    const sentinel = join(process.env.job_hunter_ai_REPORTS_DIR, '001-RESERVED.md');
     let firstToken = null;
     try { firstToken = JSON.parse(readFileSync(sentinel, 'utf-8')).token; } catch {}
     await api.releaseReportNumbers(nums, {
-      reportsDir: process.env.CAREER_OPS_REPORTS_DIR,
-      trackerPath: process.env.CAREER_OPS_TRACKER,
+      reportsDir: process.env.job_hunter_ai_REPORTS_DIR,
+      trackerPath: process.env.job_hunter_ai_TRACKER,
     });
     const replacement = await api.reserveReportNumbers(1, {
-      reportsDir: process.env.CAREER_OPS_REPORTS_DIR,
-      trackerPath: process.env.CAREER_OPS_TRACKER,
+      reportsDir: process.env.job_hunter_ai_REPORTS_DIR,
+      trackerPath: process.env.job_hunter_ai_TRACKER,
     });
     let replacementToken = null;
     try { replacementToken = JSON.parse(readFileSync(sentinel, 'utf-8')).token; } catch {}
     await api.releaseReportNumbers(nums, {
-      reportsDir: process.env.CAREER_OPS_REPORTS_DIR,
-      trackerPath: process.env.CAREER_OPS_TRACKER,
+      reportsDir: process.env.job_hunter_ai_REPORTS_DIR,
+      trackerPath: process.env.job_hunter_ai_TRACKER,
     });
     const replacementPreserved = existsSync(sentinel);
     await api.releaseReportNumbers(replacement, {
-      reportsDir: process.env.CAREER_OPS_REPORTS_DIR,
-      trackerPath: process.env.CAREER_OPS_TRACKER,
+      reportsDir: process.env.job_hunter_ai_REPORTS_DIR,
+      trackerPath: process.env.job_hunter_ai_TRACKER,
     });
     console.log(JSON.stringify({
       nums,
@@ -7143,7 +7143,7 @@ try {
     }));
   `], {
     encoding: 'utf-8',
-    env: { ...process.env, CAREER_OPS_REPORTS_DIR: apiTmp, CAREER_OPS_TRACKER: apiTracker },
+    env: { ...process.env, job_hunter_ai_REPORTS_DIR: apiTmp, job_hunter_ai_TRACKER: apiTracker },
   }).trim();
   let apiResult = null;
   try { apiResult = JSON.parse(apiProbe); } catch {}
@@ -7170,10 +7170,10 @@ try {
     fail(`complex tracker report links parsed incorrectly: ${complexLinkNums} / ${angleLinkNums}`);
   }
 
-  const reserveTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-'));
+  const reserveTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-'));
   const single = reserveRun([], reserveTmp);
   if (single === '001' && existsSync(join(reserveTmp, '001-RESERVED.md'))) {
-    pass('CAREER_OPS_REPORTS_DIR override redirects sentinel to temp dir');
+    pass('job_hunter_ai_REPORTS_DIR override redirects sentinel to temp dir');
   } else {
     fail(`env override failed: stdout=${single}, sentinel in tmp=${existsSync(join(reserveTmp, '001-RESERVED.md'))}`);
   }
@@ -7181,7 +7181,7 @@ try {
 
   // Tracker IDs and linked report IDs are occupied even when their report
   // files are missing (for example after a partial sync or manual archive).
-  const trackerTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-tracker-'));
+  const trackerTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-tracker-'));
   const trackerFile = join(trackerTmp, 'applications.md');
   writeFileSync(trackerFile,
     '# Applications Tracker\n\n' +
@@ -7197,7 +7197,7 @@ try {
   rmSync(trackerTmp, { recursive: true, force: true });
 
   // Formatting is a minimum width, not a three-digit ceiling.
-  const fourDigitTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-4digit-'));
+  const fourDigitTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-4digit-'));
   const fourDigitTracker = join(fourDigitTmp, 'applications.md');
   writeFileSync(fourDigitTracker,
     '# Applications Tracker\n\n' +
@@ -7212,7 +7212,7 @@ try {
   }
   rmSync(fourDigitTmp, { recursive: true, force: true });
 
-  const unsafeRangeTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-unsafe-range-'));
+  const unsafeRangeTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-unsafe-range-'));
   const unsafeRangeReports = join(unsafeRangeTmp, 'reports');
   const unsafeRangeTracker = join(unsafeRangeTmp, 'applications.md');
   mkdirSync(unsafeRangeReports);
@@ -7253,7 +7253,7 @@ try {
   }
 
   // --count N: contiguous range from an empty dir.
-  const rangeTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-range-'));
+  const rangeTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-range-'));
   const range = reserveRun(['--count', '3'], rangeTmp);
   const rangeSentinels = ['001', '002', '003']
     .every(n => existsSync(join(rangeTmp, `${n}-RESERVED.md`)));
@@ -7285,7 +7285,7 @@ try {
   // maxSlot() counts RESERVED sentinels as occupied, so a foreign sentinel at
   // 007 bases the range past it (008-) — no slot below is ever attempted.
   // (The rollback path is exercised by the next test, not this one.)
-  const collideTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-collide-'));
+  const collideTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-collide-'));
   writeFileSync(join(collideTmp, '005-acme-2026-07-02.md'), '# stub');
   writeFileSync(join(collideTmp, '007-RESERVED.md'), '');
   const collided = reserveRun(['--count', '3'], collideTmp);
@@ -7299,7 +7299,7 @@ try {
   rmSync(collideTmp, { recursive: true, force: true });
 
   // Existing four-digit report names participate in the same occupancy scan.
-  const highRangeTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-high-range-'));
+  const highRangeTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-high-range-'));
   writeFileSync(join(highRangeTmp, '999-acme-2026-07-02.md'), '# stub');
   writeFileSync(join(highRangeTmp, '1001-taken.md'), '# stub');
   const highRange = reserveRun(['--count', '3'], highRangeTmp);
@@ -7318,11 +7318,11 @@ try {
   // Terminates by construction: each restart strictly advances the base.
   let reserveRetries = 1;
   while (reserveRetries >= 0) {
-    const concTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-conc-'));
+    const concTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-conc-'));
     try {
       const spawnReserve = () => new Promise(resolve => {
         const child = spawn(NODE, [RESERVE, '--count', '4'], {
-          env: { ...process.env, CAREER_OPS_REPORTS_DIR: concTmp },
+          env: { ...process.env, job_hunter_ai_REPORTS_DIR: concTmp },
         });
         let stdout = '';
         child.stdout.on('data', chunk => { stdout += chunk; });
@@ -7359,14 +7359,14 @@ try {
       execFileSync(NODE, [RESERVE, ...args], {
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, CAREER_OPS_REPORTS_DIR: dir, CAREER_OPS_TRACKER: join(dir, 'applications.md') },
+        env: { ...process.env, job_hunter_ai_REPORTS_DIR: dir, job_hunter_ai_TRACKER: join(dir, 'applications.md') },
       });
       return null;
     } catch (err) {
       return err.status;
     }
   };
-  const relTmp = mkdtempSync(join(tmpdir(), 'career-ops-reserve-release-'));
+  const relTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-reserve-release-'));
   reserveRun(['--count', '4'], relTmp); // reserves 001-004
   reserveRun(['--release', '001-004'], relTmp);
   const anyLeft = ['001', '002', '003', '004']
@@ -7400,12 +7400,12 @@ try {
 // must surface both as warnings (not errors — re-evaluations are legitimate).
 console.log('\n🧪 Testing verify-pipeline duplicate/orphan report checks...');
 try {
-  const vpTmp = mkdtempSync(join(tmpdir(), 'career-ops-verify-reports-'));
+  const vpTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-verify-reports-'));
   try {
     const vpReports = join(vpTmp, 'reports');
     mkdirSync(vpReports, { recursive: true });
     const vpTracker = join(vpTmp, 'applications.md');
-    const vpEnv = { ...process.env, CAREER_OPS_TRACKER: vpTracker, CAREER_OPS_REPORTS: vpReports };
+    const vpEnv = { ...process.env, job_hunter_ai_TRACKER: vpTracker, job_hunter_ai_REPORTS: vpReports };
 
     const report = (company, role) =>
       `# Evaluación: ${company} — ${role}\n\n## Machine Summary\n\n\`\`\`yaml\ncompany: "${company}"\nrole: "${role}"\nscore: 4.2\n\`\`\`\n`;
@@ -7482,12 +7482,12 @@ try {
 //       unrelated report sharing its number, masking a real orphan.
 console.log('\n🧪 Testing verify-pipeline orphan reference resolution (#1425 follow-up)');
 try {
-  const orTmp = mkdtempSync(join(tmpdir(), 'career-ops-verify-orphan-'));
+  const orTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-verify-orphan-'));
   try {
     const orReports = join(orTmp, 'reports');
     mkdirSync(orReports, { recursive: true });
     const orTracker = join(orTmp, 'applications.md');
-    const orEnv = { ...process.env, CAREER_OPS_TRACKER: orTracker, CAREER_OPS_REPORTS: orReports };
+    const orEnv = { ...process.env, job_hunter_ai_TRACKER: orTracker, job_hunter_ai_REPORTS: orReports };
     const rpt = (company, role) =>
       `# Evaluación: ${company} — ${role}\n\n## Machine Summary\n\n\`\`\`yaml\ncompany: "${company}"\nrole: "${role}"\nscore: 3.1\n\`\`\`\n`;
 
@@ -7559,10 +7559,10 @@ try {
 // on a genuine re-application) — verify-pipeline must flag it as an error.
 console.log('\n🧪 Testing verify-pipeline duplicate tracker # check (#1704)...');
 try {
-  const dupNumTmp = mkdtempSync(join(tmpdir(), 'career-ops-verify-dupnum-'));
+  const dupNumTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-verify-dupnum-'));
   try {
     const dupNumTracker = join(dupNumTmp, 'applications.md');
-    const dupNumEnv = { ...process.env, CAREER_OPS_TRACKER: dupNumTracker };
+    const dupNumEnv = { ...process.env, job_hunter_ai_TRACKER: dupNumTracker };
 
     writeFileSync(dupNumTracker,
       '# Applications Tracker\n\n' +
@@ -7600,7 +7600,7 @@ try {
   }
 
   // Clean fixture: no duplicate numbers — must pass green.
-  const cleanTmp = mkdtempSync(join(tmpdir(), 'career-ops-verify-dupnum-clean-'));
+  const cleanTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-verify-dupnum-clean-'));
   try {
     const cleanTracker = join(cleanTmp, 'applications.md');
     writeFileSync(cleanTracker,
@@ -7609,7 +7609,7 @@ try {
       '|---|------|---------|------|-------|--------|-----|--------|-------|\n' +
       '| 1 | 2026-01-01 | Acme | Engineer | 4.0/5 | Evaluated | ❌ | — | — |\n' +
       '| 2 | 2026-01-02 | Globex | Analyst | 3.9/5 | Evaluated | ❌ | — | — |\n');
-    const cleanOut = run(NODE, ['verify-pipeline.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: cleanTracker }, stdio: ['pipe', 'pipe', 'pipe'] });
+    const cleanOut = run(NODE, ['verify-pipeline.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: cleanTracker }, stdio: ['pipe', 'pipe', 'pipe'] });
     if (cleanOut !== null && cleanOut.includes('No duplicate tracker numbers')) {
       pass('clean tracker with unique numbers passes the duplicate-number check');
     } else {
@@ -7900,7 +7900,7 @@ try {
     fail('accented "Júnior" collapsed a sub-baseline req into the bare title');
   }
 
-  const dedupTmp = mkdtempSync(join(tmpdir(), 'career-ops-dedup-'));
+  const dedupTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-dedup-'));
   try {
     mkdirSync(join(dedupTmp, 'data'));
     const tracker = join(dedupTmp, 'data', 'applications.md');
@@ -7937,7 +7937,7 @@ try {
       '| 36 | 2026-01-06 | NumCo | Data Engineer | 3.9/5 | Applied | ❌ | [36](../reports/036-numco-data.md) | duplicate-number, applied |\n' +
       '| 36 | 2026-01-12 | NumCo | ML Engineer | 4.5/5 | Evaluated | ❌ | [37](../reports/037-numco-ml.md) | duplicate-number, different role |\n');
 
-    const dedupResult = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker } });
+    const dedupResult = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker } });
     if (dedupResult === null) {
       fail('dedup-tracker.mjs crashed during shared role matcher safety test');
     } else {
@@ -8031,7 +8031,7 @@ try {
 // re-blast must still collapse, otherwise the fix would just be "never merge".
 console.log('\n🧪 Testing dedup blind-via channel key with non-Latin agencies (#2393)...');
 try {
-  const viaDedupTmp = mkdtempSync(join(tmpdir(), 'career-ops-dedup-via-'));
+  const viaDedupTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-dedup-via-'));
   try {
     mkdirSync(join(viaDedupTmp, 'data'));
     const tracker = join(viaDedupTmp, 'data', 'applications.md');
@@ -8052,7 +8052,7 @@ try {
       '| 65 | 2026-03-05 | ? | Hays | Data Engineer, Warehouse | 3.5/5 | Evaluated | ❌ | [65](../reports/065-blind-e.md) | first sighting |\n' +
       '| 66 | 2026-03-06 | ? | Hays | Data Engineer, Warehouse | 4.4/5 | Evaluated | ❌ | [66](../reports/066-blind-f.md) | same agency re-blast |\n');
 
-    const r = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker } });
+    const r = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker } });
     if (r === null) {
       fail('dedup-tracker.mjs crashed during blind-via channel key test (#2393)');
     } else {
@@ -8100,13 +8100,13 @@ try {
 // fired. Controls: genuine same-company+same-role pairs must still be flagged.
 console.log('\n🧪 Testing verify-pipeline grouping keys with non-Latin text (#2393)...');
 try {
-  const vpKeyTmp = mkdtempSync(join(tmpdir(), 'career-ops-verify-unicode-'));
+  const vpKeyTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-verify-unicode-'));
   try {
     const vpKeyReports = join(vpKeyTmp, 'reports');
     mkdirSync(vpKeyReports, { recursive: true });
     const vpKeyTracker = join(vpKeyTmp, 'applications.md');
     const vpKeyEnv = {
-      ...process.env, CAREER_OPS_TRACKER: vpKeyTracker, CAREER_OPS_REPORTS: vpKeyReports,
+      ...process.env, job_hunter_ai_TRACKER: vpKeyTracker, job_hunter_ai_REPORTS: vpKeyReports,
     };
     const jaReport = (company, role) =>
       `# Evaluación: ${company} — ${role}\n\n## Machine Summary\n\n\`\`\`yaml\ncompany: "${company}"\nrole: "${role}"\nscore: 4.0\n\`\`\`\n`;
@@ -8203,7 +8203,7 @@ try {
 // when promoting a keeper's status during dedup. rebuildRow() now preserves it.
 console.log('\n🧪 Testing dedup row rebuild preserves notes on no-trailing-pipe rows...');
 try {
-  const rebuildTmp = mkdtempSync(join(tmpdir(), 'career-ops-rebuild-'));
+  const rebuildTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-rebuild-'));
   try {
     mkdirSync(join(rebuildTmp, 'data'));
     const tracker = join(rebuildTmp, 'data', 'applications.md');
@@ -8218,7 +8218,7 @@ try {
       '| 50 | 2026-02-01 | Globex | Widget Engineer | 4.5/5 | Rejected | ❌ | [50](../reports/050-widget.md) | KEEPER_NOTE_SENTINEL\n' +
       '| 51 | 2026-02-02 | Globex | Widget Engineer | 3.0/5 | Evaluated | ❌ | [51](../reports/051-widget.md) | dup row |\n');
 
-    const r = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker } });
+    const r = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker } });
     if (r === null) {
       fail('dedup-tracker.mjs crashed during notes-preservation test');
     } else {
@@ -8389,7 +8389,7 @@ try {
 // promotion must target the Status cell, not fixed parts[6].
 console.log('\n🧪 Testing dedup-tracker with an inserted Location column...');
 try {
-  const locTmp = mkdtempSync(join(tmpdir(), 'career-ops-dedup-loc-'));
+  const locTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-dedup-loc-'));
   try {
     mkdirSync(join(locTmp, 'data'));
     const tracker = join(locTmp, 'data', 'applications.md');
@@ -8402,7 +8402,7 @@ try {
       '| 60 | 2026-02-01 | Globex | Widget Engineer | Berlin | 4.5/5 | Rejected | ❌ | [60](r.md) | LOC_SENTINEL |\n' +
       '| 61 | 2026-02-02 | Globex | Widget Engineer | Berlin | 3.0/5 | Evaluated | ❌ | [61](r.md) | dup |\n');
 
-    const r = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker } });
+    const r = run(NODE, ['dedup-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker } });
     if (r === null) {
       fail('dedup-tracker crashed on a Location-column tracker');
     } else {
@@ -8433,7 +8433,7 @@ try {
 // distinct specialties fall below the 0.6 threshold.
 console.log('\n🧪 Testing merge-tracker fuzzy dedup (distinct roles vs reposts)...');
 try {
-  const mergeTmp = mkdtempSync(join(tmpdir(), 'career-ops-merge-'));
+  const mergeTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-merge-'));
   try {
     mkdirSync(join(mergeTmp, 'data'));
     mkdirSync(join(mergeTmp, 'reports'));
@@ -8457,7 +8457,7 @@ try {
     writeFileSync(join(additionsDir, '005-streamco.tsv'),
       '5\t2026-01-06\tStreamCo\tFull Stack Engineer 5, Ads Reporting\tEvaluated\t4.5/5\t❌\t[5](reports/005-streamco-2026-01-06.md)\trepost\n');
 
-    const mergeResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir } });
+    const mergeResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir } });
     if (mergeResult === null) {
       fail('merge-tracker.mjs crashed during fuzzy dedup regression test');
     } else {
@@ -8499,7 +8499,7 @@ try {
 // survive tokenization, and non-report-number matches never rewrite the title.
 console.log('\n🧪 Testing merge-tracker sibling-req clobber guard (slash acronyms + title preservation)...');
 try {
-  const clobberTmp = mkdtempSync(join(tmpdir(), 'career-ops-clobber-'));
+  const clobberTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-clobber-'));
   try {
     mkdirSync(join(clobberTmp, 'data'));
     mkdirSync(join(clobberTmp, 'reports'));
@@ -8522,7 +8522,7 @@ try {
     writeFileSync(join(additionsDir, '004-acme.tsv'),
       '4\t2026-01-09\tAcme\tSr Platform Engineer, Observability (Remote)\tEvaluated\t4.2/5\t❌\t[4](reports/004-acme-2026-01-09.md)\trepost re-eval\n');
 
-    const clobberResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir } });
+    const clobberResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir } });
     if (clobberResult === null) {
       fail('merge-tracker.mjs crashed during sibling-req clobber guard test');
     } else {
@@ -8576,7 +8576,7 @@ try {
 console.log('\n🧪 Testing merge-tracker tier-2 (entry num) title preservation...');
 try {
   const { roleFuzzyMatch } = await import(pathToFileURL(join(ROOT, 'role-matcher.mjs')).href);
-  const tier2Tmp = mkdtempSync(join(tmpdir(), 'career-ops-tier2-'));
+  const tier2Tmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-tier2-'));
   try {
     mkdirSync(join(tier2Tmp, 'data'));
     mkdirSync(join(tier2Tmp, 'reports'));
@@ -8607,7 +8607,7 @@ try {
       fail('tier-2 fixture roles now fuzzy-match — this test no longer isolates tier-2');
     }
 
-    const tier2Result = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir } });
+    const tier2Result = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir } });
     if (tier2Result === null) {
       fail('merge-tracker.mjs crashed during tier-2 title preservation test');
     } else {
@@ -8646,7 +8646,7 @@ try {
 // comparison must use a Unicode-aware key.
 console.log('\n🧪 Testing merge-tracker via guard with non-Latin agencies (#1603)...');
 try {
-  const viaTmp = mkdtempSync(join(tmpdir(), 'career-ops-via-'));
+  const viaTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-via-'));
   try {
     mkdirSync(join(viaTmp, 'data'));
     mkdirSync(join(viaTmp, 'reports'));
@@ -8670,7 +8670,7 @@ try {
     writeFileSync(join(additionsDir, '003-unknown.tsv'),
       '3\t2026-01-06\t?\tBackend Engineer, Payments Platform\tEvaluated\t4.2/5\t❌\t[3](reports/003-unknown-2026-01-06.md)\tre-blast\tvia=リクルート\n');
 
-    const viaResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir } });
+    const viaResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir } });
     if (viaResult === null) {
       fail('merge-tracker.mjs crashed during non-Latin via guard test (#1603)');
     } else {
@@ -8745,7 +8745,7 @@ try {
   }
 
   // End-to-end: two different non-Latin companies, fuzzy-matching role titles.
-  const coTmp = mkdtempSync(join(tmpdir(), 'career-ops-nonlatin-co-'));
+  const coTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-nonlatin-co-'));
   try {
     mkdirSync(join(coTmp, 'data'));
     mkdirSync(join(coTmp, 'reports'));
@@ -8765,7 +8765,7 @@ try {
     writeFileSync(join(additionsDir, '002-globex.tsv'),
       '2\t2026-01-05\tグロベックス合同会社\tBackend Engineer, Payments Platform\tEvaluated\t4.1/5\t❌\t[2](reports/002-globex-2026-01-05.md)\tsecond company\n');
 
-    const coResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir } });
+    const coResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir } });
     if (coResult === null) {
       fail('merge-tracker.mjs crashed during non-Latin company test (#2429)');
     } else {
@@ -8849,7 +8849,7 @@ try {
   }
 
   // End-to-end: a swapped-column TSV merges correctly; an undecidable one is skipped.
-  const colTmp = mkdtempSync(join(tmpdir(), 'career-ops-colorder-'));
+  const colTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-colorder-'));
   try {
     mkdirSync(join(colTmp, 'data'));
     mkdirSync(join(colTmp, 'reports'));
@@ -8874,7 +8874,7 @@ try {
     writeFileSync(join(additionsDir, '004-boldco.tsv'),
       '4\t2026-01-05\tBoldCo\tSRE\tEvaluated\t**4.7/5**\t❌\t[4](reports/004-boldco-2026-01-05.md)\tbold score\n');
 
-    const mergeResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir } });
+    const mergeResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir } });
     if (mergeResult === null) {
       fail('merge-tracker.mjs crashed during column-order test');
     } else {
@@ -8913,7 +8913,7 @@ try {
 console.log('\n🧪 Testing merge-tracker PDF flag sync from data/pdf-index.tsv (#1429)...');
 try {
   const runPdfSyncFixture = (name, trackerRow, pdfIndex = null, additions = []) => {
-    const tmp = mkdtempSync(join(tmpdir(), `career-ops-merge-pdf-${name}-`));
+    const tmp = mkdtempSync(join(tmpdir(), `job-hunter-ai-merge-pdf-${name}-`));
     mkdirSync(join(tmp, 'data'), { recursive: true });
     const additionsDir = join(tmp, 'additions');
     const tracker = join(tmp, 'data', 'applications.md');
@@ -8932,7 +8932,7 @@ try {
 
     try {
     const result = run(NODE, ['merge-tracker.mjs'], {
-      env: { ...process.env, CAREER_OPS_TRACKER: tracker, CAREER_OPS_ADDITIONS: additionsDir },
+      env: { ...process.env, job_hunter_ai_TRACKER: tracker, job_hunter_ai_ADDITIONS: additionsDir },
     });
     const merged = readFileSync(tracker, 'utf-8');
     return { result, merged };
@@ -9000,7 +9000,7 @@ try {
 // update it in-place instead of appending NewCo as a new row.
 console.log('\n🧪 Testing merge-tracker report-number cross-company collision (#912)...');
 try {
-  const col912Tmp = mkdtempSync(join(tmpdir(), 'career-ops-merge-912-'));
+  const col912Tmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-merge-912-'));
   try {
     mkdirSync(join(col912Tmp, 'data'));
     mkdirSync(join(col912Tmp, 'reports'));
@@ -9021,7 +9021,7 @@ try {
       '1\t2026-01-05\tNewCo\tNew Role\tEvaluated\t2.7/5\t❌\t[1](reports/001-newco-2026-01-05.md)\tcollision\n');
 
     const col912Result = run(NODE, ['merge-tracker.mjs'], {
-      env: { ...process.env, CAREER_OPS_TRACKER: col912Tracker, CAREER_OPS_ADDITIONS: col912Additions },
+      env: { ...process.env, job_hunter_ai_TRACKER: col912Tracker, job_hunter_ai_ADDITIONS: col912Additions },
     });
     if (col912Result === null) {
       fail('merge-tracker crashed during report-number collision test (#912)');
@@ -9069,7 +9069,7 @@ try {
 // heuristic) and refuses to trust a number already in it.
 console.log('\n🧪 Testing merge-tracker stale-number collision with a hidden existing row (#1704)...');
 try {
-  const staleNumTmp = mkdtempSync(join(tmpdir(), 'career-ops-merge-1704-'));
+  const staleNumTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-merge-1704-'));
   try {
     mkdirSync(join(staleNumTmp, 'data'));
     const staleNumAdditions = join(staleNumTmp, 'additions');
@@ -9093,7 +9093,7 @@ try {
       '9\t2026-01-10\tNewCo\tFresh Role\tEvaluated\t2.9/5\t❌\t—\tstale number\n');
 
     const staleNumResult = run(NODE, ['merge-tracker.mjs'], {
-      env: { ...process.env, CAREER_OPS_TRACKER: staleNumTracker, CAREER_OPS_ADDITIONS: staleNumAdditions },
+      env: { ...process.env, job_hunter_ai_TRACKER: staleNumTracker, job_hunter_ai_ADDITIONS: staleNumAdditions },
     });
     if (staleNumResult === null) {
       fail('merge-tracker crashed during stale-number collision test (#1704)');
@@ -9140,7 +9140,7 @@ try {
 // real collision (with a visible warning).
 console.log('\n🧪 Testing merge-tracker reserved-number fidelity (#1733)...');
 try {
-  const reservedTmp = mkdtempSync(join(tmpdir(), 'career-ops-merge-reserved-'));
+  const reservedTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-merge-reserved-'));
   try {
     mkdirSync(join(reservedTmp, 'data'));
     const reservedAdditions = join(reservedTmp, 'additions');
@@ -9155,7 +9155,7 @@ try {
     writeFileSync(join(reservedAdditions, '005-early.tsv'),
       '5\t2026-01-05\tEarlyCo\tEngineer\tEvaluated\t4.1/5\t❌\t[5](reports/005-early-2026-01-05.md)\treserved first\n');
     const preserveResult = run(NODE, ['merge-tracker.mjs'], {
-      env: { ...process.env, CAREER_OPS_TRACKER: reservedTracker, CAREER_OPS_ADDITIONS: reservedAdditions },
+      env: { ...process.env, job_hunter_ai_TRACKER: reservedTracker, job_hunter_ai_ADDITIONS: reservedAdditions },
     });
     const afterPreserve = readFileSync(reservedTracker, 'utf-8');
     if (preserveResult !== null && /^\| 5 \|[^\n]*\| EarlyCo \|/m.test(afterPreserve)) {
@@ -9169,7 +9169,7 @@ try {
     const collisionResult = spawnSync(NODE, [join(ROOT, 'merge-tracker.mjs')], {
       cwd: ROOT,
       encoding: 'utf-8',
-      env: { ...process.env, CAREER_OPS_TRACKER: reservedTracker, CAREER_OPS_ADDITIONS: reservedAdditions },
+      env: { ...process.env, job_hunter_ai_TRACKER: reservedTracker, job_hunter_ai_ADDITIONS: reservedAdditions },
     });
     const afterCollision = readFileSync(reservedTracker, 'utf-8');
     const collisionOutput = `${collisionResult.stdout || ''}\n${collisionResult.stderr || ''}`;
@@ -9202,7 +9202,7 @@ try {
 // the same heuristic.
 console.log('\n🧪 Testing dedup blindness from `---` / "Empresa" in a data row...');
 try {
-  const hyphenTmp = mkdtempSync(join(tmpdir(), 'career-ops-dedup-hyphen-'));
+  const hyphenTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-dedup-hyphen-'));
   try {
     const hData = join(hyphenTmp, 'data');
     const hReports = join(hyphenTmp, 'reports');
@@ -9238,7 +9238,7 @@ try {
       '[1](reports/001-empresa-ejemplo-2026-01-05.md)\tre-evaluated after JD update\n');
 
     const hOut = run(NODE, ['merge-tracker.mjs'], {
-      env: { ...process.env, CAREER_OPS_TRACKER: hTracker, CAREER_OPS_ADDITIONS: hAdditions },
+      env: { ...process.env, job_hunter_ai_TRACKER: hTracker, job_hunter_ai_ADDITIONS: hAdditions },
     });
 
     if (hOut === null) {
@@ -9284,7 +9284,7 @@ try {
     try {
       badOut = execFileSync(NODE, ['verify-pipeline.mjs'], {
         cwd: ROOT, encoding: 'utf-8', timeout: 30000,
-        env: { ...process.env, CAREER_OPS_TRACKER: hBadRow, CAREER_OPS_REPORTS: hReports },
+        env: { ...process.env, job_hunter_ai_TRACKER: hBadRow, job_hunter_ai_REPORTS: hReports },
       });
     } catch (e) {
       badOut = String(e.stdout ?? '');
@@ -9309,7 +9309,7 @@ try {
     try {
       hdrOut = execFileSync(NODE, ['verify-pipeline.mjs'], {
         cwd: ROOT, encoding: 'utf-8', timeout: 30000,
-        env: { ...process.env, CAREER_OPS_TRACKER: hHeaderish, CAREER_OPS_REPORTS: hReports },
+        env: { ...process.env, job_hunter_ai_TRACKER: hHeaderish, job_hunter_ai_REPORTS: hReports },
       });
     } catch (e) {
       hdrOut = String(e.stdout ?? '');
@@ -9383,7 +9383,7 @@ try {
 // falls back to fuzzy-match behavior (can't prove a mismatch without both).
 console.log('\n🧪 Testing merge-tracker req/job-number dedup guard (#1524)...');
 try {
-  const reqTmp = mkdtempSync(join(tmpdir(), 'career-ops-merge-1524-'));
+  const reqTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-merge-1524-'));
   try {
     mkdirSync(join(reqTmp, 'data'));
     mkdirSync(join(reqTmp, 'reports'));
@@ -9417,7 +9417,7 @@ try {
     writeFileSync(join(reqAdditions, '007-northwind.tsv'),
       '7\t2026-01-02\tNorthwind\tOperations Analyst\tEvaluated\t3.2/5\t❌\t[7](reports/007-northwind-2026-01-02.md)\tno req number on this side\n');
 
-    const reqResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, CAREER_OPS_TRACKER: reqTracker, CAREER_OPS_ADDITIONS: reqAdditions } });
+    const reqResult = run(NODE, ['merge-tracker.mjs'], { env: { ...process.env, job_hunter_ai_TRACKER: reqTracker, job_hunter_ai_ADDITIONS: reqAdditions } });
     if (reqResult === null) {
       fail('merge-tracker.mjs crashed during req/job-number dedup guard test (#1524)');
     } else {
@@ -9480,7 +9480,7 @@ console.log('\n🧪 Testing merge-tracker concurrent writes...');
 try {
   let retries = 1;
   while (retries >= 0) {
-    const mergeTmp = mkdtempSync(join(tmpdir(), 'career-ops-merge-lock-'));
+    const mergeTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-merge-lock-'));
     /**
      * Spawn one isolated `merge-tracker.mjs` process against the temporary fixture.
      *
@@ -9505,11 +9505,11 @@ try {
           cwd: ROOT,
           env: {
             ...process.env,
-            CAREER_OPS_TRACKER: join(mergeTmp, 'data', 'applications.md'),
-            CAREER_OPS_ADDITIONS: additionsDir,
-            CAREER_OPS_TRACKER_LOCK: join(mergeTmp, 'career-ops-merge-tracker-fixture.lock'),
-            CAREER_OPS_MERGE_HOLD_MS: String(holdMs),
-            CAREER_OPS_MERGE_READY_IPC: '1',
+            job_hunter_ai_TRACKER: join(mergeTmp, 'data', 'applications.md'),
+            job_hunter_ai_ADDITIONS: additionsDir,
+            job_hunter_ai_TRACKER_LOCK: join(mergeTmp, 'job-hunter-ai-merge-tracker-fixture.lock'),
+            job_hunter_ai_MERGE_HOLD_MS: String(holdMs),
+            job_hunter_ai_MERGE_READY_IPC: '1',
           },
           stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
         });
@@ -9705,10 +9705,10 @@ if (!sqliteAvailable) {
   warn('node:sqlite unavailable (Node < 22.5) — tracker index tests skipped');
 } else {
   try {
-    const idxTmp = mkdtempSync(join(tmpdir(), 'career-ops-index-'));
+    const idxTmp = mkdtempSync(join(tmpdir(), 'job-hunter-ai-index-'));
     try {
       const md = join(idxTmp, 'applications.md');
-      const env = { ...process.env, CAREER_OPS_TRACKER: md };
+      const env = { ...process.env, job_hunter_ai_TRACKER: md };
       const trackerRun = (args) => run(NODE, ['tracker.mjs', ...args], { env, stdio: ['pipe', 'pipe', 'pipe'] });
 
       // 1. Round trip: clean canonical input must export byte-identical.
@@ -10219,12 +10219,12 @@ try {
   const { SEMVER_RE } = await import(pathToFileURL(join(ROOT, 'update-system.mjs')).href);
   const parse = (tag) => String(tag).trim().match(SEMVER_RE)?.[1] ?? null;
 
-  // Release Please tags carry the component prefix (career-ops-v1.9.0); the
+  // Release Please tags carry the component prefix (job-hunter-ai-v1.9.0); the
   // prefix must be stripped or the releases-API fallback is dead code (#923).
-  if (parse('career-ops-v1.9.0') === '1.9.0') {
-    pass('SEMVER_RE parses Release Please component-prefixed tag (career-ops-v1.9.0 → 1.9.0)');
+  if (parse('job-hunter-ai-v1.9.0') === '1.9.0') {
+    pass('SEMVER_RE parses Release Please component-prefixed tag (job-hunter-ai-v1.9.0 → 1.9.0)');
   } else {
-    fail(`SEMVER_RE failed on career-ops-v1.9.0 (got ${parse('career-ops-v1.9.0')}) — releases-API fallback is dead code (#923)`);
+    fail(`SEMVER_RE failed on job-hunter-ai-v1.9.0 (got ${parse('job-hunter-ai-v1.9.0')}) — releases-API fallback is dead code (#923)`);
   }
 
   // No regression on plain tags.
@@ -10235,10 +10235,10 @@ try {
   }
 
   // Non-semver input must not match.
-  if (parse('career-ops') === null && parse('v1.9') === null) {
+  if (parse('job-hunter-ai') === null && parse('v1.9') === null) {
     pass('SEMVER_RE rejects non-semver input');
   } else {
-    fail(`SEMVER_RE matched non-semver input (career-ops → ${parse('career-ops')}, v1.9 → ${parse('v1.9')})`);
+    fail(`SEMVER_RE matched non-semver input (job-hunter-ai → ${parse('job-hunter-ai')}, v1.9 → ${parse('v1.9')})`);
   }
 } catch (e) {
   fail(`update-system SEMVER_RE test crashed: ${e.message}`);
@@ -10571,14 +10571,14 @@ try {
   const compileOnlyTex = `\\documentclass{article}\\begin{document}Minimal user CV\\end{document}`;
   const compileOnlyValidation = validateLatexContent(compileOnlyTex, true);
   if (compileOnlyValidation.issues.length === 0) {
-    pass('--compile-only validation accepts minimal user .tex without career-ops macros');
+    pass('--compile-only validation accepts minimal user .tex without job-hunter-ai macros');
   } else {
     fail(`compile-only validation too strict: ${compileOnlyValidation.issues.join('; ')}`);
   }
 
   const strictValidation = validateLatexContent(compileOnlyTex, false);
   if (strictValidation.issues.some(i => /section|resumeSubheading|pdfgentounicode/i.test(i))) {
-    pass('default validation still enforces career-ops template checks');
+    pass('default validation still enforces job-hunter-ai template checks');
   } else {
     fail('default validation should reject non-template .tex');
   }
@@ -11437,10 +11437,10 @@ try {
   if (vreg.validateRegistry(ROOT).length === 0) pass('registry: shipped plugins-registry.json validates clean');
   else fail('registry: shipped registry should be valid');
 
-  const goodEntry = { name: 'career-ops-plugin-x', id: 'x', repo: 'https://github.com/a/career-ops-plugin-x', author: 'a', hooks: ['ingest'], requiredEnv: [], allowedHosts: ['api.x.com'], license: 'MIT', version: '1.0.0', sha: 'a'.repeat(40) };
+  const goodEntry = { name: 'job-hunter-ai-plugin-x', id: 'x', repo: 'https://github.com/a/job-hunter-ai-plugin-x', author: 'a', hooks: ['ingest'], requiredEnv: [], allowedHosts: ['api.x.com'], license: 'MIT', version: '1.0.0', sha: 'a'.repeat(40) };
   if (reg.validateRegistryEntry(goodEntry, regOpts).length === 0) pass('registry: a well-formed entry validates');
   else fail('registry: a good entry should validate');
-  if (reg.validateRegistryEntry({ ...goodEntry, name: 'evil-x' }, regOpts).length > 0) pass('registry: name must start with career-ops-plugin-');
+  if (reg.validateRegistryEntry({ ...goodEntry, name: 'evil-x' }, regOpts).length > 0) pass('registry: name must start with job-hunter-ai-plugin-');
   else fail('registry: a bad name should fail');
   if (reg.validateRegistryEntry({ ...goodEntry, requiredEnv: ['GEMINI_API_KEY'] }, regOpts).length > 0) pass('registry: a reserved/core env var is rejected');
   else fail('registry: reserved env should fail');
@@ -11461,7 +11461,7 @@ try {
   mkdirSync(join(succTmp, 'plugins.local', 'gmail'), { recursive: true });
   writeFileSync(join(succTmp, 'plugins.local', 'gmail', 'manifest.json'), JSON.stringify({ id: 'gmail', apiVersion: 1, description: 'community successor gmail', hooks: ['ingest'], requiredEnv: [], allowedHosts: [], humanInTheLoop: true }));
   writeFileSync(join(succTmp, 'plugins.local', 'gmail', 'index.mjs'), 'export default { ingest: async () => [] };');
-  writeFileSync(join(succTmp, 'plugins-registry.json'), JSON.stringify({ registryVersion: 1, plugins: [{ name: 'career-ops-plugin-gmail', id: 'gmail', repo: 'https://github.com/a/career-ops-plugin-gmail', author: 'a', hooks: ['ingest'], requiredEnv: [], allowedHosts: [], license: 'MIT', version: '2.0.0', sha: SUCC_SHA, supersedesBundled: true }] }));
+  writeFileSync(join(succTmp, 'plugins-registry.json'), JSON.stringify({ registryVersion: 1, plugins: [{ name: 'job-hunter-ai-plugin-gmail', id: 'gmail', repo: 'https://github.com/a/job-hunter-ai-plugin-gmail', author: 'a', hooks: ['ingest'], requiredEnv: [], allowedHosts: [], license: 'MIT', version: '2.0.0', sha: SUCC_SHA, supersedesBundled: true }] }));
   const bundledGmail = join(succTmp, 'plugins', 'gmail');
   const localGmail = join(succTmp, 'plugins.local', 'gmail');
 
@@ -11485,17 +11485,17 @@ try {
   const disc1 = eng.discoverPlugins(eng.pluginRoots(succTmp), ids1).find(m => m.id === 'gmail');
   if (disc1 && disc1.dir === localGmail) pass('successor: an approved+pinned successor overrides the bundled reference of the same id');
   else fail('successor: approved successor should override the bundled reference');
-  if (reg.successorFor(succTmp, 'gmail')?.name === 'career-ops-plugin-gmail') pass('successor: successorFor() surfaces the maintained version of a bundled id');
+  if (reg.successorFor(succTmp, 'gmail')?.name === 'job-hunter-ai-plugin-gmail') pass('successor: successorFor() surfaces the maintained version of a bundled id');
   else fail('successor: successorFor should return the registered successor');
   rmSync(succTmp, { recursive: true, force: true });
 
-  if (install.parseRepoArg('alice/career-ops-plugin-foo').id === 'foo') pass('install: owner/career-ops-plugin-foo parses to id "foo"');
+  if (install.parseRepoArg('alice/job-hunter-ai-plugin-foo').id === 'foo') pass('install: owner/job-hunter-ai-plugin-foo parses to id "foo"');
   else fail('install: should parse owner/repo');
   let extRej = false; try { install.parseRepoArg('ext::sh -c whoami'); } catch { extRej = true; }
   if (extRej) pass('install: refuses a non-GitHub / ext:: repo URL (clone-RCE guard)');
   else fail('install: should refuse an ext:: URL');
   let nameRej = false; try { install.parseRepoArg('alice/not-a-plugin'); } catch { nameRej = true; }
-  if (nameRej) pass('install: refuses a repo not named career-ops-plugin-*');
+  if (nameRej) pass('install: refuses a repo not named job-hunter-ai-plugin-*');
   else fail('install: should refuse a bad repo name');
 
   const auditTmp = mkdtempSync(join(tmpdir(), 'co-audit-'));
@@ -11994,7 +11994,7 @@ try {
     { file: 'web/src/app/actions/registry.ts', re: /TAB_VALUES\s*=\s*\[([\s\S]*?)\]/, upper: true, exclude: [] },
     { file: 'web/src/components/pipeline-view.tsx', re: /TABS\s*=\s*\[([\s\S]*?)\]/, upper: true, exclude: [] },
     { file: 'web/src/app/analytics/page.tsx', re: /STAGES[^=]*=\s*\[([\s\S]*?)\];/, upper: true, exclude: ['SKIP'] },
-    // 55.3b+ the degraded-path FALLBACK in the states ACL (career-ops-ui's find, #2282):
+    // 55.3b+ the degraded-path FALLBACK in the states ACL (job-hunter-ai-ui's find, #2282):
     // it promises to mirror states.yml and drifted to 8 states while the live path had 9.
     { file: 'web/src/lib/core/states.ts', re: /const FALLBACK[^=]*=\s*\[([\s\S]*?)\n\];/, upper: false, exclude: [] },
   ];
@@ -12074,16 +12074,16 @@ try {
   }
 
   // 55.3d the web onboarding banner's prereq list must match doctor.mjs.
-  // doctorState() in web/src/lib/career-ops.ts hand-copies USER_LAYER_PREREQS
+  // doctorState() in web/src/lib/job-hunter-ai.ts hand-copies USER_LAYER_PREREQS
   // as a deliberate fast-path (server components can't execFile doctor per
   // render) — if the core gains a fifth prereq, the banner silently stops
   // asking for it and the user believes they're configured. Same mechanism as
-  // #2282, different symptom (career-ops-ui's census, 31-jul).
+  // #2282, different symptom (job-hunter-ai-ui's census, 31-jul).
   {
     const corePrereqBlock = readFileSync(join(ROOT, 'doctor.mjs'), 'utf-8')
       .match(/const USER_LAYER_PREREQS = \[([\s\S]*?)\n\];/)?.[1] ?? '';
     const corePrereqs = [...corePrereqBlock.matchAll(/path:\s*'([^']+)'/g)].map((m) => m[1]);
-    const webDoctorPath = join(ROOT, 'web', 'src', 'lib', 'career-ops.ts');
+    const webDoctorPath = join(ROOT, 'web', 'src', 'lib', 'job-hunter-ai.ts');
     if (corePrereqs.length > 0 && existsSync(webDoctorPath)) {
       const webPrereqBlock = readFileSync(webDoctorPath, 'utf-8')
         .match(/const prereqs[^=]*=\s*\[([\s\S]*?)\n\s*\];/)?.[1] ?? '';
@@ -12108,18 +12108,18 @@ try {
   }
 
   // 55.5 cross-check: the web parser still speaks the same column names
-  const webParserPath = join(ROOT, 'web', 'src', 'lib', 'career-ops.ts');
+  const webParserPath = join(ROOT, 'web', 'src', 'lib', 'job-hunter-ai.ts');
   if (existsSync(webParserPath)) {
     const webSrc = readFileSync(webParserPath, 'utf-8');
     const ESSENTIAL_COLS = ['Company', 'Role', 'Score', 'Status'];
     const missingCols = ESSENTIAL_COLS.filter((c) => !webSrc.toLowerCase().includes(c.toLowerCase()));
     if (missingCols.length === 0) {
-      pass('web/src/lib/career-ops.ts still references the essential tracker columns');
+      pass('web/src/lib/job-hunter-ai.ts still references the essential tracker columns');
     } else {
       fail(`web parser no longer references column(s): ${missingCols.join(', ')} — core and web drifted`);
     }
   } else {
-    warn('web/src/lib/career-ops.ts not found — web layer moved? update contract freeze section');
+    warn('web/src/lib/job-hunter-ai.ts not found — web layer moved? update contract freeze section');
   }
 } catch (e) {
   fail(`core↔web contract freeze section crashed: ${e.message}`);
@@ -12393,7 +12393,7 @@ try {
   }
 
   if (
-    titlesMode.includes('/career-ops scan') &&
+    titlesMode.includes('/job-hunter-ai scan') &&
     titlesMode.includes('upskill')
   ) {
     pass('titles mode suggests scan after the filter grows and upskill against a stretch title');
@@ -12413,18 +12413,18 @@ try {
   fail(`modes/titles.md missing or unreadable: ${e.message}`);
 }
 
-for (const skillPath of ['.claude/skills/career-ops/SKILL.md', '.agents/skills/career-ops/SKILL.md']) {
+for (const skillPath of ['.claude/skills/job-hunter-ai/SKILL.md', '.agents/skills/job-hunter-ai/SKILL.md']) {
   if (!fileExists(skillPath)) continue; // existence already checked in section 8
   const skill = readFile(skillPath);
   if (
     /argument-hint:[^\n]*titles/.test(skill) &&
     skill.includes('| `titles` | `titles` |') &&
-    skill.includes('/career-ops titles') &&
+    skill.includes('/job-hunter-ai titles') &&
     /Standalone modes[\s\S]*Applies to:[^\n]*`titles`/.test(skill)
   ) {
-    pass(`${skillPath} exposes /career-ops titles in argument-hint, routing, discovery, and standalone loading`);
+    pass(`${skillPath} exposes /job-hunter-ai titles in argument-hint, routing, discovery, and standalone loading`);
   } else {
-    fail(`${skillPath} does not fully expose /career-ops titles`);
+    fail(`${skillPath} does not fully expose /job-hunter-ai titles`);
   }
 }
 
@@ -12473,7 +12473,7 @@ console.log('\n59. CV template resolver (cv-templates.mjs)');
 
   // Hermetic: point at a nonexistent profile so this exercises the unset -> base
   // fallback regardless of the developer's real config/profile.yml (cv.template).
-  const noProfile = { env: { ...process.env, CAREER_OPS_PROFILE: join(tmpdir(), 'career-ops-no-such-profile.yml') } };
+  const noProfile = { env: { ...process.env, job_hunter_ai_PROFILE: join(tmpdir(), 'job-hunter-ai-no-such-profile.yml') } };
   const resolved = run(NODE, ['cv-templates.mjs', 'resolve', 'cv'], noProfile);
   if (resolved && resolved.endsWith('cv-template.html')) pass('CLI: resolve cv (unset) -> base template');
   else fail(`CLI: resolve cv (unset) unexpected: ${resolved}`);

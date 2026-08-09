@@ -81,7 +81,7 @@ async function triageJob(line) {
   const [id, url, , ...noteParts] = cols;
   const notes = noteParts.join(' ');
 
-  const prompt = `You are a career-ops triage agent. Your ONLY job is to give a quick go/no-go score.
+  const prompt = `You are a job-hunter-ai triage agent. Your ONLY job is to give a quick go/no-go score.
 
 Read this compact candidate brief carefully:
 

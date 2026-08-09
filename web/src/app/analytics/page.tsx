@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pipelineSummary } from "@/lib/career-ops";
+import { pipelineSummary } from "@/lib/job-hunter-ai";
 import { canonStatus, scoreNum } from "@/lib/format";
 
 export const dynamic = "force-dynamic";

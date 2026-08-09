@@ -19,10 +19,10 @@ import { fileURLToPath } from 'url';
 import { extractTrackerReportNumbers, resolveColumns, parseTrackerRow } from './tracker-parse.mjs';
 import { rebuildRow, resolveTrackerPath, resolvePdfIndexPath, openTrackerTransaction } from './tracker-utils.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const APPS_FILE = resolveTrackerPath(CAREER_OPS);
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
+const APPS_FILE = resolveTrackerPath(job_hunter_ai);
 // Derived from the TRACKER, not from this script's location, so a redirected
-// CAREER_OPS_TRACKER moves the whole workspace together (#2471).
+// job_hunter_ai_TRACKER moves the whole workspace together (#2471).
 const PDF_MANIFEST = resolvePdfIndexPath(APPS_FILE);
 
 const flags = { dryRun: false, json: false };

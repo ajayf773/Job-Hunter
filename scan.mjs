@@ -61,8 +61,8 @@ const parseYaml = yaml.load;
 
 // ── Config ──────────────────────────────────────────────────────────
 
-const PORTALS_PATH = process.env.CAREER_OPS_PORTALS || 'portals.yml';
-const PROFILE_PATH = process.env.CAREER_OPS_PROFILE || 'config/profile.yml';
+const PORTALS_PATH = process.env.job_hunter_ai_PORTALS || 'portals.yml';
+const PROFILE_PATH = process.env.job_hunter_ai_PROFILE || 'config/profile.yml';
 const SCAN_HISTORY_PATH = 'data/scan-history.tsv';
 const PIPELINE_PATH = 'data/pipeline.md';
 const APPLICATIONS_PATH = 'data/applications.md';
@@ -1601,10 +1601,10 @@ export function loadFingerprintHistory(historyPath = SCAN_HISTORY_PATH) {
 }
 
 // Standard skeleton created on fresh install — matches the format documented
-// in modes/pipeline.md and expected by /career-ops pipeline.
+// in modes/pipeline.md and expected by /job-hunter-ai pipeline.
 const PIPELINE_SKELETON = `# Pipeline — Pending URLs
 
-Paste job URLs below as \`- [ ] {url}\` then run \`/career-ops pipeline\`.
+Paste job URLs below as \`- [ ] {url}\` then run \`/job-hunter-ai pipeline\`.
 
 ## Pending
 
@@ -2598,7 +2598,7 @@ async function main() {
     });
   }
 
-  console.log(`\n→ Run /career-ops pipeline to evaluate new offers.`);
+  console.log(`\n→ Run /job-hunter-ai pipeline to evaluate new offers.`);
   console.log('→ Share results and get help: https://discord.gg/8pRpHETxa4');
 
   // One-time-ever manifesto note: first successful REAL run only. The state
@@ -2612,8 +2612,8 @@ async function main() {
       || !!process.env.WT_SESSION || !!process.env.KITTY_WINDOW_ID
       || parseInt(process.env.VTE_VERSION || '0', 10) >= 5000;
     const link = osc8
-      ? '\x1b]8;;https://career-ops.org/manifesto?utm_source=cli\x1b\\career-ops.org/manifesto\x1b]8;;\x1b\\'
-      : 'career-ops.org/manifesto?utm_source=cli';
+      ? '\x1b]8;;https://job-hunter-ai.org/manifesto?utm_source=cli\x1b\\job-hunter-ai.org/manifesto\x1b]8;;\x1b\\'
+      : 'job-hunter-ai.org/manifesto?utm_source=cli';
     console.log(`\nthe practice behind this tool has a name and a manifesto: ${link}`);
     try { writeFileSync('.manifesto-noted', new Date().toISOString() + '\n'); } catch { /* best-effort */ }
   }

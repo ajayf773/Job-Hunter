@@ -1,13 +1,13 @@
 ---
-description: career-ops command center — evaluate offers, scan portals, track applications
+description: job-hunter-ai command center — evaluate offers, scan portals, track applications
 ---
 
-# career-ops
+# job-hunter-ai
 
 $ARGUMENTS
 
-Load the career-ops skill:
+Load the job-hunter-ai skill:
 
 ```javascript
-skill({ name: "career-ops" })
+skill({ name: "job-hunter-ai" })
 ```

@@ -3,7 +3,7 @@
 /**
  * cli.mjs
  * 
- * Interactive Terminal Chatbot & Career-Ops Pipeline Assistant.
+ * Interactive Terminal Chatbot & job-hunter-ai Pipeline Assistant.
  * Powered directly by Gemini API (3-Key Load Balancer) with zero CLI context token usage.
  * 
  * Features:
@@ -39,7 +39,7 @@ if (existsSync(envPath)) {
 const cvText = existsSync(cvPath) ? readFileSync(cvPath, 'utf8').slice(0, 4000) : '';
 const profileMd = existsSync(profileMdPath) ? readFileSync(profileMdPath, 'utf8').slice(0, 3000) : '';
 
-const systemPrompt = `You are Career-Ops AI, an expert career strategist, technical recruiter, and job search assistant for Ajay Marimuthu.
+const systemPrompt = `You are job-hunter-ai AI, an expert career strategist, technical recruiter, and job search assistant for Ajay Marimuthu.
 You have full access to his candidate profile, CV background (Python, AI/LLM ETL pipelines, automation, software engineering), and target preferences.
 
 Candidate Context:
@@ -52,7 +52,7 @@ Be concise, practical, direct, and encouraging. Format responses in clean termin
 
 console.clear();
 console.log(`====================================================================`);
-console.log(`🤖 CAREER-OPS INTERACTIVE AI ASSISTANT & COMMAND HELPER`);
+console.log(`🤖 job-hunter-ai INTERACTIVE AI ASSISTANT & COMMAND HELPER`);
 console.log(`====================================================================`);
 console.log(`Powered by 3-Key Gemini Load Balancer (0 CLI Tokens burned)`);
 console.log(`\nAvailable Commands:`);
@@ -68,7 +68,7 @@ console.log(`===================================================================
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: '💬 Career-Ops AI > '
+  prompt: '💬 job-hunter-ai AI > '
 });
 
 const conversationHistory = [];
@@ -172,7 +172,7 @@ rl.on('line', async (line) => {
     const res = await generateContentBalanced(apiKey, systemPrompt, userPrompt);
 
     if (res && res.text) {
-      console.log(`\n🤖 Career-Ops AI:\n${res.text.trim()}\n`);
+      console.log(`\n🤖 job-hunter-ai AI:\n${res.text.trim()}\n`);
       conversationHistory.push(`User: ${input}`);
       conversationHistory.push(`AI: ${res.text.trim()}`);
     } else {

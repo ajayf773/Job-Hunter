@@ -1,10 +1,10 @@
-# Delt kontekst -- career-ops (Dansk)
+# Delt kontekst -- job-hunter-ai (Dansk)
 
 <!-- ============================================================
      TILPASNING AF DENNE FIL
      ============================================================
-     Denne fil indeholder den delte kontekst for alle career-ops-modes
-     i den danske version. Før du bruger career-ops, SKAL du:
+     Denne fil indeholder den delte kontekst for alle job-hunter-ai-modes
+     i den danske version. Før du bruger job-hunter-ai, SKAL du:
      1. Udfylde config/profile.yml med dine personlige oplysninger
      2. Oprette cv.md i projektets rod (CV i Markdown)
      3. (Valgfrit) Oprette article-digest.md med dine proof points

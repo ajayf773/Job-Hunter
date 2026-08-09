@@ -77,7 +77,7 @@
     "claude-code",
     "opencode",
     "career",
-    "career-ops",
+    "job-hunter-ai",
     "careerops",
     "automation",
     "codex",
@@ -92,7 +92,7 @@
   "homepage": "https://santifer.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/santifer/career-ops"
+    "url": "https://github.com/santifer/job-hunter-ai"
   },
   "license": "MIT",
   "dependencies": {

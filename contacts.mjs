@@ -45,9 +45,9 @@ import { join, dirname, resolve, relative, isAbsolute, basename, sep } from 'pat
 import { fileURLToPath, pathToFileURL } from 'url';
 import { createHash } from 'crypto';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const CONTACTS_PATH = join(CAREER_OPS, 'data/contacts.tsv');
-const DEFAULT_VCF = join(CAREER_OPS, 'output/contacts.vcf');
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
+const CONTACTS_PATH = join(job_hunter_ai, 'data/contacts.tsv');
+const DEFAULT_VCF = join(job_hunter_ai, 'output/contacts.vcf');
 
 const args = process.argv.slice(2);
 const summaryMode = args.includes('--summary');
@@ -213,7 +213,7 @@ export function contactToVcard(contact, { callerId = false, rev = null } = {}) {
   if (c.email) lines.push(`EMAIL;TYPE=INTERNET:${escapeVcard(c.email)}`);
   if (c.linkedin) lines.push(`URL:${escapeVcard(c.linkedin)}`);
   if (noteParts.length) lines.push(`NOTE:${escapeVcard(noteParts.join(' — '))}`);
-  lines.push('CATEGORIES:career-ops');
+  lines.push('CATEGORIES:job-hunter-ai');
   lines.push(`REV:${rev ?? new Date().toISOString()}`);
   lines.push('END:VCARD');
   return lines.map(foldLine).join('\r\n');
@@ -414,9 +414,9 @@ function writeVcf(contacts, quality) {
   const outPath = resolve(vcfPathArg ?? DEFAULT_VCF);
   // Path-traversal guard: keep the vCard write inside the project directory so
   // a crafted output argument (e.g. "../../etc/cron.d/x") can't escape the
-  // repo. Anchored to the repo root (CAREER_OPS), not process.cwd() — see the
+  // repo. Anchored to the repo root (job_hunter_ai), not process.cwd() — see the
   // generate-pdf.mjs precedent. Cheap lexical gate first…
-  const relOut = relative(CAREER_OPS, outPath);
+  const relOut = relative(job_hunter_ai, outPath);
   if (relOut === '' || relOut.startsWith('..') || isAbsolute(relOut)) {
     console.error(`Refusing to write the vCard outside the project directory: ${outPath}`);
     process.exit(1);
@@ -436,7 +436,7 @@ function writeVcf(contacts, quality) {
     console.error(`Refusing to write the vCard outside the project directory: ${outPath}`);
     process.exit(1);
   }
-  const repoReal = realpathSync(CAREER_OPS);
+  const repoReal = realpathSync(job_hunter_ai);
   const canonicalTarget = existsSync(outPath)
     ? realpathSync(outPath)
     : join(realpathSync(dirname(outPath)), basename(outPath));

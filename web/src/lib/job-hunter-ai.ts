@@ -4,14 +4,14 @@ import { atomicWrite } from "@/lib/core/safe-write";
 import { parseApplications } from "@/lib/tracker-table.mjs";
 
 /**
- * Resolve the career-ops "home" — the directory holding the user's sibling
+ * Resolve the job-hunter-ai "home" — the directory holding the user's sibling
  * files (cv.md, data/, reports/). In production the web/ app lives inside the
- * career-ops checkout, so the home is its parent (..). Dev overrides via
- * CAREER_OPS_ROOT to read the user's real (gitignored) data from a separate
+ * job-hunter-ai checkout, so the home is its parent (..). Dev overrides via
+ * job_hunter_ai_ROOT to read the user's real (gitignored) data from a separate
  * checkout — see web/.env.local.
  */
 export function careerOpsRoot(): string {
-  const env = process.env.CAREER_OPS_ROOT?.trim();
+  const env = process.env.job_hunter_ai_ROOT?.trim();
   if (env) return env;
   return path.resolve(process.cwd(), "..");
 }
@@ -268,7 +268,7 @@ export function readMemory(): string {
     /* no _profile.md yet */
   }
   try {
-    return fs.readFileSync(path.join(careerOpsRoot(), ".career-ops-web", "memory.md"), "utf8").trim();
+    return fs.readFileSync(path.join(careerOpsRoot(), ".job-hunter-ai-web", "memory.md"), "utf8").trim();
   } catch {
     return "";
   }

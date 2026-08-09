@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * verify-pipeline.mjs — Health check for career-ops pipeline integrity
+ * verify-pipeline.mjs — Health check for job-hunter-ai pipeline integrity
  *
  * Checks:
  * 1. All statuses are canonical (per states.yml)
@@ -16,7 +16,7 @@
  * 11. Via channel consistency (see #1596)
  * 12. No # value reused across 2+ tracker rows (error — see #1704)
  *
- * Run: node career-ops/verify-pipeline.mjs
+ * Run: node job-hunter-ai/verify-pipeline.mjs
  */
 
 import { readFileSync, readdirSync, existsSync, mkdirSync, unlinkSync, statSync } from 'fs';
@@ -27,23 +27,23 @@ import {
   normalizeTextKey, normalizeVia,
 } from './tracker-parse.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
 // Support both layouts: data/applications.md (boilerplate) and applications.md (original).
-// CAREER_OPS_TRACKER overrides the path (used by tests and non-standard layouts).
-const APPS_FILE = process.env.CAREER_OPS_TRACKER
-  ? process.env.CAREER_OPS_TRACKER
-  : existsSync(join(CAREER_OPS, 'data/applications.md'))
-    ? join(CAREER_OPS, 'data/applications.md')
-    : join(CAREER_OPS, 'applications.md');
-const ADDITIONS_DIR = join(CAREER_OPS, 'batch/tracker-additions');
-// CAREER_OPS_REPORTS overrides the reports dir (used by tests, mirrors CAREER_OPS_TRACKER).
-const REPORTS_DIR = process.env.CAREER_OPS_REPORTS || join(CAREER_OPS, 'reports');
-const STATES_FILE = existsSync(join(CAREER_OPS, 'templates/states.yml'))
-  ? join(CAREER_OPS, 'templates/states.yml')
-  : join(CAREER_OPS, 'states.yml');
+// job_hunter_ai_TRACKER overrides the path (used by tests and non-standard layouts).
+const APPS_FILE = process.env.job_hunter_ai_TRACKER
+  ? process.env.job_hunter_ai_TRACKER
+  : existsSync(join(job_hunter_ai, 'data/applications.md'))
+    ? join(job_hunter_ai, 'data/applications.md')
+    : join(job_hunter_ai, 'applications.md');
+const ADDITIONS_DIR = join(job_hunter_ai, 'batch/tracker-additions');
+// job_hunter_ai_REPORTS overrides the reports dir (used by tests, mirrors job_hunter_ai_TRACKER).
+const REPORTS_DIR = process.env.job_hunter_ai_REPORTS || join(job_hunter_ai, 'reports');
+const STATES_FILE = existsSync(join(job_hunter_ai, 'templates/states.yml'))
+  ? join(job_hunter_ai, 'templates/states.yml')
+  : join(job_hunter_ai, 'states.yml');
 
 // Ensure required directories exist (fresh setup)
-mkdirSync(join(CAREER_OPS, 'data'), { recursive: true });
+mkdirSync(join(job_hunter_ai, 'data'), { recursive: true });
 mkdirSync(REPORTS_DIR, { recursive: true });
 
 const CANONICAL_STATUSES = [
@@ -173,7 +173,7 @@ for (const e of entries) {
   const match = e.report.match(/\]\(([^)]+)\)/);
   if (!match) continue;
   const link = match[1];
-  if (!existsSync(join(TRACKER_DIR, link)) && !existsSync(join(CAREER_OPS, link))) {
+  if (!existsSync(join(TRACKER_DIR, link)) && !existsSync(join(job_hunter_ai, link))) {
     error(`#${e.num}: Report not found: ${link}`);
     brokenReports++;
   }

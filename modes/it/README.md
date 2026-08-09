@@ -1,6 +1,6 @@
-# career-ops -- Modalità in italiano (`modes/it/`)
+# job-hunter-ai -- Modalità in italiano (`modes/it/`)
 
-Questa cartella contiene le traduzioni in italiano delle principali modalità di career-ops per i candidati che si rivolgono al mercato italiano.
+Questa cartella contiene le traduzioni in italiano delle principali modalità di job-hunter-ai per i candidati che si rivolgono al mercato italiano.
 
 ## Quando usare queste modalità?
 

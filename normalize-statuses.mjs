@@ -8,7 +8,7 @@
  * Also strips markdown bold (**) and dates from the status field,
  * moving DUPLICADO info to the notes column.
  *
- * Run: node career-ops/normalize-statuses.mjs [--dry-run]
+ * Run: node job-hunter-ai/normalize-statuses.mjs [--dry-run]
  */
 
 import { readFileSync, copyFileSync, existsSync, mkdirSync } from 'fs';
@@ -19,12 +19,12 @@ import {
 } from './tracker-utils.mjs';
 import { resolveColumns, parseTrackerRow } from './tracker-parse.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
-const APPS_FILE = resolveTrackerPath(CAREER_OPS);
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
+const APPS_FILE = resolveTrackerPath(job_hunter_ai);
 const DRY_RUN = process.argv.includes('--dry-run');
 
 // Ensure required directories exist (fresh setup)
-mkdirSync(join(CAREER_OPS, 'data'), { recursive: true });
+mkdirSync(join(job_hunter_ai, 'data'), { recursive: true });
 
 // Canonical status mapping
 function normalizeStatus(raw) {

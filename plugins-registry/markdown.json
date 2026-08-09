@@ -1,7 +1,7 @@
 {
-  "name": "career-ops-plugin-markdown",
+  "name": "job-hunter-ai-plugin-markdown",
   "id": "markdown",
-  "repo": "https://github.com/rubicon/career-ops-plugin-markdown",
+  "repo": "https://github.com/rubicon/job-hunter-ai-plugin-markdown",
   "author": "rubicon",
   "hooks": [
     "export"

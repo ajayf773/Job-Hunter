@@ -18,20 +18,20 @@ job-hunter-ai is a multi-CLI job-search command center. The routing below is sha
 
 ## Invocation Notes
 
-- CLIs with slash-command registration can expose this router as `/career-ops`.
-- In Cursor, this skill lives at `.cursor/skills/career-ops/` and is auto-discovered; ask for a mode by name, or paste a JD/URL to trigger auto-pipeline.
-- Interactive Codex sessions use `codex` in the repo root. Slash commands are not guaranteed in Codex, so ask Codex to run the same mode by name if `/career-ops` is unavailable.
+- CLIs with slash-command registration can expose this router as `/job-hunter-ai`.
+- In Cursor, this skill lives at `.cursor/skills/job-hunter-ai/` and is auto-discovered; ask for a mode by name, or paste a JD/URL to trigger auto-pipeline.
+- Interactive Codex sessions use `codex` in the repo root. Slash commands are not guaranteed in Codex, so ask Codex to run the same mode by name if `/job-hunter-ai` is unavailable.
 - Headless Codex workers use `codex exec "prompt"`.
 - The routing semantics below stay the same regardless of whether the entrypoint is a slash command or a natural-language prompt.
 
 Codex prompt examples that map to the same router semantics:
 
 ```text
-Evaluate this JD with career-ops auto-pipeline: https://company.com/jobs/123
-Run the career-ops scan mode and summarize new matches.
-Run the career-ops pipeline mode for data/pipeline.md.
-Run the career-ops pdf mode for the latest evaluated role.
-Run the career-ops tracker mode and summarize the current statuses.
+Evaluate this JD with job-hunter-ai auto-pipeline: https://company.com/jobs/123
+Run the job-hunter-ai scan mode and summarize new matches.
+Run the job-hunter-ai pipeline mode for data/pipeline.md.
+Run the job-hunter-ai pdf mode for the latest evaluated role.
+Run the job-hunter-ai tracker mode and summarize the current statuses.
 ```
 
 ## Mode Routing
@@ -103,62 +103,62 @@ Inject this directive after loading the mode instructions and before producing a
 
 ## Discovery Mode (no arguments)
 
-If your CLI supports `/career-ops`, show this menu. In Codex, surface the same options in plain text and map the requested mode the same way.
+If your CLI supports `/job-hunter-ai`, show this menu. In Codex, surface the same options in plain text and map the requested mode the same way.
 
 Concrete equivalents for Codex prompt-driven sessions:
 
 ```text
-/career-ops {JD}           ↔ "Evaluate this JD with career-ops auto-pipeline: {JD or URL}"
-/career-ops scan           ↔ "Run the career-ops scan mode and summarize new matches."
-/career-ops pipeline       ↔ "Run the career-ops pipeline mode for data/pipeline.md."
-/career-ops pdf            ↔ "Run the career-ops pdf mode for the latest evaluated role."
-/career-ops email          ↔ "Run the career-ops email mode for the latest evaluated role."
-/career-ops tracker        ↔ "Run the career-ops tracker mode and summarize the current statuses."
+/job-hunter-ai {JD}           ↔ "Evaluate this JD with job-hunter-ai auto-pipeline: {JD or URL}"
+/job-hunter-ai scan           ↔ "Run the job-hunter-ai scan mode and summarize new matches."
+/job-hunter-ai pipeline       ↔ "Run the job-hunter-ai pipeline mode for data/pipeline.md."
+/job-hunter-ai pdf            ↔ "Run the job-hunter-ai pdf mode for the latest evaluated role."
+/job-hunter-ai email          ↔ "Run the job-hunter-ai email mode for the latest evaluated role."
+/job-hunter-ai tracker        ↔ "Run the job-hunter-ai tracker mode and summarize the current statuses."
 ```
 
 Show this menu:
 
 ```
-career-ops -- Command Center
+job-hunter-ai -- Command Center
 
 Available commands:
-  /career-ops {JD}      → AUTO-PIPELINE: evaluate + report + PDF + tracker (paste text or URL)
-  /career-ops pipeline  → Process pending URLs from inbox (data/pipeline.md)
-  /career-ops oferta    → Evaluation only A-F (no auto PDF)
-  /career-ops ofertas   → Compare and rank multiple offers
-  /career-ops contacto  → LinkedIn power move: find contacts + draft message
-  /career-ops deep      → Deep research prompt about company
-  /career-ops interview-prep → Generate company-specific interview prep doc
-  /career-ops interview    → Interactive profile/CV onboarding interview
-  /career-ops eu-swe    → Calibrate a European SWE application before CV/apply/interview
-  /career-ops eu-fintech → Scan 21 EU fintech portals for Product Manager roles (zero-token)
-  /career-ops interview/plan → Time-blocked prep plan for an upcoming interview
-  /career-ops interview/practice → Practice interview, one question at a time with feedback
-  /career-ops interview/debrief → Post-interview debrief: close gaps, predict next round
-  /career-ops pdf       → PDF only, ATS-optimized CV
-  /career-ops latex     → Export CV as LaTeX/Overleaf .tex
-  /career-ops latex-tex → Tailor your own resume.tex in place (opt-in; cv.md stays default)
-  /career-ops cover     → Cover letter: standalone JD paste or /career-ops cover {slug}
-  /career-ops email     → Formal application email draft (draft-only; never sends, submits, or clicks)
-  /career-ops add       → Add a project/paper/role to your CV (fetch + preview + confirm)
-  /career-ops expand    → Auto-discover and add missing competencies from profile links
-  /career-ops training  → Evaluate course/cert against North Star
-  /career-ops project   → Evaluate portfolio project idea
-  /career-ops tracker   → Application status overview
-  /career-ops agent-inbox → Queue/drain requests for the next session (data/agent-inbox.md)
-  /career-ops apply     → Live application assistant (reads form + generates answers)
-  /career-ops scan      → Scan portals and discover new offers
-  /career-ops discover  → Resolve a company list to scannable ATS boards + append to portals.yml (zero-token)
-  /career-ops batch     → Batch processing with parallel workers
-  /career-ops patterns  → Analyze rejection patterns and improve targeting
-  /career-ops offer-prep → Read a received offer/contract with the candidate: clause walk + lawyer questions (not legal advice)
-  /career-ops titles    → Suggest adjacent job titles from your CV to broaden the search
-  /career-ops upskill   → Aggregate skill-gap analysis from your evaluated reports
-  /career-ops followup  → Follow-up cadence tracker: flag overdue, generate drafts
-  /career-ops outcome   → Record application outcome & archive artifacts
-  /career-ops update    → Update career-ops system files with diff preview + compat check
+  /job-hunter-ai {JD}      → AUTO-PIPELINE: evaluate + report + PDF + tracker (paste text or URL)
+  /job-hunter-ai pipeline  → Process pending URLs from inbox (data/pipeline.md)
+  /job-hunter-ai oferta    → Evaluation only A-F (no auto PDF)
+  /job-hunter-ai ofertas   → Compare and rank multiple offers
+  /job-hunter-ai contacto  → LinkedIn power move: find contacts + draft message
+  /job-hunter-ai deep      → Deep research prompt about company
+  /job-hunter-ai interview-prep → Generate company-specific interview prep doc
+  /job-hunter-ai interview    → Interactive profile/CV onboarding interview
+  /job-hunter-ai eu-swe    → Calibrate a European SWE application before CV/apply/interview
+  /job-hunter-ai eu-fintech → Scan 21 EU fintech portals for Product Manager roles (zero-token)
+  /job-hunter-ai interview/plan → Time-blocked prep plan for an upcoming interview
+  /job-hunter-ai interview/practice → Practice interview, one question at a time with feedback
+  /job-hunter-ai interview/debrief → Post-interview debrief: close gaps, predict next round
+  /job-hunter-ai pdf       → PDF only, ATS-optimized CV
+  /job-hunter-ai latex     → Export CV as LaTeX/Overleaf .tex
+  /job-hunter-ai latex-tex → Tailor your own resume.tex in place (opt-in; cv.md stays default)
+  /job-hunter-ai cover     → Cover letter: standalone JD paste or /job-hunter-ai cover {slug}
+  /job-hunter-ai email     → Formal application email draft (draft-only; never sends, submits, or clicks)
+  /job-hunter-ai add       → Add a project/paper/role to your CV (fetch + preview + confirm)
+  /job-hunter-ai expand    → Auto-discover and add missing competencies from profile links
+  /job-hunter-ai training  → Evaluate course/cert against North Star
+  /job-hunter-ai project   → Evaluate portfolio project idea
+  /job-hunter-ai tracker   → Application status overview
+  /job-hunter-ai agent-inbox → Queue/drain requests for the next session (data/agent-inbox.md)
+  /job-hunter-ai apply     → Live application assistant (reads form + generates answers)
+  /job-hunter-ai scan      → Scan portals and discover new offers
+  /job-hunter-ai discover  → Resolve a company list to scannable ATS boards + append to portals.yml (zero-token)
+  /job-hunter-ai batch     → Batch processing with parallel workers
+  /job-hunter-ai patterns  → Analyze rejection patterns and improve targeting
+  /job-hunter-ai offer-prep → Read a received offer/contract with the candidate: clause walk + lawyer questions (not legal advice)
+  /job-hunter-ai titles    → Suggest adjacent job titles from your CV to broaden the search
+  /job-hunter-ai upskill   → Aggregate skill-gap analysis from your evaluated reports
+  /job-hunter-ai followup  → Follow-up cadence tracker: flag overdue, generate drafts
+  /job-hunter-ai outcome   → Record application outcome & archive artifacts
+  /job-hunter-ai update    → Update job-hunter-ai system files with diff preview + compat check
 
-Inbox: add URLs to data/pipeline.md → /career-ops pipeline
+Inbox: add URLs to data/pipeline.md → /job-hunter-ai pipeline
 Or paste a JD directly to run the full pipeline.
 ```
 
@@ -190,7 +190,7 @@ For `scan`, `apply` (with Playwright), and `pipeline` (3+ URLs): launch as a wor
 Agent(
   subagent_type="general-purpose",
   prompt="[output language directive]\n\n[content of modes/_shared.md]\n\n[content of modes/_profile.md if exists]\n\n[content of modes/_custom.md if exists]\n\n[content of modes/{mode}.md]\n\n[invocation-specific data]",
-  description="career-ops {mode}"
+  description="job-hunter-ai {mode}"
 )
 ```
 

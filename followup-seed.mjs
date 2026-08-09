@@ -39,13 +39,13 @@
  *   4 lock timeout
  *
  * Env overrides (mirroring merge-tracker.mjs / followup-cadence.mjs):
- *   CAREER_OPS_TRACKER                     tracker path
- *   CAREER_OPS_FOLLOWUPS                   follow-ups path
- *   CAREER_OPS_PROFILE                     profile.yml path (cadence overrides)
- *   CAREER_OPS_FOLLOWUPS_LOCK              lock directory override
- *   CAREER_OPS_FOLLOWUPS_LOCK_TIMEOUT_MS   lock acquire timeout
- *   CAREER_OPS_FOLLOWUPS_LOCK_RETRY_MS     lock retry interval
- *   CAREER_OPS_FOLLOWUPS_LOCK_STALE_MS     stale-lock recovery threshold
+ *   job_hunter_ai_TRACKER                     tracker path
+ *   job_hunter_ai_FOLLOWUPS                   follow-ups path
+ *   job_hunter_ai_PROFILE                     profile.yml path (cadence overrides)
+ *   job_hunter_ai_FOLLOWUPS_LOCK              lock directory override
+ *   job_hunter_ai_FOLLOWUPS_LOCK_TIMEOUT_MS   lock acquire timeout
+ *   job_hunter_ai_FOLLOWUPS_LOCK_RETRY_MS     lock retry interval
+ *   job_hunter_ai_FOLLOWUPS_LOCK_STALE_MS     stale-lock recovery threshold
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, rmSync, statSync, realpathSync } from 'fs';
@@ -63,7 +63,7 @@ import {
   addDays,
 } from './followup-cadence.mjs';
 
-const CAREER_OPS = dirname(fileURLToPath(import.meta.url));
+const job_hunter_ai = dirname(fileURLToPath(import.meta.url));
 
 /** Canonical header written when data/follow-ups.md doesn't exist yet. */
 export const FOLLOWUPS_HEADER = [
@@ -73,7 +73,7 @@ export const FOLLOWUPS_HEADER = [
   '|---|---|---|---|---|---|---|---|',
 ].join('\n');
 
-const FOLLOWUPS_LOCK_PREFIX = 'career-ops-followups-';
+const FOLLOWUPS_LOCK_PREFIX = 'job-hunter-ai-followups-';
 
 /**
  * Minimum age before directory age alone may condemn an ownerless lock.
@@ -156,16 +156,16 @@ export function formatPinLine(appNum, nextDate, setDate) {
 
 function resolveTrackerPath(override) {
   if (override) return override;
-  if (process.env.CAREER_OPS_TRACKER) return process.env.CAREER_OPS_TRACKER;
-  return existsSync(join(CAREER_OPS, 'data/applications.md'))
-    ? join(CAREER_OPS, 'data/applications.md')
-    : join(CAREER_OPS, 'applications.md');
+  if (process.env.job_hunter_ai_TRACKER) return process.env.job_hunter_ai_TRACKER;
+  return existsSync(join(job_hunter_ai, 'data/applications.md'))
+    ? join(job_hunter_ai, 'data/applications.md')
+    : join(job_hunter_ai, 'applications.md');
 }
 
 function resolveFollowupsPath(override) {
   if (override) return override;
-  if (process.env.CAREER_OPS_FOLLOWUPS) return process.env.CAREER_OPS_FOLLOWUPS;
-  return join(CAREER_OPS, 'data/follow-ups.md');
+  if (process.env.job_hunter_ai_FOLLOWUPS) return process.env.job_hunter_ai_FOLLOWUPS;
+  return join(job_hunter_ai, 'data/follow-ups.md');
 }
 
 function envInt(name, fallback) {
@@ -234,7 +234,7 @@ function resolveFollowupsLockDir(envValue, lockKey) {
 function resolveLockDir(explicitLockDir, followupsPath) {
   if (explicitLockDir) return explicitLockDir;
   const lockKey = createHash('sha256').update(followupsPath).digest('hex').slice(0, 16);
-  return resolveFollowupsLockDir(process.env.CAREER_OPS_FOLLOWUPS_LOCK, lockKey);
+  return resolveFollowupsLockDir(process.env.job_hunter_ai_FOLLOWUPS_LOCK, lockKey);
 }
 
 function sleep(ms) {
@@ -451,9 +451,9 @@ export async function seedFollowup(appNum, options = {}) {
 
   const lockDir = resolveLockDir(options.lockDir, followupsPath);
   const lock = await acquireFollowupsLock(lockDir, followupsPath, {
-    timeoutMs: options.lockTimeoutMs ?? envInt('CAREER_OPS_FOLLOWUPS_LOCK_TIMEOUT_MS', 60_000),
-    retryMs: options.lockRetryMs ?? envInt('CAREER_OPS_FOLLOWUPS_LOCK_RETRY_MS', 75),
-    staleMs: options.lockStaleMs ?? envInt('CAREER_OPS_FOLLOWUPS_LOCK_STALE_MS', 10 * 60_000),
+    timeoutMs: options.lockTimeoutMs ?? envInt('job_hunter_ai_FOLLOWUPS_LOCK_TIMEOUT_MS', 60_000),
+    retryMs: options.lockRetryMs ?? envInt('job_hunter_ai_FOLLOWUPS_LOCK_RETRY_MS', 75),
+    staleMs: options.lockStaleMs ?? envInt('job_hunter_ai_FOLLOWUPS_LOCK_STALE_MS', 10 * 60_000),
   });
 
   try {
@@ -522,9 +522,9 @@ export async function seedBackfill(options = {}) {
 
   const lockDir = resolveLockDir(options.lockDir, followupsPath);
   const lock = await acquireFollowupsLock(lockDir, followupsPath, {
-    timeoutMs: options.lockTimeoutMs ?? envInt('CAREER_OPS_FOLLOWUPS_LOCK_TIMEOUT_MS', 60_000),
-    retryMs: options.lockRetryMs ?? envInt('CAREER_OPS_FOLLOWUPS_LOCK_RETRY_MS', 75),
-    staleMs: options.lockStaleMs ?? envInt('CAREER_OPS_FOLLOWUPS_LOCK_STALE_MS', 10 * 60_000),
+    timeoutMs: options.lockTimeoutMs ?? envInt('job_hunter_ai_FOLLOWUPS_LOCK_TIMEOUT_MS', 60_000),
+    retryMs: options.lockRetryMs ?? envInt('job_hunter_ai_FOLLOWUPS_LOCK_RETRY_MS', 75),
+    staleMs: options.lockStaleMs ?? envInt('job_hunter_ai_FOLLOWUPS_LOCK_STALE_MS', 10 * 60_000),
   });
 
   try {

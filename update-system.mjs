@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * update-system.mjs — Safe auto-updater for career-ops
+ * update-system.mjs — Safe auto-updater for job-hunter-ai
  *
  * Updates ONLY system layer files (modes, scripts, dashboard, templates).
  * NEVER touches user data (cv.md, profile.yml, _profile.md, data/, reports/).
@@ -33,28 +33,28 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
 
-const CANONICAL_REPO = 'https://github.com/santifer/career-ops.git';
-const RAW_VERSION_URL = 'https://raw.githubusercontent.com/santifer/career-ops/main/VERSION';
-const RELEASES_API = 'https://api.github.com/repos/santifer/career-ops/releases/latest';
+const CANONICAL_REPO = 'https://github.com/santifer/job-hunter-ai.git';
+const RAW_VERSION_URL = 'https://raw.githubusercontent.com/santifer/job-hunter-ai/main/VERSION';
+const RELEASES_API = 'https://api.github.com/repos/santifer/job-hunter-ai/releases/latest';
 
 // Matches a semver, with or without a leading `v` and an optional
-// Release Please component prefix (e.g. `career-ops-v1.9.0` → `1.9.0`).
+// Release Please component prefix (e.g. `job-hunter-ai-v1.9.0` → `1.9.0`).
 // Anchoring on `(?:^|-)` lets the releases-API fallback parse our tags,
 // which Release Please always prefixes with the component name.
 export const SEMVER_RE = /(?:^|-)v?(\d+\.\d+\.\d+)$/i;
 // 120s: local git commands are normally instant, but a cloud-evicted working
 // tree (iCloud "optimize storage", OneDrive dehydration) can stall a plain
 // `git status` for a minute of pure I/O wait re-materializing files (#1393).
-export const DEFAULT_GIT_TIMEOUT_MS = parsePositiveInt(process.env.CAREER_OPS_GIT_TIMEOUT_MS, 120000);
+export const DEFAULT_GIT_TIMEOUT_MS = parsePositiveInt(process.env.job_hunter_ai_GIT_TIMEOUT_MS, 120000);
 export const DEFAULT_GIT_FETCH_TIMEOUT_MS = parsePositiveInt(
-  process.env.CAREER_OPS_GIT_FETCH_TIMEOUT_MS,
+  process.env.job_hunter_ai_GIT_FETCH_TIMEOUT_MS,
   Math.max(DEFAULT_GIT_TIMEOUT_MS, 300000),
 );
-export const NPM_INSTALL_TIMEOUT_MS = parsePositiveInt(process.env.CAREER_OPS_NPM_INSTALL_TIMEOUT_MS, 60000);
-export const PLAYWRIGHT_INSTALL_TIMEOUT_MS = parsePositiveInt(process.env.CAREER_OPS_PLAYWRIGHT_INSTALL_TIMEOUT_MS, 120000);
-export const DASHBOARD_REBUILD_TIMEOUT_MS = parsePositiveInt(process.env.CAREER_OPS_DASHBOARD_REBUILD_TIMEOUT_MS, 60000);
-export const UPDATE_PATH_CHECKOUT_BUDGET_MS = parsePositiveInt(process.env.CAREER_OPS_UPDATE_PATH_CHECKOUT_BUDGET_MS, 5000);
-export const REEXEC_BUFFER_TIMEOUT_MS = parsePositiveInt(process.env.CAREER_OPS_REEXEC_BUFFER_TIMEOUT_MS, 60000);
+export const NPM_INSTALL_TIMEOUT_MS = parsePositiveInt(process.env.job_hunter_ai_NPM_INSTALL_TIMEOUT_MS, 60000);
+export const PLAYWRIGHT_INSTALL_TIMEOUT_MS = parsePositiveInt(process.env.job_hunter_ai_PLAYWRIGHT_INSTALL_TIMEOUT_MS, 120000);
+export const DASHBOARD_REBUILD_TIMEOUT_MS = parsePositiveInt(process.env.job_hunter_ai_DASHBOARD_REBUILD_TIMEOUT_MS, 60000);
+export const UPDATE_PATH_CHECKOUT_BUDGET_MS = parsePositiveInt(process.env.job_hunter_ai_UPDATE_PATH_CHECKOUT_BUDGET_MS, 5000);
+export const REEXEC_BUFFER_TIMEOUT_MS = parsePositiveInt(process.env.job_hunter_ai_REEXEC_BUFFER_TIMEOUT_MS, 60000);
 
 // System layer paths — ONLY these files get updated
 const SYSTEM_PATHS = [
@@ -485,7 +485,7 @@ function timeoutSeconds(timeout) {
 }
 
 function gitTimeoutEnvVar(args) {
-  return args[0] === 'fetch' ? 'CAREER_OPS_GIT_FETCH_TIMEOUT_MS' : 'CAREER_OPS_GIT_TIMEOUT_MS';
+  return args[0] === 'fetch' ? 'job_hunter_ai_GIT_FETCH_TIMEOUT_MS' : 'job_hunter_ai_GIT_TIMEOUT_MS';
 }
 
 export function gitIn(root, ...args) {
@@ -839,7 +839,7 @@ async function check() {
     curlGet(RAW_VERSION_URL),
     curlGet(RELEASES_API, [
       '--header', 'Accept: application/vnd.github.v3+json',
-      '--header', 'User-Agent: career-ops-update-checker',
+      '--header', 'User-Agent: job-hunter-ai-update-checker',
     ]),
   ]);
 
@@ -903,7 +903,7 @@ async function check() {
 async function apply() {
   const local = localVersion();
   const initialStatusPaths = new Set(gitStatusEntries().map(entry => entry.path));
-  const isReexec = process.env.CAREER_OPS_UPDATE_REEXEC === '1';
+  const isReexec = process.env.job_hunter_ai_UPDATE_REEXEC === '1';
 
   // Check for lock
   const lockFile = join(ROOT, '.update-lock');
@@ -923,7 +923,7 @@ async function apply() {
     // invisible to `git branch` and can be lost if the update aborts.
     // `git stash create` builds a stash object without touching the stash
     // stack, giving a recoverable ref for WIP even if the update fails.
-    const backupBranch = process.env.CAREER_OPS_UPDATE_BACKUP_BRANCH || updateBackupBranchName(local);
+    const backupBranch = process.env.job_hunter_ai_UPDATE_BACKUP_BRANCH || updateBackupBranchName(local);
     if (!isReexec) {
       try {
         const wip = git('stash', 'create');
@@ -957,8 +957,8 @@ async function apply() {
           timeout,
           env: {
             ...process.env,
-            CAREER_OPS_UPDATE_REEXEC: '1',
-            CAREER_OPS_UPDATE_BACKUP_BRANCH: backupBranch,
+            job_hunter_ai_UPDATE_REEXEC: '1',
+            job_hunter_ai_UPDATE_BACKUP_BRANCH: backupBranch,
           },
         });
         return;
@@ -1228,10 +1228,10 @@ async function apply() {
     console.log(`Updated ${updated.length} system paths.`);
     console.log(`Rollback available: node update-system.mjs rollback`);
 
-    console.log('\n-- The CareerOps Manifesto ------------------------------');
+    console.log('\n-- The JobHunterAI Manifesto ------------------------------');
     console.log('A new way of job searching is taking shape. You are');
     console.log('already practicing it. Read it, sign it if you want to help:');
-    console.log('    npm run manifesto  ·  https://career-ops.org/manifesto?utm_source=updater');
+    console.log('    npm run manifesto  ·  https://job-hunter-ai.org/manifesto?utm_source=updater');
 
   } finally {
     // Remove lock

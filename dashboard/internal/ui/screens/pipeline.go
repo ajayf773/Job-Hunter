@@ -11,10 +11,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/santifer/career-ops/dashboard/internal/data"
-	"github.com/santifer/career-ops/dashboard/internal/i18n"
-	"github.com/santifer/career-ops/dashboard/internal/model"
-	"github.com/santifer/career-ops/dashboard/internal/theme"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/data"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/i18n"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/model"
+	"github.com/santifer/job-hunter-ai/dashboard/internal/theme"
 )
 
 // PipelineClosedMsg is emitted when the pipeline screen is dismissed.
@@ -41,9 +41,9 @@ type PipelineOpenPDFMsg struct {
 
 // PipelineGeneratePDFMsg requests a PDF regeneration via generate-pdf.mjs
 // from the application's recorded source HTML. Paths are relative to
-// CareerOpsPath (as recorded in the manifest).
+// JobHunterAIPath (as recorded in the manifest).
 type PipelineGeneratePDFMsg struct {
-	CareerOpsPath string
+	JobHunterAIPath string
 	ReportNumber  string
 	HTMLPath      string
 	PDFPath       string
@@ -59,13 +59,13 @@ type PipelinePDFGeneratedMsg struct {
 
 // PipelineLoadReportMsg requests lazy loading of a report summary.
 type PipelineLoadReportMsg struct {
-	CareerOpsPath string
+	JobHunterAIPath string
 	ReportPath    string
 }
 
 // PipelineUpdateStatusMsg requests a status update for an application.
 type PipelineUpdateStatusMsg struct {
-	CareerOpsPath string
+	JobHunterAIPath string
 	App           model.CareerApplication
 	NewStatus     string
 }
@@ -74,7 +74,7 @@ type PipelineUpdateStatusMsg struct {
 // Used by the discard reason picker (Issue 1380) to commit both changes in a
 // single tracker write.
 type PipelineUpdateStatusAndNotesMsg struct {
-	CareerOpsPath string
+	JobHunterAIPath string
 	App           model.CareerApplication
 	NewStatus     string
 	NotesAppend   string // text to append to the Notes cell, e.g. "DISCARD: salary_too_low"
@@ -109,7 +109,7 @@ type reportSummary struct {
 	comp      string
 }
 
-const storyTemplateURL = "https://github.com/santifer/career-ops/issues/new?template=i-got-hired.yml"
+const storyTemplateURL = "https://github.com/santifer/job-hunter-ai/issues/new?template=i-got-hired.yml"
 
 // Sort modes
 const (
@@ -606,7 +606,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 
 	case "m":
 		return m, func() tea.Msg {
-			return PipelineOpenURLMsg{URL: "https://career-ops.org/manifesto?utm_source=dashboard-shortcut"}
+			return PipelineOpenURLMsg{URL: "https://job-hunter-ai.org/manifesto?utm_source=dashboard-shortcut"}
 		}
 
 	case "d":
@@ -614,7 +614,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 			manifest := data.LoadPDFManifest(m.careerOpsPath)
 			candidates := data.ResolvePDFs(m.careerOpsPath, app, manifest)
 			if len(candidates) == 0 {
-				m.flash = "No CV PDF found for this application — generate one with /career-ops pdf"
+				m.flash = "No CV PDF found for this application — generate one with /job-hunter-ai pdf"
 			} else {
 				return m, m.openPDFCmd(candidates[0]) // newest first
 			}
@@ -638,7 +638,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 				}
 			}
 			if !found || entry.HTMLPath == "" {
-				m.flash = "No source HTML found for this application — run /career-ops pdf first"
+				m.flash = "No source HTML found for this application — run /job-hunter-ai pdf first"
 				return m, nil
 			}
 			if _, err := os.Stat(filepath.Join(m.careerOpsPath, filepath.FromSlash(entry.HTMLPath))); err != nil {
@@ -650,7 +650,7 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 			html, pdf, format := entry.HTMLPath, entry.PDFPath, entry.Format
 			return m, func() tea.Msg {
 				return PipelineGeneratePDFMsg{
-					CareerOpsPath: path,
+					JobHunterAIPath: path,
 					ReportNumber:  report,
 					HTMLPath:      html,
 					PDFPath:       pdf,
@@ -806,7 +806,7 @@ func (m PipelineModel) handleStatusPicker(msg tea.KeyMsg) (PipelineModel, tea.Cm
 				m.hiredStep = 1
 				return m, func() tea.Msg {
 					return PipelineUpdateStatusMsg{
-						CareerOpsPath: m.careerOpsPath,
+						JobHunterAIPath: m.careerOpsPath,
 						App:           app,
 						NewStatus:     newStatus,
 					}
@@ -819,7 +819,7 @@ func (m PipelineModel) handleStatusPicker(msg tea.KeyMsg) (PipelineModel, tea.Cm
 			}
 			return m, func() tea.Msg {
 				return PipelineUpdateStatusMsg{
-					CareerOpsPath: m.careerOpsPath,
+					JobHunterAIPath: m.careerOpsPath,
 					App:           app,
 					NewStatus:     newStatus,
 				}
@@ -920,7 +920,7 @@ func (m PipelineModel) handleDiscardPicker(msg tea.KeyMsg) (PipelineModel, tea.C
 		m.discardPicker = false
 		return m, func() tea.Msg {
 			return PipelineUpdateStatusMsg{
-				CareerOpsPath: m.careerOpsPath,
+				JobHunterAIPath: m.careerOpsPath,
 				App:           m.discardPendingApp,
 				NewStatus:     m.discardPendingStatus,
 			}
@@ -1034,7 +1034,7 @@ func (m PipelineModel) commitDiscardReason(reason string) (PipelineModel, tea.Cm
 	notesTag := fmt.Sprintf("%s: %s", prefix, reason)
 	return m, func() tea.Msg {
 		return PipelineUpdateStatusAndNotesMsg{
-			CareerOpsPath: m.careerOpsPath,
+			JobHunterAIPath: m.careerOpsPath,
 			App:           app,
 			NewStatus:     newStatus,
 			NotesAppend:   notesTag,
@@ -1103,7 +1103,7 @@ func (m PipelineModel) loadCurrentReport() tea.Cmd {
 	path := m.careerOpsPath
 	report := app.ReportPath
 	return func() tea.Msg {
-		return PipelineLoadReportMsg{CareerOpsPath: path, ReportPath: report}
+		return PipelineLoadReportMsg{JobHunterAIPath: path, ReportPath: report}
 	}
 }
 
@@ -1897,9 +1897,9 @@ func (m PipelineModel) renderHelp() string {
 	// The manifesto segment is an OSC 8 hyperlink (utm_source=dashboard);
 	// terminals without support show the same text, just not clickable. The
 	// gap math uses the plain text so the escapes never skew the layout.
-	const brandPlain = "built on the CareerOps Manifesto · career-ops by santifer.io"
-	manifestoLink := "\x1b]8;;https://career-ops.org/manifesto?utm_source=dashboard\x1b\\built on the CareerOps Manifesto\x1b]8;;\x1b\\"
-	brand := lipgloss.NewStyle().Foreground(m.theme.Overlay).Render(manifestoLink + " · career-ops by santifer.io")
+	const brandPlain = "built on the JobHunterAI Manifesto · job-hunter-ai by santifer.io"
+	manifestoLink := "\x1b]8;;https://job-hunter-ai.org/manifesto?utm_source=dashboard\x1b\\built on the JobHunterAI Manifesto\x1b]8;;\x1b\\"
+	brand := lipgloss.NewStyle().Foreground(m.theme.Overlay).Render(manifestoLink + " · job-hunter-ai by santifer.io")
 
 	keys := keyStyle.Render("↑↓/jk") + descStyle.Render(i18n.Current.HelpNav) +
 		keyStyle.Render("←→/hl") + descStyle.Render(i18n.Current.HelpTabs) +

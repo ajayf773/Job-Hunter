@@ -11,7 +11,7 @@ import (
 )
 
 func TestTrackerLockDirMatchesNodeProtocol(t *testing.T) {
-	t.Setenv("CAREER_OPS_TRACKER_LOCK", "")
+	t.Setenv("job_hunter_ai_TRACKER_LOCK", "")
 	_, trackerPath := writeTracker(t, insertedColumnTracker)
 	canonicalTracker, err := filepath.EvalSymlinks(trackerPath)
 	if err != nil {
@@ -22,7 +22,7 @@ func TestTrackerLockDirMatchesNodeProtocol(t *testing.T) {
 		t.Fatalf("canonical temp dir: %v", err)
 	}
 	sum := sha256.Sum256([]byte(canonicalTracker))
-	want := filepath.Join(canonicalTemp, fmt.Sprintf("career-ops-merge-tracker-%x.lock", sum[:8]))
+	want := filepath.Join(canonicalTemp, fmt.Sprintf("job-hunter-ai-merge-tracker-%x.lock", sum[:8]))
 
 	got, err := trackerLockDirFor(trackerPath)
 	if err != nil {
@@ -34,7 +34,7 @@ func TestTrackerLockDirMatchesNodeProtocol(t *testing.T) {
 }
 
 func TestUpdateApplicationStatusWaitsForSharedLock(t *testing.T) {
-	t.Setenv("CAREER_OPS_TRACKER_LOCK", "")
+	t.Setenv("job_hunter_ai_TRACKER_LOCK", "")
 	tempDir, trackerPath := writeTracker(t, insertedColumnTracker)
 	apps := ParseApplications(tempDir)
 	if len(apps) != 1 {

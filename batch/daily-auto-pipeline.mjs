@@ -3,7 +3,7 @@
 /**
  * daily-auto-pipeline.mjs
  * 
- * Master Orchestrator for Career-Ops (Inspired by n8n daily automation).
+ * Master Orchestrator for job-hunter-ai (Inspired by n8n daily automation).
  * Runs the end-to-end job pipeline in sequence:
  *   1. Scan Portals & Inbox (scan.mjs)
  *   2. Evaluate Pending Job URLs (batch/auto-eval-runner.mjs)
@@ -37,7 +37,7 @@ function runStep(title, command) {
   }
 }
 
-console.log(`\n🌅 Starting Career-Ops Daily Automated Pipeline...`);
+console.log(`\n🌅 Starting job-hunter-ai Daily Automated Pipeline...`);
 console.log(`Timestamp: ${new Date().toISOString()}\n`);
 
 // Step 1: Unified Multi-Board Scanning (ATS + Apify LinkedIn/Naukri)

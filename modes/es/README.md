@@ -1,6 +1,6 @@
-# career-ops -- Modos en español (`modes/es/`)
+# job-hunter-ai -- Modos en español (`modes/es/`)
 
-Esta carpeta contiene las traducciones al español de los principales modos de career-ops para candidatos que apuntan al mercado hispanohablante (España, México, Argentina, Colombia, Chile y otros países de LATAM).
+Esta carpeta contiene las traducciones al español de los principales modos de job-hunter-ai para candidatos que apuntan al mercado hispanohablante (España, México, Argentina, Colombia, Chile y otros países de LATAM).
 
 ## ¿Cuándo usar estos modos?
 

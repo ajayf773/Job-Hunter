@@ -20,7 +20,7 @@ All scripts live in the project root as `.mjs` modules. Most are exposed via
 | `npm run sync-check` | `cv-sync-check.mjs` | Validate CV/profile consistency |
 | `npm run patterns` | `analyze-patterns.mjs` | Analyze tracker outcomes and report patterns |
 | `npm run upskill` | `upskill.mjs` | Aggregate skill-gap map from tracked reports (or `--url-text <url\|file>` for a single-JD targeted gap analysis) |
-| `npm run add` | `add-entry.mjs` | Dedup + insert a `/career-ops add` entry into cv.md / article-digest.md |
+| `npm run add` | `add-entry.mjs` | Dedup + insert a `/job-hunter-ai add` entry into cv.md / article-digest.md |
 | `npm run update:check` | `update-system.mjs check` | Check for upstream updates |
 | `npm run update` | `update-system.mjs apply` | Apply upstream update |
 | `npm run rollback` | `update-system.mjs rollback` | Rollback last update |
@@ -201,7 +201,7 @@ node fix-slugs.mjs --apply                    # alias for --fix
 node fix-slugs.mjs --file templates/portals.example.yml
 ```
 
-The default path is `portals.yml`, overridable with `--file` or the `CAREER_OPS_PORTALS` environment variable. A missing portals file is reported and treated as nothing to do, not as an error.
+The default path is `portals.yml`, overridable with `--file` or the `job_hunter_ai_PORTALS` environment variable. A missing portals file is reported and treated as nothing to do, not as an error.
 
 **Exit codes:** `0` on every normal run, `1` only if the run itself fails. Unlike `check-table-freshness`, pending fixes in a dry run do **not** fail the run, so this is a maintenance tool rather than a CI gate.
 
@@ -252,7 +252,7 @@ node build-cv-latex.mjs --test
 
 ## sync-check
 
-Validates that the career-ops setup is internally consistent: `cv.md` exists and is not too short, `config/profile.yml` exists with required fields, no hardcoded metrics in `modes/_shared.md` or `batch/batch-prompt.md`, and `article-digest.md` freshness (warns if older than 30 days).
+Validates that the job-hunter-ai setup is internally consistent: `cv.md` exists and is not too short, `config/profile.yml` exists with required fields, no hardcoded metrics in `modes/_shared.md` or `batch/batch-prompt.md`, and `article-digest.md` freshness (warns if older than 30 days).
 
 ```bash
 npm run sync-check
@@ -458,7 +458,7 @@ node check-table-freshness.mjs --self-test
 
 ## update:check
 
-Checks whether a newer version of career-ops is available upstream. Outputs JSON to stdout:
+Checks whether a newer version of job-hunter-ai is available upstream. Outputs JSON to stdout:
 
 ```bash
 npm run update:check
@@ -606,9 +606,9 @@ How many upstream queries that becomes depends on the OS resolver: `dns.lookup()
 Cache hits and lookups that coalesce onto an in-flight one are free, so only uncached, non-coalesced lookup keys count against the ceiling — a hostname not in the cache, or a cached one requested with different resolver options (the cache key is hostname plus `family`/`all`/`hints`/`verbatim`).
 
 ```bash
-CAREER_OPS_DNS_LOOKUPS_PER_MIN=800 npm run scan:full   # raise the ceiling
-CAREER_OPS_DNS_LOOKUPS_PER_MIN=0 npm run scan:full     # no pacing (pre-#2229 behaviour)
-CAREER_OPS_NO_DNS_CACHE=1 npm run scan:full            # no DNS cache AND no pacing
+job_hunter_ai_DNS_LOOKUPS_PER_MIN=800 npm run scan:full   # raise the ceiling
+job_hunter_ai_DNS_LOOKUPS_PER_MIN=0 npm run scan:full     # no pacing (pre-#2229 behaviour)
+job_hunter_ai_NO_DNS_CACHE=1 npm run scan:full            # no DNS cache AND no pacing
 ```
 
 The cost is real: a full Workday + iCIMS sweep becomes DNS-bound at roughly 35 minutes. Raise the ceiling if your resolver has the budget — but if you see `fetch failed` in bulk from one ATS section, suspect the resolver before the boards.

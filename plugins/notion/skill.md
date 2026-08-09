@@ -1,6 +1,6 @@
 ---
-name: career-ops-plugin-notion
-description: How to mirror the career-ops tracker to a Notion database and read records back as job leads.
+name: job-hunter-ai-plugin-notion
+description: How to mirror the job-hunter-ai tracker to a Notion database and read records back as job leads.
 license: MIT
 ---
 

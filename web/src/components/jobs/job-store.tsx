@@ -39,8 +39,8 @@ export function useJobs() {
   return c;
 }
 
-const CONFIG_KEY = "career-ops:config";
-const JOBS_KEY = "career-ops:jobs";
+const CONFIG_KEY = "job-hunter-ai:config";
+const JOBS_KEY = "job-hunter-ai:jobs";
 
 function parseVerdict(text: string): JobResult {
   const m = text.match(/VERDICT:\s*([\d.]+)\s*\/\s*5\s*[—:|-]+\s*(.+)/i);

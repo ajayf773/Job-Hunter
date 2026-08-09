@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
-import { careerOpsRoot } from "@/lib/career-ops";
+import { careerOpsRoot } from "@/lib/job-hunter-ai";
 
 /**
  * ACL for templates/states.yml — the SINGLE SOURCE OF TRUTH for canonical
- * application states (career-ops writer + dashboard reader both read it). Per the
+ * application states (job-hunter-ai writer + dashboard reader both read it). Per the
  * web↔core contract we READ it live and never hardcode the list (the maintainer
  * once mis-listed it from memory — the file had one more). The FALLBACK below is
  * only a last resort if the file is unreadable, and is kept identical to the file.
