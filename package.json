@@ -1,7 +1,7 @@
 {
-  "name": "career-nexus",
+  "name": "job-hunter-ai",
   "version": "3.0.0",
-  "description": "Autonomous Multi-Model AI Job Search & Application Engine",
+  "description": "Job-Hunter AI — Autonomous Multi-Model Job Hunter Engine",
   "private": true,
   "engines": {
     "node": ">=18"

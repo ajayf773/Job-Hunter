@@ -1,6 +1,6 @@
-# ⚡ CareerNexus AI — Autonomous Multi-Model Job Search & Application Pipeline
+# 🎯 Job-Hunter AI — Autonomous Multi-Model Job Hunter Engine
 
-> **An enterprise-grade, open-source AI Job Copilot powered by parallel multi-provider model balancing, zero-token web scrapers, interactive Playwright form automation, and native Microsoft Excel export.**
+> **An enterprise-grade, open-source AI Job Search & Application Engine powered by parallel multi-provider model balancing, zero-token web scrapers, interactive Playwright form automation, and native Microsoft Excel export.**
 
 ---
 
@@ -48,8 +48,8 @@
 
 ```bash
 # 1. Clone your repository
-git clone https://github.com/YOUR_USERNAME/career-nexus.git
-cd career-nexus
+git clone https://github.com/ajayf773/Job-Hunter.git
+cd Job-Hunter
 
 # 2. Install dependencies
 npm install
@@ -84,7 +84,7 @@ mkdir -p config
 
 | Command | Purpose |
 |---|---|
-| `npm start` | Launch the **CareerNexus AI Interactive REPL Terminal** |
+| `npm start` | Launch the **Job-Hunter AI Interactive REPL Terminal** |
 | `npm run health` | View live **API Key & Model Rate-Limit Health Matrix** |
 | `npm run scan:multi` | Run **High-Capacity Multi-Portal Scrapers** (LinkedIn, Indeed, Naukri, Jobstreet) |
 | `npm run daily` | Run daily automated scan, evaluation, resume, & email pipeline |

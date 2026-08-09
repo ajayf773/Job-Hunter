@@ -1,4 +1,4 @@
-# Career-Ops -- AI Job Search Pipeline
+# Job-Hunter AI -- Autonomous Multi-Model Job Hunter Engine
 
 ## Origin
 
