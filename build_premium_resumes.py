@@ -42,7 +42,35 @@ def parse_report_file(report_num):
     except Exception as e:
         return None
 
+def get_personal_info():
+    info = {
+        "name": "[YOUR NAME]",
+        "email": "[YOUR EMAIL]",
+        "phone": "[YOUR PHONE]",
+        "location": "[YOUR LOCATION]",
+        "github": "github.com/[YOUR_USERNAME]"
+    }
+    try:
+        with open(os.path.join("config", "profile.yml"), "r", encoding="utf-8") as f:
+            content = f.read()
+            import re
+            name_m = re.search(r'full_name:\s*"([^"]+)"', content)
+            email_m = re.search(r'email:\s*"([^"]+)"', content)
+            phone_m = re.search(r'phone:\s*"([^"]+)"', content)
+            loc_m = re.search(r'location:\s*"([^"]+)"', content)
+            git_m = re.search(r'github:\s*"([^"]+)"', content)
+            
+            if name_m: info["name"] = name_m.group(1)
+            if email_m: info["email"] = email_m.group(1)
+            if phone_m: info["phone"] = phone_m.group(1)
+            if loc_m: info["location"] = loc_m.group(1)
+            if git_m: info["github"] = git_m.group(1).replace("https://", "")
+    except Exception:
+        pass
+    return info
+
 def generate_ai_tailored_json(report_num, company, role, report_info):
+    personal_info = get_personal_info()
     base_summary = "AI Automation & Business Intelligence Engineer with 4+ years of experience designing Python automation, streamlining business processes, and building data-driven solutions."
     
     domain = report_info.get("domain", "") if report_info else ""
@@ -99,12 +127,12 @@ def generate_ai_tailored_json(report_num, company, role, report_info):
         ai_skills = ["LLMs & AI Platform Integration", "Python Automation", "REST APIs & Microservices", "ETL Pipelines & Validation", "Workflow Optimization"]
 
     payload = {
-        "name": "AJAY MARIMUTHU",
+        "name": personal_info["name"],
         "title": headline,
-        "email": "ajay9f01@gmail.com",
-        "phone": "+91-9489101583 | +91-7010409697 (WA)",
-        "location": "Chennai, India",
-        "github": "github.com/ajayf773",
+        "email": personal_info["email"],
+        "phone": personal_info["phone"],
+        "location": personal_info["location"],
+        "github": personal_info["github"],
         "summary": summary,
         "experience": [
             {
