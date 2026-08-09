@@ -219,20 +219,24 @@ for (let i = 0; i < shortlisted.length; i++) {
     continue;
   }
 
-  if (!browser) {
-    browser = await chromium.launch({ headless: false });
-  }
+  let context = null;
+  let page = null;
 
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  console.log(`🌐 Navigating to ${job.url}...`);
-  try {
+  async function ensureBrowserOpen() {
+    if (!browser || !browser.isConnected()) {
+      console.log(`🌐 Launching Playwright browser...`);
+      browser = await chromium.launch({ headless: false });
+    }
+    context = await browser.newContext();
+    page = await context.newPage();
+    console.log(`🌐 Opening portal URL: ${job.url}...`);
     await page.goto(job.url, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(2000);
-
-    // Auto-fill initial page
     await fillFormOnCurrentPage(page, job);
+  }
+
+  try {
+    await ensureBrowserOpen();
 
     let activeLoop = true;
     while (activeLoop) {
@@ -241,44 +245,70 @@ for (let i = 0; i < shortlisted.length; i++) {
       console.log(`   y = Applied (Submitted! Sync status to Applied)`);
       console.log(`   n = Decide Not to Apply (Skip/Pass & sync to Excel)`);
       console.log(`   r = Reject & Learn Exclusion Rule (Save reason to AI rules)`);
-      console.log(`   f = Refill Form (Trigger auto-fill & resume upload on new page/tab)`);
+      console.log(`   f = Refill Form (Trigger auto-fill on active tab)`);
+      console.log(`   o = Re-open Browser (Re-launch & open portal if closed)`);
       console.log(`--------------------------------------------------`);
 
-      const cmd = (await ask(`Select action (y/n/r/f): `)).trim().toLowerCase();
+      const cmd = (await ask(`Select action (y/n/r/f/o): `)).trim().toLowerCase();
+
+      if (cmd === 'o' || cmd === 'open' || cmd === 'reopen') {
+        console.log(`🔄 Re-opening browser for ${job.company}...`);
+        try {
+          if (context) await context.close().catch(() => {});
+        } catch {}
+        await ensureBrowserOpen();
+        console.log(`✅ Browser re-opened and form pre-filled!`);
+        continue;
+      }
 
       if (cmd === 'f' || cmd === 'fill' || cmd === 'refill') {
-        // Refill active page or latest tab
-        const pages = context.pages();
-        const activePage = pages[pages.length - 1] || page;
-        console.log(`🔄 Re-running auto-fill engine on active page: ${activePage.url()}...`);
-        await fillFormOnCurrentPage(activePage, job);
-        console.log(`✅ Auto-fill complete on ${activePage.url()}`);
+        try {
+          const pages = context ? context.pages() : [];
+          const activePage = pages.length > 0 ? pages[pages.length - 1] : null;
+          if (!activePage || activePage.isClosed()) {
+            console.log(`⚠️ Browser tab was closed! Re-opening browser...`);
+            await ensureBrowserOpen();
+          } else {
+            console.log(`🔄 Re-running auto-fill engine on active page: ${activePage.url()}...`);
+            await fillFormOnCurrentPage(activePage, job);
+            console.log(`✅ Auto-fill complete on ${activePage.url()}`);
+          }
+        } catch (err) {
+          console.log(`⚠️ Browser was closed (${err.message}). Re-opening browser...`);
+          await ensureBrowserOpen();
+        }
         continue;
       }
 
       if (cmd === 'y' || cmd === 'yes' || cmd === 'applied') {
         // Extract & Learn any new answers
-        console.log(`🧠 Inspecting form inputs for new answers to learn...`);
-        const textareas = await page.locator('textarea, input[type="text"]').all();
-        let learnedCount = 0;
-        for (const el of textareas) {
-          try {
-            const val = await el.inputValue();
-            const name = (await el.getAttribute('name')) || (await el.getAttribute('id')) || '';
-            const placeholder = (await el.getAttribute('placeholder')) || '';
-            const labelKey = (name || placeholder).toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 30);
-            if (val && val.length > 5 && labelKey && !['first_name', 'last_name', 'email', 'phone', 'name'].includes(labelKey)) {
-              if (!profile.custom_answers[labelKey] || profile.custom_answers[labelKey] !== val) {
-                profile.custom_answers[labelKey] = val;
-                learnedCount++;
-              }
+        try {
+          const pages = context ? context.pages() : [];
+          const activePage = pages.length > 0 ? pages[pages.length - 1] : null;
+          if (activePage && !activePage.isClosed()) {
+            console.log(`🧠 Inspecting form inputs for new answers to learn...`);
+            const textareas = await activePage.locator('textarea, input[type="text"]').all();
+            let learnedCount = 0;
+            for (const el of textareas) {
+              try {
+                const val = await el.inputValue();
+                const name = (await el.getAttribute('name')) || (await el.getAttribute('id')) || '';
+                const placeholder = (await el.getAttribute('placeholder')) || '';
+                const labelKey = (name || placeholder).toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 30);
+                if (val && val.length > 5 && labelKey && !['first_name', 'last_name', 'email', 'phone', 'name'].includes(labelKey)) {
+                  if (!profile.custom_answers[labelKey] || profile.custom_answers[labelKey] !== val) {
+                    profile.custom_answers[labelKey] = val;
+                    learnedCount++;
+                  }
+                }
+              } catch {}
             }
-          } catch {}
-        }
-        if (learnedCount > 0) {
-          saveProfileMemory(profile);
-          console.log(`🎉 Learned & saved ${learnedCount} new Q&A answers!`);
-        }
+            if (learnedCount > 0) {
+              saveProfileMemory(profile);
+              console.log(`🎉 Learned & saved ${learnedCount} new Q&A answers!`);
+            }
+          }
+        } catch {}
 
         updateJobStatusInTrackerAndExcel(job.id, 'Applied', 'Submitted via Interactive Assistant');
         activeLoop = false;
@@ -295,10 +325,10 @@ for (let i = 0; i < shortlisted.length; i++) {
       }
     }
 
-    await context.close();
+    if (context) await context.close().catch(() => {});
   } catch (err) {
-    console.error(`⚠️ Error opening page: ${err.message}`);
-    await context.close();
+    console.error(`⚠️ Notice: ${err.message}`);
+    if (context) await context.close().catch(() => {});
   }
 }
 
