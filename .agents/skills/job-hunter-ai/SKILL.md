@@ -1,10 +1,10 @@
 ---
-name: career-ops
+name: job-hunter-ai
 description: >-
   AI job search command center -- evaluate offers, generate CVs, scan portals,
   track applications. Use when the user pastes a job URL or JD, asks to scan
   portals, generate a CV/PDF, track applications, prepare for interviews, draft
-  outreach/emails, or run any career-ops mode.
+  outreach/emails, or run any job-hunter-ai mode.
 arguments: mode
 user_invocable: true
 user-invocable: true
@@ -12,9 +12,9 @@ argument-hint: "[scan | discover | deep | pdf | latex | latex-tex | cover | emai
 license: MIT
 ---
 
-# career-ops -- Router
+# job-hunter-ai -- Router
 
-career-ops is a multi-CLI job-search command center. The routing below is shared across supported agent CLIs even when the invocation surface differs.
+job-hunter-ai is a multi-CLI job-search command center. The routing below is shared across supported agent CLIs even when the invocation surface differs.
 
 ## Invocation Notes
 
