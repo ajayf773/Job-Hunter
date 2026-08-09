@@ -24,7 +24,7 @@ Instead of manually browsing hundreds of job boards or filling out repetitive fo
 |---|---|
 | 🤖 **Multi-Provider AI Load Balancer** | Round-robins across multiple API keys & models (**Gemini 2.5/3.5**, **Claude**, **DeepSeek**, **Kimi**, **OpenAI**). Smart 60s RPM & 24h RPD rate-limit failover. |
 | ⚡ **6-Worker Parallel Engine** | Evaluates 1,000+ scraped jobs simultaneously in parallel (`npm run eval:parallel`). |
-| 🌐 **Visa Sponsorship & Work Permit Engine** | Indian citizen location policy: automatically caps roles requiring pre-existing EU/US permits at max 2.0/5 and prioritizes Visa Sponsorship / Remote-Worldwide roles. |
+| 🌐 **Work Authorization & Location Filter** | Automatically flags non-sponsorship roles and prioritizes Remote-Worldwide or Visa Sponsorship postings based on user profile settings. |
 | 📝 **Interactive Auto-Apply Assistant** | Step-by-step Playwright form automation (`npm run apply:auto`) with multi-page redirect fill (`f`) and live rejection learning (`r`). |
 | 💬 **Interactive Terminal Assistant** | Autonomous terminal chatbot (`npm start`) with slash commands (`/scan`, `/eval`, `/apply`, `/excel`, `/stats`, `/health`). |
 | 📊 **Native Excel & CSV Exporter** | Generates `output/Top_Jobs_Analysis.xlsx` with interactive dropdowns, direct portal links, and tailored resume links. |
