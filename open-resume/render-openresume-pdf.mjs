@@ -173,7 +173,7 @@ const FlowCVOpenResumePDFDocument = ({ targetRole, summary }) =>
           e(Text, { style: styles.sidebarHeading }, "Education"),
           e(Text, { style: styles.contactItem },
             e(Text, { style: { fontWeight: 'bold', color: '#FFDD50' } }, "B.Tech - Mechanical\n"),
-            "Anna University (2020)"
+            "VIT University, Vellore (2020)"
           )
         ),
 
