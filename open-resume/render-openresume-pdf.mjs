@@ -239,7 +239,7 @@ const FlowCVOpenResumePDFDocument = ({ targetRole, summary }) =>
 
 const targetRole = process.argv[2] || "AI Automation & Business Intelligence Engineer";
 const outputPath = process.argv[3] || "output/test_flowcv_openresume.pdf";
-const summary = "AI Automation & Business Intelligence Engineer with 4+ years of experience designing Python automation, streamlining business processes, and building data-driven solutions. Experienced in developing ETL pipelines, integrating AI and APIs into business workflows, and transforming time-intensive manual operations into scalable automated systems. Passionate about solving real-world business problems through data, automation, and AI.";
+const summary = process.argv[4] || "AI Automation & Business Intelligence Engineer with 4+ years of experience designing Python automation, streamlining business processes, and building data-driven solutions. Experienced in developing ETL pipelines, integrating AI and APIs into business workflows, and transforming time-intensive manual operations into scalable automated systems. Passionate about solving real-world business problems through data, automation, and AI.";
 
 console.log(`🚀 Rendering Exact FlowCV Styled OpenResume React PDF to ${outputPath}...`);
 renderToFile(FlowCVOpenResumePDFDocument({ targetRole, summary }), outputPath)
