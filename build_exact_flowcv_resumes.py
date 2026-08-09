@@ -1,4 +1,21 @@
-<!DOCTYPE html>
+#!/usr/bin/env python3
+import os
+import re
+import csv
+import subprocess
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+reports_dir = os.path.join(ROOT, 'reports')
+apps_md_path = os.path.join(ROOT, 'data', 'applications.md')
+csv_path = os.path.join(ROOT, 'output', 'Top_Jobs_Analysis.csv')
+output_dir = os.path.join(ROOT, 'output', 'tailored-resumes')
+os.makedirs(output_dir, exist_ok=True)
+
+print("🎯 Building Exact FlowCV Resumes (PT Serif, 9pt, 16mm Margins, 1.2 Line Height)...")
+print(f"📁 Output Directory: {output_dir}\n")
+
+# Exact FlowCV HTML Template following User Settings & https://flowcv.com/resume/qldann9sweec
+FLOWCV_EXACT_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -390,3 +407,75 @@
   </div>
 </body>
 </html>
+"""
+
+# Update templates/cv-template.html as the primary source of truth
+template_dest = os.path.join(ROOT, 'templates', 'cv-template.html')
+with open(template_dest, 'w', encoding='utf-8') as tf:
+    tf.write(FLOWCV_EXACT_TEMPLATE)
+
+print("✅ Updated templates/cv-template.html with exact FlowCV settings!")
+
+# Read shortlisted jobs from applications.md
+with open(apps_md_path, 'r', encoding='utf-8') as f:
+    apps_content = f.read()
+
+lines = apps_content.split('\n')
+targets = []
+
+for line in lines:
+    if line.strip().startswith('|') and not line.strip().startswith('| #') and not line.strip().startswith('|---'):
+        parts = [p.strip() for p in line.split('|')]
+        if len(parts) >= 9:
+            job_id = parts[1]
+            date = parts[2]
+            company = parts[3]
+            role = parts[4]
+            score_str = parts[5].replace('/5', '').strip()
+
+            try:
+                score = float(score_str)
+            except ValueError:
+                score = 0.0
+
+            if score >= 3.5:
+                targets.append({
+                    "id": job_id,
+                    "company": company,
+                    "role": role,
+                    "score": score
+                })
+
+print(f"📋 Rendering {len(targets)} exact FlowCV resumes (PT Serif, 9pt, 16mm margins)...")
+
+success_count = 0
+
+for job in targets:
+    company_clean = re.sub(r'[^a-zA-Z0-9]', '_', job['company'].lower()).strip('_')
+    pdf_name = f"Resume_{job['id']}_{company_clean}.pdf"
+    pdf_path = os.path.join(output_dir, pdf_name)
+    html_temp_path = os.path.join(output_dir, f"temp_{job['id']}.html")
+
+    html_rendered = FLOWCV_EXACT_TEMPLATE.replace('{{TARGET_ROLE}}', job['role'])
+
+    with open(html_temp_path, 'w', encoding='utf-8') as hf:
+        hf.write(html_rendered)
+
+    res = subprocess.run([
+        'node', 'generate-pdf.mjs',
+        html_temp_path, pdf_path,
+        f'--report={job["id"]}', '--allow-reorder', '--max-pages=1'
+    ], capture_output=True, text=True)
+
+    if os.path.exists(html_temp_path):
+        os.remove(html_temp_path)
+
+    if res.returncode == 0:
+        print(f"  -> 🎯 [FLOWCV PT SERIF PDF] Rendered for #{job['id']}: {job['company']} — {job['role']} ({job['score']}/5)")
+        success_count += 1
+
+print(f"\n🎉 SUCCESS! Rendered {success_count} exact FlowCV Resumes in:")
+print(f"👉 {output_dir}\n")
+
+print("📊 Updating Excel Workbook output/Top_Jobs_Analysis.xlsx with fresh PDF links...")
+subprocess.run(['node', 'batch/generate-excel-xlsx.mjs'], check=True)
