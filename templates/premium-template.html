@@ -16,7 +16,7 @@
     height: 297mm;
     margin: 0 auto;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 10pt;
+    font-size: 9.5pt;
     line-height: 1.5;
     background-color: #ffffff;
     color: #1a1a1a;
@@ -25,7 +25,7 @@
     overflow: hidden;
   }
   .resume-page {
-    padding: 18mm 20mm;
+    padding: 16mm 18mm;
     width: 100%;
     height: 100%;
     display: flex;
@@ -36,9 +36,11 @@
   header {
     text-align: center;
     margin-bottom: 6mm;
+    padding-bottom: 5mm;
+    border-bottom: 2px solid #4F46E5;
   }
   .name {
-    font-size: 24pt;
+    font-size: 26pt;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #111827;
@@ -46,10 +48,12 @@
     text-transform: uppercase;
   }
   .title {
-    font-size: 12pt;
+    font-size: 11.5pt;
     font-weight: 500;
-    color: #4F46E5; /* Indigo accent */
-    margin-bottom: 3mm;
+    color: #4F46E5;
+    margin-bottom: 3.5mm;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
   }
   .contact-info {
     font-size: 8.5pt;
@@ -57,7 +61,7 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 14px;
   }
   .contact-info span {
     display: flex;
@@ -67,55 +71,72 @@
   .contact-info svg {
     width: 12px;
     height: 12px;
-    fill: #9ca3af;
+    fill: #4F46E5;
+  }
+
+  /* 2-COLUMN LAYOUT */
+  .layout {
+    display: flex;
+    gap: 6%;
+    flex: 1;
+  }
+  .main-column {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+  }
+  .side-column {
+    width: 29%;
+    display: flex;
+    flex-direction: column;
   }
 
   /* SECTIONS */
   section {
-    margin-bottom: 5mm;
+    margin-bottom: 4.5mm;
   }
   .section-title {
-    font-size: 11pt;
-    font-weight: 600;
+    font-size: 10.5pt;
+    font-weight: 700;
     color: #111827;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 3px;
-    margin-bottom: 4mm;
+    padding-bottom: 2px;
+    margin-bottom: 3.5mm;
   }
 
-  /* SUMMARY */
+  /* MAIN CONTENT */
   .summary {
-    font-size: 9.5pt;
+    font-size: 9pt;
     color: #374151;
     text-align: justify;
-    line-height: 1.6;
+    line-height: 1.55;
   }
 
   /* EXPERIENCE & PROJECTS */
   .item {
-    margin-bottom: 4mm;
+    margin-bottom: 3.5mm;
   }
   .item-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
   .item-title {
-    font-weight: 600;
-    font-size: 10pt;
+    font-weight: 700;
+    font-size: 9.5pt;
     color: #111827;
   }
   .item-subtitle {
     font-weight: 500;
-    font-size: 9.5pt;
-    color: #4b5563;
-    font-style: italic;
+    font-size: 9pt;
+    color: #4F46E5;
+    margin-bottom: 2px;
   }
   .item-date {
-    font-size: 9pt;
+    font-size: 8.5pt;
     color: #6b7280;
     font-weight: 500;
   }
@@ -125,49 +146,68 @@
     margin-top: 2px;
   }
   .item-bullets li {
-    font-size: 9pt;
+    font-size: 8.5pt;
     color: #374151;
-    margin-bottom: 3px;
-    padding-left: 14px;
+    margin-bottom: 2.5px;
+    padding-left: 12px;
     position: relative;
-    line-height: 1.5;
+    line-height: 1.45;
   }
   .item-bullets li::before {
     content: "•";
     position: absolute;
     left: 0;
-    color: #4F46E5; /* Indigo accent bullet */
+    color: #4F46E5;
     font-weight: bold;
   }
 
-  /* SKILLS */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 6px 12px;
+  /* SIDEBAR CONTENT */
+  .sidebar-block {
+    margin-bottom: 4mm;
+  }
+  .sidebar-heading {
     font-size: 9pt;
-    line-height: 1.5;
-  }
-  .skill-category {
-    font-weight: 600;
+    font-weight: 700;
     color: #111827;
+    margin-bottom: 1.5mm;
   }
-  .skill-list {
+  .sidebar-text {
+    font-size: 8.5pt;
+    color: #4b5563;
+    line-height: 1.4;
+    margin-bottom: 1mm;
+  }
+  
+  .skill-pill-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 3.5mm;
+  }
+  .skill-pill {
+    background-color: #f3f4f6;
     color: #374151;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 500;
+    border: 1px solid #e5e7eb;
   }
 
-  /* EDUCATION */
-  .education-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 9.5pt;
-  }
   .edu-degree {
-    font-weight: 600;
+    font-weight: 700;
     color: #111827;
+    font-size: 9pt;
   }
   .edu-school {
-    color: #4b5563;
+    color: #4F46E5;
+    font-weight: 500;
+    font-size: 8.5pt;
+    margin-bottom: 1px;
+  }
+  .edu-date {
+    color: #6b7280;
+    font-size: 8.5pt;
   }
 </style>
 </head>
@@ -184,35 +224,52 @@
       </div>
     </header>
 
-    <section>
-      <div class="section-title">Professional Summary</div>
-      <div class="summary" id="doc-summary">{{SUMMARY}}</div>
-    </section>
+    <div class="layout">
+      <!-- MAIN COLUMN -->
+      <div class="main-column">
+        <section>
+          <div class="section-title">Professional Summary</div>
+          <div class="summary" id="doc-summary">{{SUMMARY}}</div>
+        </section>
 
-    <section>
-      <div class="section-title">Experience</div>
-      <div id="doc-experience">{{EXPERIENCE_HTML}}</div>
-    </section>
+        <section>
+          <div class="section-title">Experience</div>
+          <div id="doc-experience">{{EXPERIENCE_HTML}}</div>
+        </section>
 
-    <section>
-      <div class="section-title">Projects</div>
-      <div id="doc-projects">{{PROJECTS_HTML}}</div>
-    </section>
-
-    <section>
-      <div class="section-title">Skills</div>
-      <div class="skills-grid" id="doc-skills">
-        {{SKILLS_HTML}}
+        <section>
+          <div class="section-title">Projects</div>
+          <div id="doc-projects">{{PROJECTS_HTML}}</div>
+        </section>
       </div>
-    </section>
 
-    <section>
-      <div class="section-title">Education</div>
-      <div class="education-row">
-        <div><span class="edu-degree">B.Tech - Mechanical Engineering</span> <span class="edu-school">| VIT University, Vellore</span></div>
-        <div class="item-date">Graduated 2020</div>
+      <!-- SIDEBAR COLUMN -->
+      <div class="side-column">
+        <section>
+          <div class="section-title">Skills</div>
+          <div id="doc-skills">
+            {{SKILLS_HTML}}
+          </div>
+        </section>
+
+        <section>
+          <div class="section-title">Education</div>
+          <div class="sidebar-block">
+            <div class="edu-degree">B.Tech - Mechanical Engineering</div>
+            <div class="edu-school">VIT University, Vellore</div>
+            <div class="edu-date">Graduated 2020</div>
+          </div>
+        </section>
+        
+        <section>
+          <div class="section-title">Languages</div>
+          <div class="sidebar-block">
+            <div class="sidebar-text"><strong>English</strong> (TOEFL: 7.5)</div>
+            <div class="sidebar-text"><strong>Tamil</strong> (Native)</div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   </div>
 </body>
 </html>

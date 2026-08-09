@@ -221,9 +221,17 @@ def build_all_premium_pdfs():
             '''
             
         skills_html = ""
-        skills_html += f'<div class="skill-category">Domain & Business</div><div class="skill-list">{", ".join(payload["skills"]["domain"])}</div>'
-        skills_html += f'<div class="skill-category">Tools & Engineering</div><div class="skill-list">{", ".join(payload["skills"]["tools"])}</div>'
-        skills_html += f'<div class="skill-category">AI & Automation</div><div class="skill-list">{", ".join(payload["skills"]["ai"])}</div>'
+        skills_html += '<div class="sidebar-block"><div class="sidebar-heading">Domain & Business</div><div class="skill-pill-container">'
+        skills_html += "".join([f'<div class="skill-pill">{s}</div>' for s in payload["skills"]["domain"]])
+        skills_html += '</div></div>'
+        
+        skills_html += '<div class="sidebar-block"><div class="sidebar-heading">Tools & Engineering</div><div class="skill-pill-container">'
+        skills_html += "".join([f'<div class="skill-pill">{s}</div>' for s in payload["skills"]["tools"]])
+        skills_html += '</div></div>'
+        
+        skills_html += '<div class="sidebar-block"><div class="sidebar-heading">AI & Automation</div><div class="skill-pill-container">'
+        skills_html += "".join([f'<div class="skill-pill">{s}</div>' for s in payload["skills"]["ai"]])
+        skills_html += '</div></div>'
         
         # Replace template placeholders
         html_out = template_html.replace("{{NAME}}", payload["name"])
