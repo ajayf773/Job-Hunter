@@ -4,47 +4,36 @@
 
 ---
 
-## 🌟 Key Highlights & Features
+## 🌟 What Is Job-Hunter AI?
 
-### 1. 🤖 Multi-Provider AI Load Balancer (Zero-Token Loss)
-- **Multi-API Key Round-Robin**: Rotates requests across multiple API keys simultaneously.
-- **Multi-Provider Support**: Built-in support for **Gemini (2.5-Flash, 3.5-Flash, 2.5-Pro)**, **DeepSeek (V3 & R1)**, **Claude (Anthropic)**, **Kimi (Moonshot)**, and **OpenAI**.
-- **Smart 429 Cooldown Engine**: Locks rate-limited model pairs for 60 seconds and daily-exhausted keys for 24 hours without failing jobs.
-- **Live Health Matrix (`npm run health`)**: Real-time diagnostic terminal UI showing active RPM/RPD stats and model health.
+**Job-Hunter AI** turns any AI coding CLI (Antigravity CLI, Claude Code, Codex, OpenCode, Qwen, Kimi, Copilot, Grok) or standalone Node.js environment into a complete, high-throughput job search command center.
 
-### 2. ⚡ High-Throughput Parallel Worker Pool
-- **Concurrent Execution (`npm run eval:parallel`)**: Runs 6+ parallel workers simultaneously, re-evaluating 1,000+ job postings in minutes.
-- **Async Failover**: If Worker #1 hits a rate limit, it failovers instantly while Worker #2 through #6 continue at maximum speed.
-
-### 3. 💬 Interactive Chatbot REPL (`npm start`)
-- Autonomous terminal helper powered directly by Gemini & Multi-Model APIs.
-- Slash commands:
-  - `/scan`: Launch high-capacity portal scrapers.
-  - `/eval <url>`: Evaluate any job URL instantly.
-  - `/apply`: Start interactive Playwright application runner.
-  - `/excel`: Export native Excel spreadsheet.
-  - `/stats`: View lifetime pipeline analytics.
-  - `/health`: Monitor live API key health.
-
-### 4. 📝 Interactive Auto-Apply Assistant (`npm run apply:auto`)
-- **Playwright Auto-Fill**: Automates form fields, Q&A inputs, and uploads tailored FlowCV resumes.
-- **Multi-Page Redirect Refill**: Press `f` anytime to refill new tabs or redirected application portals.
-- **Feedback & Rule Learner**: Input rejection feedback (`r` / `reject`), and the AI automatically appends rules to `modes/_profile.md` to disqualify similar roles in future scans!
-
-### 5. 🔍 High-Capacity Multi-Portal Scrapers (`npm run scan:multi`)
-- High-volume job ingestion (up to 300+ jobs per portal) for **LinkedIn**, **Indeed**, **Naukri India**, and **Jobstreet**.
-- Explicit error reporting directly in terminal for actor quotas and limits.
-
-### 6. 📊 Native Excel Workbook (`output/Top_Jobs_Analysis.xlsx`)
-- Generates a native `.xlsx` workbook featuring:
-  - Interactive Status Dropdowns (`Applied`, `Rejected`, `Shortlist`, `Skip`)
-  - Clickable Direct Application Portal Links
-  - Clickable Tailored 1-Page FlowCV Resume Links
-  - Highlighting for Visa Sponsorship & Remote Worldwide roles
+Instead of manually browsing hundreds of job boards or filling out repetitive forms:
+- **Evaluates Fit by Reasoning**: Scores job descriptions against your experience across weighted dimensions, filtering out deal-breakers (e.g. no visa sponsorship, mandatory non-English fluency) before they reach your list.
+- **Generates Tailored Resumes**: Creates ATS-optimized, 1-page FlowCV PDF resumes tailored specifically to each role.
+- **Scans High-Volume Job Portals**: Ingests up to 300+ postings per source across LinkedIn, Indeed, Naukri (India), and Jobstreet (SE Asia).
+- **Automates Application Forms**: Interactive Playwright form filler auto-populates candidate details, answers custom Q&A fields, and attaches tailored PDF resumes.
+- **Learns From Rejections**: Type rejection feedback (`r` / `reject`), and the system automatically updates `modes/_profile.md` to permanently disqualify similar roles in future runs.
+- **Exports Native Microsoft Excel Spreadsheets**: Creates `.xlsx` workbooks featuring interactive status dropdowns, direct portal links, and resume download links.
 
 ---
 
-## 🛠️ Installation & Setup
+## 🚀 Key Features
+
+| Feature | Description |
+|---|---|
+| 🤖 **Multi-Provider AI Load Balancer** | Round-robins across multiple API keys & models (**Gemini 2.5/3.5**, **Claude**, **DeepSeek**, **Kimi**, **OpenAI**). Smart 60s RPM & 24h RPD rate-limit failover. |
+| ⚡ **6-Worker Parallel Engine** | Evaluates 1,000+ scraped jobs simultaneously in parallel (`npm run eval:parallel`). |
+| 🌐 **Visa Sponsorship & Work Permit Engine** | Indian citizen location policy: automatically caps roles requiring pre-existing EU/US permits at max 2.0/5 and prioritizes Visa Sponsorship / Remote-Worldwide roles. |
+| 📝 **Interactive Auto-Apply Assistant** | Step-by-step Playwright form automation (`npm run apply:auto`) with multi-page redirect fill (`f`) and live rejection learning (`r`). |
+| 💬 **Interactive Terminal Assistant** | Autonomous terminal chatbot (`npm start`) with slash commands (`/scan`, `/eval`, `/apply`, `/excel`, `/stats`, `/health`). |
+| 📊 **Native Excel & CSV Exporter** | Generates `output/Top_Jobs_Analysis.xlsx` with interactive dropdowns, direct portal links, and tailored resume links. |
+| 🔍 **High-Capacity Scrapers** | Multi-account Apify scrapers (`npm run scan:multi`) for LinkedIn, Indeed, Naukri, and Jobstreet with limit 300+. |
+| 📈 **API Health Matrix** | Terminal UI (`npm run health`) displaying real-time RPM/RPD usage and model health across all API keys. |
+
+---
+
+## 🛠️ Quick Start
 
 ```bash
 # 1. Clone your repository
@@ -80,25 +69,28 @@ mkdir -p config
 
 ---
 
-## 🚀 Command Reference
+## 💻 Command Reference
 
 | Command | Purpose |
 |---|---|
 | `npm start` | Launch the **Job-Hunter AI Interactive REPL Terminal** |
 | `npm run health` | View live **API Key & Model Rate-Limit Health Matrix** |
 | `npm run scan:multi` | Run **High-Capacity Multi-Portal Scrapers** (LinkedIn, Indeed, Naukri, Jobstreet) |
-| `npm run daily` | Run daily automated scan, evaluation, resume, & email pipeline |
 | `npm run eval:parallel` | Re-evaluate all scraped jobs using **6 Parallel Concurrent Workers** |
 | `npm run apply:auto` | Start **Interactive Playwright Auto-Apply Assistant** |
+| `npm run daily` | Run daily automated scan, evaluation, resume, & email pipeline |
+| `npm run doctor` | Run system prerequisite & file contract diagnostic check |
 
 ---
 
-## 🛡️ Data Privacy & Safety
+## 🛡️ Data Privacy & Security Guarantee
 
-All personal profile data (`cv.md`, `config/profile.yml`, `modes/_profile.md`), API keys (`config/*.json`), evaluation reports (`reports/`), and generated outputs (`output/`) are strictly gitignored in `.gitignore`. Your GitHub repository remains 100% clean and free of private personal data!
+Your privacy is built into the core architecture:
+- All personal profile data (`cv.md`, `config/profile.yml`, `modes/_profile.md`), API keys (`config/*.json`), evaluation reports (`reports/`), and generated outputs (`output/`) are **strictly gitignored** in `.gitignore`.
+- Your GitHub repository remains 100% clean and free of private personal data.
 
 ---
 
 ## 📄 License
 
-MIT License. Built for autonomous job search automation and multi-model AI orchestration.
+MIT License. Built for autonomous job search automation, multi-model AI orchestration, and candidate empowerment.
