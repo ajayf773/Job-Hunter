@@ -15,6 +15,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const csvPath = join(ROOT, 'output', 'Top_Jobs_Analysis.csv');
@@ -27,6 +28,10 @@ if (!existsSync(csvPath)) {
   console.error(`❌ Spreadsheet output/Top_Jobs_Analysis.csv not found. Run node batch/generate-excel-export.mjs first.`);
   process.exit(1);
 }
+
+// Sync manual Excel edits to CSV before reading
+console.log(`🔄 Syncing any manual changes from Top_Jobs_Analysis.xlsx...`);
+execSync('node batch/generate-excel-xlsx.mjs', { stdio: 'ignore' });
 
 // Read CSV
 const csvText = readFileSync(csvPath, 'utf8');

@@ -150,6 +150,10 @@ async function fillFormOnCurrentPage(page, job) {
   }
 }
 
+// Sync manual Excel edits to CSV before reading
+console.log(`🔄 Syncing any manual changes from Top_Jobs_Analysis.xlsx...`);
+execSync('node batch/generate-excel-xlsx.mjs', { stdio: 'ignore' });
+
 const csvText = readFileSync(csvPath, 'utf8');
 const lines = csvText.split('\n').filter(l => l.trim());
 
