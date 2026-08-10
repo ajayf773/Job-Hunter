@@ -107,27 +107,37 @@ async function fillFormOnCurrentPage(page, job) {
   const portfolioInput = page.locator('input[name*="portfolio" i], input[name*="website" i], input[name*="url" i]');
   if (await portfolioInput.count() > 0) await portfolioInput.first().fill(profile.personal.portfolio || profile.personal.github);
 
-  // Pre-fill Saved Memory Q&A
-  for (const [key, answer] of Object.entries(profile.custom_answers)) {
-    const matchLocator = page.locator(`textarea[name*="${key}" i], input[name*="${key}" i], textarea[id*="${key}" i]`);
-    if (await matchLocator.count() > 0) {
-      console.log(`  -> 🧠 Auto-filled saved answer from memory for "${key}"`);
-      await matchLocator.first().fill(answer);
-    }
-  }
+  // We now rely entirely on the Gemini RAG generator for custom questions below.
 
   // Gemini API Q&A Generator for open-ended questions
   const emptyTextareas = await page.locator('textarea:not([value]), textarea:has-text("")').all();
   for (const area of emptyTextareas) {
     try {
-      const nameAttr = (await area.getAttribute('name')) || (await area.getAttribute('id')) || (await area.getAttribute('placeholder')) || 'Question';
+      let nameAttr = await area.evaluate(node => {
+        if (node.labels && node.labels.length > 0) return node.labels[0].innerText;
+        const parentLabel = node.closest('label');
+        if (parentLabel) return parentLabel.innerText;
+        const id = node.getAttribute('id');
+        if (id) {
+          const linkedLabel = document.querySelector(`label[for="${id}"]`);
+          if (linkedLabel) return linkedLabel.innerText;
+        }
+        let prev = node.previousElementSibling;
+        if (prev && (prev.tagName === 'LABEL' || prev.tagName === 'DIV' || prev.tagName === 'SPAN')) return prev.innerText;
+        return node.getAttribute('placeholder') || node.getAttribute('name') || 'Question';
+      }).catch(() => 'Question');
+      nameAttr = nameAttr.replace(/[\r\n]+/g, ' ').trim();
       if (nameAttr && nameAttr.length > 3) {
         console.log(`🤖 Requesting Gemini API for custom answer: "${nameAttr}"...`);
         const apiKey = process.env.GEMINI_API_KEY || '';
+        const pastMemories = Object.entries(profile.custom_answers || {})
+          .map(([k,v]) => `- Question like "${k}": "${v}"`)
+          .join('\n');
+          
         const geminiRes = await generateContentBalanced(
           apiKey,
-          "You are a professional software engineer answering application questions concisely in 2 sentences.",
-          `Write a 2-sentence application response for ${job.company} - ${job.role} to the question: "${nameAttr}". Candidate stats: Python, LLM ETL pipelines, fast velocity.`
+          "You are an AI job application assistant. Your goal is to auto-fill form questions accurately based on the user's past answers. DO NOT hallucinate info not present in the past memory.",
+          `Write a 1-2 sentence response for ${job.company} - ${job.role} to the question: "${nameAttr}".\n\nHere is your RAG Memory Bank of the user's past answers. Reuse these facts and tones exactly if they apply:\n${pastMemories || "No past answers yet."}\n\nCandidate core traits: AI/Python automation engineer, values velocity.`
         );
         if (geminiRes && geminiRes.text) {
           await area.fill(geminiRes.text.trim());
@@ -296,10 +306,28 @@ for (let i = 0; i < shortlisted.length; i++) {
             for (const el of textareas) {
               try {
                 const val = await el.inputValue();
-                const name = (await el.getAttribute('name')) || (await el.getAttribute('id')) || '';
-                const placeholder = (await el.getAttribute('placeholder')) || '';
-                const labelKey = (name || placeholder).toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 30);
-                if (val && val.length > 5 && labelKey && !['first_name', 'last_name', 'email', 'phone', 'name'].includes(labelKey)) {
+                let labelText = await el.evaluate(node => {
+                  if (node.labels && node.labels.length > 0) return node.labels[0].innerText;
+                  const parentLabel = node.closest('label');
+                  if (parentLabel) return parentLabel.innerText;
+                  const id = node.getAttribute('id');
+                  if (id) {
+                    const linkedLabel = document.querySelector(`label[for="${id}"]`);
+                    if (linkedLabel) return linkedLabel.innerText;
+                  }
+                  let prev = node.previousElementSibling;
+                  if (prev && (prev.tagName === 'LABEL' || prev.tagName === 'DIV')) return prev.innerText;
+                  return '';
+                }).catch(() => '');
+                
+                if (!labelText || labelText.trim() === '') {
+                  labelText = (await el.getAttribute('placeholder')) || (await el.getAttribute('name')) || '';
+                }
+                
+                const labelKey = labelText.replace(/[\r\n]+/g, ' ').trim().slice(0, 100);
+                const ignoreKeys = ['first name', 'last name', 'email', 'phone', 'first_name', 'last_name'];
+                
+                if (val && val.length > 5 && labelKey && !ignoreKeys.some(k => labelKey.toLowerCase().includes(k))) {
                   if (!profile.custom_answers[labelKey] || profile.custom_answers[labelKey] !== val) {
                     profile.custom_answers[labelKey] = val;
                     learnedCount++;
