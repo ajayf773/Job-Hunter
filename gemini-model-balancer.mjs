@@ -23,10 +23,9 @@ const KEYS_FILE = path.join(__dirname, 'config', 'gemini-keys.json');
 
 const MODEL_CONFIGS = [
   { name: 'gemini-3.5-flash-lite', rpm: 15, rpd: 1500 },
-  { name: 'gemini-2.5-flash', rpm: 15, rpd: 1500 },
   { name: 'gemini-3.5-flash', rpm: 15, rpd: 1500 },
-  { name: 'gemini-2.0-flash', rpm: 15, rpd: 1500 },
-  { name: 'gemini-2.5-pro', rpm: 5, rpd: 100 }
+  { name: 'gemini-3.5-pro', rpm: 5, rpd: 100 },
+  { name: 'gemini-2.0-flash', rpm: 15, rpd: 1500 }
 ];
 
 let globalKeyIndex = 0;
@@ -233,6 +232,7 @@ export async function generateContentBalanced(providedKey, systemPrompt, userPro
         keyUsedIndex: keyIndex + 1
       };
     } catch (err) {
+      console.error(`\n[RAW GEMINI ERROR]:`, err.message, `\n`);
       const errMsg = (err.message || '').toLowerCase();
       const pairKey = `${keyIndex}_${selectedModel}`;
 
