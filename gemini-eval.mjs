@@ -276,9 +276,9 @@ ${contextBody}
 ═══════════════════════════════════════════════════════
 IMPORTANT OPERATING RULES FOR THIS CLI SESSION
 ═══════════════════════════════════════════════════════
-1. You do NOT have access to WebSearch, Playwright, or file writing tools.
-   - For Block D (Comp research): provide salary estimates based on your training data, clearly noted as estimates.
-   - For Block G (Legitimacy): analyze the JD text only; skip URL/page freshness checks.
+1. You NOW have native access to Google Search via Search Grounding!
+   - For Block D (Comp research): actively use Google Search to find real salary data for this company/role instead of just estimates.
+   - For Block G (Legitimacy): research the company's financial stability, engineering culture, and background. Adjust points based on your findings.
    - Post-evaluation file saving is handled by the script, not by you.
 2. ${languageInstruction}
 3. Generate Blocks A through G in full.

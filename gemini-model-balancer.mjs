@@ -211,6 +211,7 @@ export async function generateContentBalanced(providedKey, systemPrompt, userPro
     const modelInstance = genAI.getGenerativeModel({
       model: selectedModel,
       systemInstruction: systemPrompt,
+      tools: [{ googleSearch: {} }],
       generationConfig: {
         temperature: 0.4,
         maxOutputTokens: 8192,
