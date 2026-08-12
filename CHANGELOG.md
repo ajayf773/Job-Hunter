@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.25.0](https://github.com/ajayf773/Job-Hunter/compare/job-hunter-ai-v1.24.0...job-hunter-ai-v1.25.0) (2026-08-12)
+
+
+### Features
+
+* Add 'o' command and auto-relaunch for Playwright browser in auto-apply CLI ([e8b7322](https://github.com/ajayf773/Job-Hunter/commit/e8b7322bfae673f83a9b52b9d61d99518aa320c7))
+* Add custom premium HTML resume template and builder ([76fbbe4](https://github.com/ajayf773/Job-Hunter/commit/76fbbe4389f8656e4ad2625979768526235c7824))
+* Add exact FlowCV template renderer with PT Serif typography and 1-page A4 layout ([ffb6be1](https://github.com/ajayf773/Job-Hunter/commit/ffb6be1f4c00ede4041420892768b931f16cda25))
+* Add job evaluation report parsing to tailor OpenResume PDFs per posting ([64eccfe](https://github.com/ajayf773/Job-Hunter/commit/64eccfe2455adc631fe43b244d8f6104092ad202))
+* Connect OpenResume React-PDF engine as primary resume generator ([73e61fe](https://github.com/ajayf773/Job-Hunter/commit/73e61fe8ef9ae29eb6934460518ee6036539434c))
+* Elevate OpenResume React-PDF builder with Gemini AI report payloads and premium FlowCV styling ([7744bbc](https://github.com/ajayf773/Job-Hunter/commit/7744bbcb46b27681ef14d942985a0d7c2ffb080d))
+* Enable Google Search Grounding for AI evaluations ([169c446](https://github.com/ajayf773/Job-Hunter/commit/169c446968e143b24daa2c9b603aad076be1548d))
+* implement RAG-based AI form generation and learning ([050bb17](https://github.com/ajayf773/Job-Hunter/commit/050bb17acfc6a13795edaae90f1215e96acddf3d))
+* Integrate OpenResume React/Next.js builder component adapted for Job-Hunter AI ([24c9a31](https://github.com/ajayf773/Job-Hunter/commit/24c9a31b92464c3729db1916508407b89d9b6760))
+* Remove hardcoded personal info from resume builder for safe committing ([70b0754](https://github.com/ajayf773/Job-Hunter/commit/70b0754e2d03206d73bb63296f4ea7d3c9b30e65))
+* Support dynamic LinkedIn and GitHub links in premium template ([136c0dc](https://github.com/ajayf773/Job-Hunter/commit/136c0dcb83c3f4544837364928a6e75d88d60407))
+* Update OpenResume React-PDF renderer to match FlowCV 2-column template design ([dad88d0](https://github.com/ajayf773/Job-Hunter/commit/dad88d026cae8ef74dcb63b9d477457672abbc00))
+
+
+### Bug Fixes
+
+* Auto-sync manual Excel status updates before running apply automation ([e373fb6](https://github.com/ajayf773/Job-Hunter/commit/e373fb689c0b3baf547176f3432c56632366e4a3))
+* remove deprecated gemini 2.5 models from balancer ([95f08a1](https://github.com/ajayf773/Job-Hunter/commit/95f08a11f83141641a3dae47f21bead334c79c88))
+* resolve all test-all.mjs failures (2991/2991 pass) ([c3de365](https://github.com/ajayf773/Job-Hunter/commit/c3de365aa01e7c0af034d8200c292f3ac16682c3))
+* **security:** untrack apply-profile.json and remove sensitive recaptcha token string ([b5b4798](https://github.com/ajayf773/Job-Hunter/commit/b5b4798231be87434ebbbf1b2106a5f8455ebffc))
+* Update candidate education to B.Tech Mechanical Engineering, VIT University, Vellore ([edf3aef](https://github.com/ajayf773/Job-Hunter/commit/edf3aef168d24626fa7ce792fc52a3ef2d499e6a))
+
 ## [1.25.0](https://github.com/santifer/job-hunter-ai/compare/job-hunter-ai-v1.24.0...job-hunter-ai-v1.25.0) (2026-08-04)
 
 

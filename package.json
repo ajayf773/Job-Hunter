@@ -1,6 +1,6 @@
 {
   "name": "job-hunter-ai",
-  "version": "3.0.0",
+  "version": "1.25.0",
   "description": "Job-Hunter AI — Autonomous Multi-Model Job Hunter Engine",
   "private": true,
   "engines": {
