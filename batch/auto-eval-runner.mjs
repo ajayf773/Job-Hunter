@@ -63,6 +63,7 @@ function log(msg) {
 // ── Queue (shared array + pointer, JS is single-threaded) ────────────────────
 let queue = [];
 let qi = 0;
+const failureCounts = new Map();
 
 function nextUrl() {
   if (qi >= queue.length) return null;
@@ -107,6 +108,15 @@ async function waitSlot(model) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+const activeChildren = new Set();
+process.on('SIGINT', () => {
+  console.log('\n🛑 SIGINT received. Killing active worker processes...');
+  for (const child of activeChildren) {
+    try { child.kill('SIGKILL'); } catch (e) {}
+  }
+  process.exit(1);
+});
+
 // ── Run one evaluation ────────────────────────────────────────────────────────
 function runEval(url, model, wid) {
   return new Promise(resolve => {
@@ -115,6 +125,7 @@ function runEval(url, model, wid) {
       'node', ['gemini-eval.mjs', url],
       { cwd: PROJECT_DIR, env, timeout: 300_000 },
       (err, stdout, stderr) => {
+        activeChildren.delete(child);
         if (err) {
           const out = stdout + stderr;
           resolve({
@@ -128,6 +139,7 @@ function runEval(url, model, wid) {
         }
       }
     );
+    activeChildren.add(child);
     child.stdout?.on('data', d => process.stdout.write(`  [W${wid}] ${d}`));
   });
 }
@@ -141,8 +153,9 @@ async function worker(wid, primary) {
 
     log(`[W${wid}] → ${url}`);
 
-    // Build try-order: primary first, then rest of fallback chain
-    const tryModels = [primary, ...FALLBACK_CHAIN.filter(m => m !== primary)];
+    try {
+      // Build try-order: primary first, then rest of fallback chain
+      const tryModels = [primary, ...FALLBACK_CHAIN.filter(m => m !== primary)];
     let ok = false;
 
     for (const model of tryModels) {
@@ -175,8 +188,18 @@ async function worker(wid, primary) {
     }
 
     if (!ok) {
-      log(`[W${wid}] ⚠️  all models failed — re-queuing: ${url}`);
-      queue.push(url);
+      const fails = (failureCounts.get(url) || 0) + 1;
+      failureCounts.set(url, fails);
+      if (fails < 3) {
+        log(`[W${wid}] ⚠️  all models failed (attempt ${fails}/3) — re-queuing: ${url}`);
+        queue.push(url);
+      } else {
+        log(`[W${wid}] 🚨 all models failed 3 times — ABORTING: ${url}`);
+      }
+    }
+
+    } catch (e) {
+      log(`[W${wid}] 💥 Fatal worker error: ${e.message}`);
     }
 
     await sleep(1_500); // tiny gap before next job

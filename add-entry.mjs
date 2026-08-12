@@ -38,7 +38,7 @@
  * files so tests never touch a real user CV.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, renameSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 
@@ -229,11 +229,13 @@ async function main() {
     const written = [];
     try {
       if (payload.cv && out.result.cv?.status === 'added') {
-        writeFileSync(CV_FILE, out.cv);
+        const tmpCV = `${CV_FILE}.${process.pid}.${Math.random().toString(36).slice(2)}.tmp`;
+        try { writeFileSync(tmpCV, out.cv); renameSync(tmpCV, CV_FILE); } catch (e) { try { unlinkSync(tmpCV); } catch {} throw e; }
         written.push('cv.md');
       }
       if (payload.articleDigest && (out.result.articleDigest?.status === 'added' || out.result.articleDigest?.status === 'created')) {
-        writeFileSync(ARTICLE_DIGEST_FILE, out.articleDigest);
+        const tmpAD = `${ARTICLE_DIGEST_FILE}.${process.pid}.${Math.random().toString(36).slice(2)}.tmp`;
+        try { writeFileSync(tmpAD, out.articleDigest); renameSync(tmpAD, ARTICLE_DIGEST_FILE); } catch (e) { try { unlinkSync(tmpAD); } catch {} throw e; }
         written.push('article-digest.md');
       }
     } catch (e) {

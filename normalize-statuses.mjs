@@ -126,6 +126,11 @@ for (let i = 0; i < lines.length; i++) {
   if (!row) continue; // header, separator, non-row, or a row missing cells
 
   const parts = line.split('|').map(s => s.trim());
+  if (COLS.notes != null && parts.length > COLS.notes + 1) {
+    parts[COLS.notes] = row.notes;
+    parts.length = COLS.notes + 1;
+    if (line.trim().endsWith('|')) parts.push('');
+  }
   const num = row.num;
   const rawStatus = row.status;
   const result = normalizeStatus(rawStatus);

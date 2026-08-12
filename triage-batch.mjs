@@ -160,7 +160,7 @@ for (let i = 0; i < pending.length; i += PARALLEL) {
     }
   }
 
-  const pct = Math.round((completed / pending.length) * 100);
+  const pct = pending.length > 0 ? Math.round((completed / pending.length) * 100) : 100;
   console.log(`Progress: ${completed}/${pending.length} (${pct}%) — PASS: ${passed} | MARGINAL: ${marginal} | FAIL: ${failed}`);
 }
 

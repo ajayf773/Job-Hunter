@@ -1,0 +1,1 @@
+{"nodes": [{"id": "$graphify-root$_venv_lib_python3_11_site_packages_pip_vendor_idna_package_data_py", "label": "package_data.py", "file_type": "code", "source_file": "venv/lib/python3.11/site-packages/pip/_vendor/idna/package_data.py", "source_location": "L1"}], "edges": [], "raw_calls": []}

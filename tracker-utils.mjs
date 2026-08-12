@@ -385,9 +385,9 @@ export async function acquireTrackerLock(lockDir, options = {}) {
               throw new Error(`Cannot verify tracker lock ownership at ${lockDir}`);
             }
           } else {
-            let beforeRead;
+            const tempDir = `${lockDir}.${token}.tmp`;
             try {
-              beforeRead = statSync(lockDir);
+              renameSync(lockDir, tempDir);
             } catch (err) {
               if (err?.code === 'ENOENT') {
                 released = true;
@@ -395,21 +395,15 @@ export async function acquireTrackerLock(lockDir, options = {}) {
               }
               throw err;
             }
-            const owner = readLockOwner(lockDir);
+            const owner = readLockOwner(tempDir);
             if (owner?.token !== token) {
               if (owner) released = true;
               else throw new Error(`Cannot verify tracker lock ownership at ${lockDir}`);
+              try { renameSync(tempDir, lockDir); } catch {}
               return;
             }
-            const afterRead = statSync(lockDir);
-            if (!sameLockDirectory(beforeRead, afterRead)) {
-              released = true;
-              return;
-            }
-            ownerVerified = true;
-            verifiedDir = afterRead;
+            try { removeLock(tempDir); } catch {}
           }
-          removeLock(lockDir);
           released = true;
         },
       };

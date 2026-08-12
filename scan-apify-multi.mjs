@@ -160,7 +160,8 @@ const linkedinCount = await runApifyActor(
   'curious_coder~linkedin-jobs-scraper',
   {
     "urls": searchQueries.map(q => `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(q)}`),
-    "datePosted": "pastWeek",
+    "datePosted": "past24Hours",
+    "sortBy": "recent",
     "limitPerSource": 300,
     "scrapeCompany": true
   },
@@ -180,7 +181,8 @@ const indeedCount = await runApifyActor(
     "query": "AI Engineer OR Machine Learning Engineer OR Data Engineer",
     "country": "us",
     "maxRows": 300,
-    "fromDays": "7"
+    "fromDays": "1",
+    "sort": "date"
   },
   tokens.indeed,
   'Indeed',
@@ -199,7 +201,8 @@ const naukriCount = await runApifyActor(
     "keyword": "AI Engineer",
     "location": "india",
     "maximumJobs": 300,
-    "jobFreshness": 7
+    "jobFreshness": 1,
+    "sort": "date"
   },
   tokens.naukri,
   'Naukri (India)',

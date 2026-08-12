@@ -435,6 +435,11 @@ const note = flags.note != null ? cell(flags.note) : null;
 // Rebuild only the matched line: change the Status cell, append the note, keep
 // every other cell exactly as parsed.
 const parts = lines[target.lineIdx].split('|').map(s => s.trim());
+if (colmap.notes != null && parts.length > colmap.notes + 1) {
+  parts[colmap.notes] = target.notes;
+  parts.length = colmap.notes + 1;
+  if (lines[target.lineIdx].trim().endsWith('|')) parts.push('');
+}
 while (parts.length <= Math.max(colmap.status, colmap.notes ?? 0)) parts.push('');
 
 const statusChanged = parts[colmap.status] !== newStatus;

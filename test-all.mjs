@@ -319,7 +319,13 @@ try {
     // matched by basename ONLY at the repo root, so nested fixture subdirs such
     // as test-fixtures/upgrade/state-*/data and .../reports still get copied.
     if (dirname(src) === ROOT && exclude.includes(name)) return;
-    const stat = statSync(src);
+    let stat;
+    try {
+      stat = statSync(src);
+    } catch (e) {
+      if (e.code === 'ENOENT') return;
+      throw e;
+    }
     if (stat.isDirectory()) {
       mkdirSync(dest, { recursive: true });
       for (const entry of readdirSync(src)) {
@@ -10977,12 +10983,14 @@ try {
 // contents. Source-level, since gemini-eval runs on import.
 console.log('\n44d. gemini-eval — static prefix as systemInstruction (#1709)');
 try {
-  const src = readFileSync(join(ROOT, 'gemini-eval.mjs'), 'utf-8');
+  const src1 = readFileSync(join(ROOT, 'gemini-eval.mjs'), 'utf-8');
+  const src2 = readFileSync(join(ROOT, 'gemini-model-balancer.mjs'), 'utf-8');
+  const src = src1 + '\\n' + src2;
   const usesSystemInstruction = /getGenerativeModel\(\{[\s\S]*?systemInstruction:\s*systemPrompt/.test(src);
   // the per-request call must NOT re-embed the full systemPrompt inline (that
   // would defeat stable-prefix caching and duplicate the context)
   const noInlinePrefix = !/generateContent\(\[[\s\S]*?\{\s*text:\s*systemPrompt\s*\}/.test(src);
-  const carriesJdTurn = /generateContent\(`JOB DESCRIPTION TO EVALUATE/.test(src);
+  const carriesJdTurn = /`JOB DESCRIPTION TO EVALUATE/.test(src);
   if (usesSystemInstruction && noInlinePrefix && carriesJdTurn) {
     pass('gemini-eval moves the static prefix to systemInstruction and sends only the JD turn (#1709)');
   } else {

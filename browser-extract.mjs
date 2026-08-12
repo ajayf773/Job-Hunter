@@ -208,6 +208,10 @@ async function main() {
   }
 
   let browser;
+  process.on('SIGINT', async () => {
+    if (browser) await browser.close().catch(() => {});
+    process.exit(1);
+  });
   try {
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext(LIVENESS_CONTEXT_OPTIONS);
@@ -220,6 +224,7 @@ async function main() {
       return route.continue();
     });
     const page = await context.newPage();
+    page.on('dialog', dialog => dialog.dismiss().catch(() => {}));
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout });
     await page.waitForTimeout(HYDRATION_WAIT_MS); // let SPAs hydrate
 

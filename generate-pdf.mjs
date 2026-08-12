@@ -623,7 +623,11 @@ export async function renderHtmlToPdf(html, outputPath, opts = {}) {
     });
 
     // Wait for fonts and images to settle
-    await page.evaluate(() => document.fonts.ready);
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await new Promise(r => setTimeout(r, 100)); // Layout tick
+    });
+    await page.waitForLoadState('networkidle');
 
     // Generate PDF
     const pdfBuffer = await page.pdf({

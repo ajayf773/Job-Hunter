@@ -94,3 +94,17 @@ Your privacy is built into the core architecture:
 ## 📄 License
 
 MIT License. Built for autonomous job search automation, multi-model AI orchestration, and candidate empowerment.
+
+---
+
+## 🤖 Using Codex
+
+Job-Hunter AI integrates natively with **Codex**. Slash commands are not guaranteed in Codex, so use plain language prompts instead. See [CODEX.md](CODEX.md) for the full guide.
+
+**Interactive Mode**: Start an interactive session with `codex` and prompt the agent:
+> "Run job-hunter-ai scan mode in this repo."
+
+**Headless Mode**: For one-shot workers or batch tasks, use `codex exec`:
+```bash
+codex exec "Evaluate this JD with job-hunter-ai auto-pipeline: https://company.com/jobs/123"
+```

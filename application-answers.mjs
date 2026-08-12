@@ -14,7 +14,7 @@ function inline(value) {
 
 function valueText(value) {
   if (Array.isArray(value)) return value.map(inline).filter(Boolean).join(', ');
-  return String(value ?? '').trim();
+  return inline(value);
 }
 
 function pick(object, keys) {

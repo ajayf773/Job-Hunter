@@ -30,7 +30,7 @@
 // Timing is caller-configurable (with these defaults) so tests can exercise
 // contention in milliseconds instead of waiting out a multi-second constant.
 
-import { mkdirSync, rmSync, statSync, existsSync, writeFileSync, readFileSync } from 'fs';
+import { mkdirSync, rmSync, statSync, existsSync, writeFileSync, readFileSync, renameSync } from 'fs';
 import { join, dirname } from 'path';
 import { randomUUID } from 'crypto';
 
@@ -191,26 +191,18 @@ export async function acquirePipelineLock(pipelinePath, options = {}) {
         // our operation outlived staleMs and another process legitimately
         // reclaimed the lock, deleting it here would free someone else's
         // critical section.
-        let before;
+        const tempDir = `${lockDir}.${token}.tmp`;
         try {
-          before = statSync(lockDir);
-        } catch {
-          return; // already gone
-        }
-        const owner = readLockOwner(lockDir);
-        if (owner?.token !== token) return; // reclaimed by someone else — leave it alone
-        let after;
-        try {
-          after = statSync(lockDir);
+          renameSync(lockDir, tempDir);
         } catch {
           return;
         }
-        if (!sameLockDirectory(before, after)) return; // swapped underneath us
-        try {
-          rmSync(lockDir, { recursive: true, force: true });
-        } catch {
-          /* best-effort; a stale-reclaim will recover it */
+        const owner = readLockOwner(tempDir);
+        if (owner?.token !== token) {
+          try { renameSync(tempDir, lockDir); } catch {}
+          return;
         }
+        try { rmSync(tempDir, { recursive: true, force: true }); } catch {}
       },
     };
   }

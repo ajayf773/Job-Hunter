@@ -18,7 +18,7 @@ import { readFileSync, existsSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { generateContentBalanced } from './gemini-model-balancer.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)));
@@ -31,8 +31,12 @@ const profileMdPath = join(ROOT, 'modes', '_profile.md');
 if (existsSync(envPath)) {
   const envText = readFileSync(envPath, 'utf8');
   envText.split('\n').forEach(l => {
-    const [k, v] = l.split('=');
-    if (k && v && !process.env[k.trim()]) process.env[k.trim()] = v.trim();
+    const idx = l.indexOf('=');
+    if (idx > 0) {
+      const k = l.slice(0, idx).trim();
+      const v = l.slice(idx + 1).trim();
+      if (k && v && !process.env[k]) process.env[k] = v;
+    }
   });
 }
 
@@ -119,7 +123,7 @@ rl.on('line', async (line) => {
     } else {
       console.log(`\n🤖 Evaluating job URL via Gemini API: ${url}...`);
       try {
-        execSync(`node gemini-eval.mjs "${url}"`, { cwd: ROOT, stdio: 'inherit' });
+        execFileSync('node', ['gemini-eval.mjs', url], { cwd: ROOT, stdio: 'inherit' });
       } catch (err) {
         console.error(`⚠️ Evaluation error: ${err.message}`);
       }

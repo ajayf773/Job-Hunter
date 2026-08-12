@@ -18,7 +18,13 @@ const templatePath = join(ROOT, 'templates', 'attractive-typst-resume', 'resume.
 const outputPath = join(ROOT, 'templates', 'attractive-typst-resume', 'resume-tailored.typ');
 const finalPdfPath = join(ROOT, 'output', 'resume.pdf');
 
-const cvContent = readFileSync(cvPath, 'utf8');
+let cvContent;
+try {
+  cvContent = readFileSync(cvPath, 'utf8');
+} catch (e) {
+  console.error("cv.md not found. Please create it first.");
+  process.exit(1);
+}
 let templateContent;
 try {
   templateContent = readFileSync(templatePath, 'utf8');
@@ -58,6 +64,14 @@ try {
 
   // Clean markdown backticks if present
   outputTypst = outputTypst.replace(/^```[a-z]*\n/, '').replace(/\n```$/, '');
+
+  // Strip dangerous Typst functions that could read arbitrary files (Bug 18)
+  outputTypst = outputTypst
+    .replace(/#read\s*\(/g, '#_blocked_read_(')
+    .replace(/#eval\s*\(/g, '#_blocked_eval_(')
+    .replace(/#include\s+/g, '#_blocked_include_ ')
+    .replace(/#plugin\s*\(/g, '#_blocked_plugin_(')
+    .replace(/#sys\./g, '#_blocked_sys_.');
 
   writeFileSync(outputPath, outputTypst, 'utf8');
   console.log("Saved tailored typst to " + outputPath);

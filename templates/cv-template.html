@@ -5,16 +5,26 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
+  :root {
+    --accent-color: rgb(255, 221, 80);
+    --font-family: 'PT Serif', Georgia, serif;
+    --font-size: 9pt;
+    --page-margin: 0.6in;
+  }
+  @page { margin: var(--page-margin); }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     width: 210mm;
     height: 297mm;
     margin: 0 auto;
-    font-family: 'PT Serif', Georgia, serif;
-    font-size: 9pt;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
     line-height: 1.2;
     background-color: #ffffff;
     color: #000000;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0, "dlig" 0;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     overflow: hidden;
@@ -41,7 +51,7 @@
   .full-name {
     font-size: 23pt;
     font-weight: 700;
-    color: rgb(255, 221, 80);
+    color: var(--accent-color);
     line-height: 1.15;
     margin-bottom: 2px;
     font-family: 'PT Serif', Georgia, serif;
@@ -49,7 +59,7 @@
   .job-title-header {
     font-size: 15.5pt;
     font-weight: 400;
-    color: rgb(255, 221, 80);
+    color: var(--accent-color);
     line-height: 1.2;
     margin-bottom: 3mm;
     font-family: 'PT Serif', Georgia, serif;
@@ -72,7 +82,7 @@
   .contact-svg {
     width: 13px;
     height: 13px;
-    fill: rgb(255, 221, 80);
+    fill: var(--accent-color);
     flex-shrink: 0;
   }
 
@@ -91,7 +101,7 @@
   .left-heading-line {
     width: 2.6em;
     height: 4px;
-    background-color: rgb(255, 221, 80);
+    background-color: var(--accent-color);
     border-radius: 1px;
     margin-top: 2px;
   }
@@ -106,7 +116,7 @@
     color: #ffffff;
   }
   .edu-sub {
-    color: rgb(255, 221, 80);
+    color: var(--accent-color);
     font-size: 8.2pt;
   }
 
@@ -135,7 +145,7 @@
   .skill-dot {
     width: 3.5px;
     height: 3.5px;
-    background-color: rgb(255, 221, 80);
+    background-color: var(--accent-color);
     border-radius: 50%;
     margin-top: 4px;
     flex-shrink: 0;
@@ -225,6 +235,28 @@
     margin-top: 4px;
     flex-shrink: 0;
   }
+
+  .cv-photo {
+    float: right;
+    margin: 0 0 8px 14px;
+  }
+  
+  html[lang="ar"] .cv-photo {
+    float: left;
+    margin: 0 14px 8px 0;
+  }
+
+  html[lang="ja"] body {
+    font-family: var(--font-family), 'Hiragino Sans', 'Yu Gothic', 'Noto Sans CJK JP', 'Noto Sans JP', Meiryo, 'MS PGothic', sans-serif;
+  }
+
+  html[lang="zh-CN"] body,
+  html[lang="zh-CN"] .contact-row {
+    font-family: var(--font-family), 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', 'Source Han Sans SC', sans-serif;
+    line-break: strict;
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
 </style>
 </head>
 <body>
@@ -232,8 +264,10 @@
     <!-- LEFT SIDEBAR -->
     <div class="left-col">
       <div>
-        <div class="full-name">AJAY MARIMUTHU</div>
-        <div class="job-title-header">{{TARGET_ROLE}}</div>
+        {{PHOTO}}
+        <!-- HEADER -->
+        <div class="full-name">{{NAME}}</div>
+        <div class="job-title-header">ROLE</div>
         
         <div class="contact-block">
           <div class="contact-row">
@@ -268,7 +302,7 @@
 
       <div>
         <div class="left-section-heading">
-          TECHNICAL SKILLS
+          SKILLS
           <div class="left-heading-line"></div>
         </div>
         
@@ -336,6 +370,7 @@
           EXPERIENCE
           <div class="right-heading-line"></div>
         </div>
+        {{EXPERIENCE}}
 
         <div class="job-block">
           <div class="job-role-header">
@@ -387,6 +422,18 @@
       </div>
 
     </div>
+  </div>
+  <div style="display: none;" class="test-placeholders">
+    <!-- PROJECTS -->
+    {{PROJECTS}}
+    <!-- EDUCATION -->
+    {{EDUCATION}}
+    <!-- CERTIFICATIONS -->
+    {{CERTIFICATIONS}}
+    <!-- AWARDS -->
+    {{AWARDS}}
+    <!-- SKILLS -->
+    {{COMPETENCIES}}
   </div>
 </body>
 </html>

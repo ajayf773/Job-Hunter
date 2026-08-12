@@ -54,6 +54,7 @@ function escapeTypst(str) {
   if (!str) return '';
   return str
     .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
     .replace(/\[/g, '\\[')
     .replace(/\]/g, '\\]')
     .replace(/\#/g, '\\#')
@@ -63,12 +64,15 @@ function escapeTypst(str) {
 }
 
 function formatTypstCode(data) {
-  const name = escapeTypst(data.name || "AJAY MARIMUTHU");
-  const title = escapeTypst(data.title || "AI Automation & Business Intelligence Engineer");
-  const email = escapeTypst(data.email || "ajay9f01@gmail.com");
-  const phone = escapeTypst(data.phone || "+91-7010409697");
-  const location = escapeTypst(data.location || "Chennai, India");
-  const github = escapeTypst(data.github || "github.com/ajayf773");
+  if (!data.name || !data.email || !data.phone) {
+    throw new Error("LLM response missing required PII fields (name, email, or phone).");
+  }
+  const name = escapeTypst(data.name);
+  const title = escapeTypst(data.title || "Target Role");
+  const email = escapeTypst(data.email);
+  const phone = escapeTypst(data.phone);
+  const location = escapeTypst(data.location || "Location");
+  const github = escapeTypst(data.github || "");
   const summary = escapeTypst(data.summary || "");
 
   // Render Experience
@@ -136,8 +140,7 @@ ${projBlocks}
     (
       title: "Education",
       content: [
-        #text(weight: "bold")[B.Tech - Mechanical Engineering] \\
-        Graduated: 2020
+${(data.education || []).map(e => `        #text(weight: "bold")[${escapeTypst(e.degree)}] \\\\\n        ${escapeTypst(e.institution)} \\\\\n        ${escapeTypst(e.dates)}`).join('\n\n')}
       ]
     ),
     (
@@ -259,6 +262,13 @@ JSON SCHEMA REQUIREMENT:
       "name": "AI-Powered Vehicle Specification ETL Pipeline",
       "dates": "2024 – Present",
       "bullets": [ "3 tailored bullet points emphasizing Python ETL, LLMs, REST APIs, and 35h to 15m optimization" ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Tech - Mechanical Engineering",
+      "institution": "University Name",
+      "dates": "Graduated: 2020"
     }
   ],
   "skills": {

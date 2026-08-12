@@ -23,6 +23,7 @@ const KEYS_FILE = path.join(__dirname, 'config', 'gemini-keys.json');
 
 const MODEL_CONFIGS = [
   { name: 'gemini-3.5-flash-lite', rpm: 15, rpd: 1500 },
+  { name: 'gemini-3.1-flash-lite', rpm: 15, rpd: 1500 },
   { name: 'gemini-3.5-flash', rpm: 15, rpd: 1500 },
   { name: 'gemini-3.5-pro', rpm: 5, rpd: 100 },
   { name: 'gemini-2.0-flash', rpm: 15, rpd: 1500 }
@@ -90,15 +91,20 @@ function initTrackerState() {
 
 function getUsageStats() {
   initTrackerState();
-  let state;
-  try {
-    state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf-8'));
-  } catch {
-    state = { history: [] };
+  let state = { history: [] };
+  if (fs.existsSync(STATE_FILE)) {
+    try {
+      const raw = fs.readFileSync(STATE_FILE, 'utf-8');
+      if (raw.trim()) {
+        state = JSON.parse(raw);
+      }
+    } catch (err) {
+      throw new Error(`[Balancer] Fatal: Failed to parse ${STATE_FILE}. Halting to prevent data loss: ${err.message}`);
+    }
   }
 
   const now = Date.now();
-  state.history = state.history.filter(h => h.time > now - 86400000);
+  state.history = Array.isArray(state.history) ? state.history.filter(h => h && h.time > now - 86400000) : [];
   return state;
 }
 
@@ -108,7 +114,13 @@ function saveHistory(state, keyHash, modelName) {
     model: modelName,
     time: Date.now()
   });
-  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), 'utf-8');
+  const tmpFile = `${STATE_FILE}.${process.pid}.${Math.random().toString(36).slice(2)}.tmp`;
+  try {
+    fs.writeFileSync(tmpFile, JSON.stringify(state, null, 2), 'utf-8');
+    fs.renameSync(tmpFile, STATE_FILE);
+  } catch (err) {
+    try { if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile); } catch {}
+  }
 }
 
 /**
@@ -158,7 +170,7 @@ export function analyzeQuotaHealth() {
 /**
  * Smart Rate-Balanced Content Generator
  */
-export async function generateContentBalanced(providedKey, systemPrompt, userPrompt) {
+export async function generateContentBalanced(providedKey, systemPrompt, userPrompt, retryCount = 0) {
   const apiKeys = loadApiKeys();
   const state = getUsageStats();
   const now = Date.now();
@@ -174,6 +186,7 @@ export async function generateContentBalanced(providedKey, systemPrompt, userPro
     // Pick next Key via round-robin
     const keyIndex = (globalKeyIndex++) % apiKeys.length;
     const currentKey = apiKeys[keyIndex];
+    console.log(`ACTUAL KEY BEING USED: ${currentKey.slice(0, 15)}...`);
     const keyHash = `key_${keyIndex}`;
 
     // Skip if key is marked daily exhausted
@@ -210,7 +223,6 @@ export async function generateContentBalanced(providedKey, systemPrompt, userPro
     const modelInstance = genAI.getGenerativeModel({
       model: selectedModel,
       systemInstruction: systemPrompt,
-      tools: [{ googleSearch: {} }],
       generationConfig: {
         temperature: 0.4,
         maxOutputTokens: 8192,
@@ -237,7 +249,8 @@ export async function generateContentBalanced(providedKey, systemPrompt, userPro
       const pairKey = `${keyIndex}_${selectedModel}`;
 
       if (errMsg.includes('quota exceeded') || errMsg.includes('resource_exhausted') || errMsg.includes('daily limit')) {
-        console.warn(`🔴 [Balancer] Key ${keyIndex + 1} hit DAILY QUOTA EXHAUSTION! Pausing Key ${keyIndex + 1} for 24h.`);
+        console.warn(`🔴 [Balancer] Key ${keyIndex + 1} + Model ${selectedModel} hit DAILY QUOTA EXHAUSTION! Pausing key for 24h.`);
+        pairCooldowns.set(pairKey, now + 86400000);
         keyDailyExhausted.set(keyIndex, now + 86400000);
       } else if (errMsg.includes('429') || errMsg.includes('rate') || errMsg.includes('limit')) {
         console.warn(`⚠️  [Balancer] Key ${keyIndex + 1} + Model ${selectedModel} hit 429 RPM limit. Locking pair for 60s and switching to next healthy pair...`);
@@ -248,7 +261,11 @@ export async function generateContentBalanced(providedKey, systemPrompt, userPro
     }
   }
 
-  console.warn(`⏳ [Balancer] All Key + Model slots busy. Backing off for 3 seconds...`);
+  if (retryCount >= 3) {
+    throw new Error(`❌ All Gemini API Keys & Models exhausted after ${retryCount} retries. Please check API quota.`);
+  }
+
+  console.warn(`⏳ [Balancer] All Key + Model slots busy. Backing off 3s (retry ${retryCount + 1}/3)...`);
   await new Promise(r => setTimeout(r, 3000));
-  return generateContentBalanced(providedKey, systemPrompt, userPrompt);
+  return generateContentBalanced(providedKey, systemPrompt, userPrompt, retryCount + 1);
 }

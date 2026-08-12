@@ -86,6 +86,7 @@ export const chromium = {
             renderedPdf = html.includes('THREE_PAGE_FIXTURE') ? threePagePdf : twoPagePdf;
           },
           async evaluate() {},
+          async waitForLoadState() {},
           async pdf() { return renderedPdf; },
         };
       },

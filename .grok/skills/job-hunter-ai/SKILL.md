@@ -1,1 +1,1 @@
-../../../.agents/skills/career-ops/SKILL.md
+../../../.agents/skills/job-hunter-ai/SKILL.md

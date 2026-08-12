@@ -160,39 +160,61 @@ async function fillFormOnCurrentPage(page, job) {
   }
 }
 
-// Sync manual Excel edits to CSV before reading
-console.log(`🔄 Syncing any manual changes from Top_Jobs_Analysis.xlsx...`);
+// Import readdirSync from fs and ExcelJS
+import { readdirSync } from 'fs';
+import ExcelJS from 'exceljs';
+
+// Sync manual Excel edits to legacy CSV just in case
+console.log(`🔄 Syncing any manual changes from legacy paths...`);
 execSync('node batch/generate-excel-xlsx.mjs', { stdio: 'ignore' });
 
-const csvText = readFileSync(csvPath, 'utf8');
-const lines = csvText.split('\n').filter(l => l.trim());
+const excelReportsDir = join(ROOT, 'output', 'excel-reports');
+let availableExcelFiles = [];
+if (existsSync(excelReportsDir)) {
+  availableExcelFiles = readdirSync(excelReportsDir).filter(f => f.startsWith('Top_Jobs_Analysis_') && f.endsWith('.xlsx')).sort().reverse();
+}
+
+if (availableExcelFiles.length === 0) {
+  console.error(`❌ No daily Excel reports found in output/excel-reports/`);
+  process.exit(1);
+}
+
+console.log(`\n📂 Available Daily Excel Reports:`);
+availableExcelFiles.forEach((file, idx) => {
+  console.log(`   [${idx}] ${file}`);
+});
+
+const rlExcel = readline.createInterface({ input: process.stdin, output: process.stdout });
+const selection = await new Promise(resolve => rlExcel.question(`\nSelect the index of the file to load for applications [default 0]: `, resolve));
+rlExcel.close();
+
+const selectedIndex = parseInt(selection.trim(), 10) || 0;
+const selectedFile = availableExcelFiles[selectedIndex] || availableExcelFiles[0];
+const selectedFilePath = join(excelReportsDir, selectedFile);
+console.log(`\n📄 Loading shortlisted jobs from: ${selectedFile}...`);
+
+const workbook = new ExcelJS.Workbook();
+await workbook.xlsx.readFile(selectedFilePath);
+const sheet = workbook.getWorksheet('Top Jobs');
 
 const shortlisted = [];
-for (let i = 1; i < lines.length; i++) {
-  const matches = lines[i].match(/(?:^|,)(?:"([^"]*)"|([^,]*))/g);
-  if (!matches) continue;
-  const cols = matches.map(m => m.replace(/^,?"?|"$/g, '').trim());
-  if (cols.length >= 9) {
-    const status = (cols[5] || '').toLowerCase();
-    const score = parseFloat(cols[4]) || 0;
-    
-    if (status.includes('applied') || status.includes('reject') || status.includes('pass')) {
-      continue;
+if (sheet) {
+  sheet.eachRow((row, rowNumber) => {
+    if (rowNumber > 1) {
+      const id = row.getCell(1).value?.toString() || '';
+      const company = row.getCell(3).value?.toString() || '';
+      const role = row.getCell(4).value?.toString() || '';
+      const score = parseFloat(row.getCell(5).value?.toString()) || 0;
+      const status = (row.getCell(6).value?.toString() || '').toLowerCase();
+      const jobBoard = row.getCell(7).value?.toString() || '';
+      const urlMatch = row.getCell(9).value;
+      const applicationUrl = (urlMatch && urlMatch.hyperlink) ? urlMatch.hyperlink : (urlMatch?.toString() || '');
+      
+      if (!status.includes('applied') && !status.includes('reject') && !status.includes('pass') && status.includes('shortlisted')) {
+        shortlisted.push({ id, company, role, score, status, jobBoard, url: applicationUrl });
+      }
     }
-
-    if (status.includes('shortlist') || score >= 4.6) {
-      shortlisted.push({
-        id: cols[0],
-        company: cols[2],
-        role: cols[3],
-        score: cols[4],
-        status: cols[5],
-        jobBoard: cols[6],
-        url: cols[8],
-        resumePdf: cols[12]
-      });
-    }
-  }
+  });
 }
 
 console.log(`🤖 Continuous Self-Learning Application Assistant Starting...`);

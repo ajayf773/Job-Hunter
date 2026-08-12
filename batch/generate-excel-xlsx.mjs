@@ -11,7 +11,7 @@
  *   4. Preserves user-selected dropdown choices across re-runs.
  */
 
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import ExcelJS from 'exceljs';
@@ -21,7 +21,12 @@ const trackerPath = join(ROOT, 'data', 'applications.md');
 const coldEmailsDir = join(ROOT, 'output', 'cold-emails');
 const resumesDir = join(ROOT, 'output', 'tailored-resumes');
 const outputDir = join(ROOT, 'output');
-const xlsxPath = join(outputDir, 'Top_Jobs_Analysis.xlsx');
+const excelReportsDir = join(outputDir, 'excel-reports');
+if (!existsSync(excelReportsDir)) {
+  mkdirSync(excelReportsDir, { recursive: true });
+}
+const dateStr = new Date().toISOString().split('T')[0];
+const xlsxPath = join(excelReportsDir, `Top_Jobs_Analysis_${dateStr}.xlsx`);
 
 const trackerContent = readFileSync(trackerPath, 'utf8');
 const coldEmailFiles = existsSync(coldEmailsDir) ? readdirSync(coldEmailsDir).filter(f => f.endsWith('.md')) : [];
@@ -31,12 +36,24 @@ function cleanFilename(str) {
   return str.replace(/[^a-zA-Z0-9\-_ ]/g, '').replace(/\s+/g, ' ').trim();
 }
 
-// Preserve existing user selections if Top_Jobs_Analysis.xlsx exists
+// Preserve existing user selections by reading the most recent Excel file
 const existingStatuses = new Map();
-if (existsSync(xlsxPath)) {
+let mostRecentFile = null;
+if (existsSync(excelReportsDir)) {
+  const files = readdirSync(excelReportsDir).filter(f => f.startsWith('Top_Jobs_Analysis_') && f.endsWith('.xlsx')).sort();
+  if (files.length > 0) {
+    mostRecentFile = join(excelReportsDir, files[files.length - 1]);
+  }
+}
+// Fallback to legacy path if no recent file
+if (!mostRecentFile && existsSync(join(outputDir, 'Top_Jobs_Analysis.xlsx'))) {
+  mostRecentFile = join(outputDir, 'Top_Jobs_Analysis.xlsx');
+}
+
+if (mostRecentFile) {
   try {
     const existingWorkbook = new ExcelJS.Workbook();
-    await existingWorkbook.xlsx.readFile(xlsxPath);
+    await existingWorkbook.xlsx.readFile(mostRecentFile);
     const existingSheet = existingWorkbook.getWorksheet('Top Jobs');
     if (existingSheet) {
       existingSheet.eachRow((row, rowNumber) => {
@@ -258,16 +275,21 @@ jobsData.forEach((j, index) => {
 await workbook.xlsx.writeFile(xlsxPath);
 console.log(`🎉 Native Microsoft Excel file generated successfully: output/Top_Jobs_Analysis.xlsx`);
 
-// Write CSV export for auto-apply script consumption
+function escapeCsv(val) {
+  let str = String(val || '');
+  if (/^[=+\-@]/.test(str)) str = "'" + str; // prevent formula injection
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
 const csvPath = join(outputDir, 'Top_Jobs_Analysis.csv');
 const csvHeaders = ['ID', 'Date', 'Company', 'Role', 'Score', 'Status', 'Job Board', 'Primary Action', 'Application URL', 'Explicit Email', 'Location', 'Salary', 'Tailored Resume PDF', 'Report Link', 'Notes'];
 const csvLines = [csvHeaders.join(',')];
 jobsData.forEach(j => {
   csvLines.push([
-    `"${j.id}"`, `"${j.date}"`, `"${j.company}"`, `"${j.role}"`, `"${j.score}"`, `"${j.status}"`,
-    `"${j.jobBoard}"`, `"${j.primaryAction}"`, `"${j.applicationUrl}"`, `"${j.explicitEmail}"`,
-    `"${j.location}"`, `"${j.salary}"`, `"${j.resumePdf}"`, `"${j.reportLink}"`, `"${j.notes.replace(/"/g, '""')}"`
-  ].join(','));
+    j.id, j.date, j.company, j.role, j.score, j.status,
+    j.jobBoard, j.primaryAction, j.applicationUrl, j.explicitEmail,
+    j.location, j.salary, j.resumePdf, j.reportLink, j.notes
+  ].map(escapeCsv).join(','));
 });
 writeFileSync(csvPath, csvLines.join('\n'), 'utf8');
 console.log(`✅ CSV updated: output/Top_Jobs_Analysis.csv`);

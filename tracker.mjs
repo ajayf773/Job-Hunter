@@ -180,9 +180,13 @@ function parseMarkdownRows(text, diag) {
     let parts = t.split('|').map(c => c.trim());
     if (parts.length < 3) continue; // needs at least one real cell
     if ((parts[colmap.num] ?? '') === '#' || /^[-: ]*$/.test(parts.join(''))) continue; // header / separator
-    if (parts.length > width && colmap.notes === width - 2) {
+    const hasTrailingPipe = t.endsWith('|');
+    const expectedLength = hasTrailingPipe ? width : width - 1;
+    if (parts.length > expectedLength && colmap.notes === width - 2) {
       // Stray pipes inside the trailing free-text column → fold back into notes.
-      parts = [...parts.slice(0, colmap.notes), parts.slice(colmap.notes, parts.length - 1).join(' | '), ''];
+      const endSlice = hasTrailingPipe ? parts.length - 1 : parts.length;
+      parts = [...parts.slice(0, colmap.notes), parts.slice(colmap.notes, endSlice).join(' | ')];
+      if (hasTrailingPipe) parts.push('');
       if (diag) diag.strayPipes++;
     }
     const at = (k) => (colmap[k] != null ? (parts[colmap[k]] ?? '') : '');

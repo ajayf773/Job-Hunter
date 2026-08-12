@@ -2011,9 +2011,7 @@ async function main() {
     console.error(`Error: ${since.error}`);
     process.exit(1);
   }
-  const sinceDays = since.days;
-
-  const effectiveAfter = resolveEffectiveAfter(postedAfter, sinceDays);
+  let sinceDays = since.days;
 
   // 1. Load providers
   const providers = await loadProviders(PROVIDERS_DIR);
@@ -2053,6 +2051,24 @@ async function main() {
     const mod = await import('./classify-tier.mjs');
     classifyTier = mod.classifyTier || mod.default;
   }
+
+  if (sinceDays == null && existsSync(SCAN_RUNS_PATH)) {
+    const lines = readFileSync(SCAN_RUNS_PATH, 'utf-8').trim().split('\n');
+    if (lines.length > 0) {
+      const lastRunLine = lines[lines.length - 1];
+      const lastRunDateStr = lastRunLine.split('\t')[0];
+      const lastRunMs = new Date(lastRunDateStr).getTime();
+      if (!isNaN(lastRunMs)) {
+        const diffDays = Math.ceil((Date.now() - lastRunMs) / 86400000);
+        const maxAge = Number(config.max_posting_age_days) || 7; // 7 days max ceiling default
+        sinceDays = Math.min(diffDays, maxAge);
+        if (sinceDays < 1) sinceDays = 1;
+        console.log(`\n⏳ [Auto-Since] Last scan was ${diffDays} day(s) ago. Auto-setting limit to --since ${sinceDays} day(s).\n`);
+      }
+    }
+  }
+
+  const effectiveAfter = resolveEffectiveAfter(postedAfter, sinceDays);
 
   const locationFilter = buildLocationFilter(config.location_filter);
   const postingAgeFilter = buildPostingAgeFilter(config.max_posting_age_days);
@@ -2625,5 +2641,12 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
   main().catch(err => {
     console.error('Fatal:', err.message);
     process.exit(1);
+  }).finally(async () => {
+    try {
+      const { closeStealthBrowser } = await import('./providers/_cloakbrowser.mjs');
+      await closeStealthBrowser();
+    } catch {
+      // Best-effort cleanup
+    }
   });
 }

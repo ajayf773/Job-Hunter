@@ -1,0 +1,1 @@
+{"nodes": [{"id": "$graphify-root$_venv_lib_python3_11_site_packages_setuptools_tests_script_with_bom_py", "label": "script-with-bom.py", "file_type": "code", "source_file": "venv/lib/python3.11/site-packages/setuptools/tests/script-with-bom.py", "source_location": "L1"}], "edges": [], "raw_calls": []}

@@ -411,7 +411,7 @@ export function passesFilters(job, { titleFilter, locationFilter, contentFilter,
 // scan isn't always biased to the same alphabetical-first slice. Pure; returns
 // a new array and never mutates `list`.
 export function sampleCompanies(list, limit, shuffle = false) {
-  if (!shuffle || limit >= list.length) return list.slice(0, limit);
+  if (!shuffle) return list.slice(0, limit);
   const copy = list.slice();
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

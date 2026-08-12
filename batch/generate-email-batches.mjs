@@ -20,8 +20,8 @@ const outputDir = join(ROOT, 'output', 'ready-to-send-emails');
 
 if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
 
-const files = readdirSync(coldEmailsDir).filter(f => f.endsWith('.md'));
-const pdfFiles = readdirSync(resumesDir).filter(f => f.endsWith('.pdf'));
+const files = existsSync(coldEmailsDir) ? readdirSync(coldEmailsDir).filter(f => f.endsWith('.md')) : [];
+const pdfFiles = existsSync(resumesDir) ? readdirSync(resumesDir).filter(f => f.endsWith('.pdf')) : [];
 
 console.log(`🚀 Processing cold email strategy reports for explicit emails only...`);
 
@@ -40,7 +40,7 @@ for (const file of files) {
   const toEmail = toMatch ? toMatch[1].trim() : "";
 
   // Filter out guessed/generic placeholders
-  const isGeneric = !toEmail || toEmail.includes('tech-lead') || toEmail.includes('recruiting@') && !content.includes('Explicit Email Found');
+  const isGeneric = !toEmail || toEmail.includes('tech-lead') || (toEmail.includes('recruiting@') && !content.includes('Explicit Email Found'));
 
   if (isGeneric && !content.includes('Explicit Email Found')) {
     // Skip creating cold email dispatch for roles without explicit contact email

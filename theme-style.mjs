@@ -71,7 +71,7 @@ export function styleTokensFrom(style) {
  */
 export function buildThemeStyleBlock(tokens) {
   const decls = Object.entries(tokens || {})
-    .filter(([, v]) => typeof v === 'string' && v.trim() && !/[;{}<>]/.test(v))
+    .filter(([, v]) => typeof v === 'string' && v.trim() && !/[;{}<>\\\]]/.test(v))
     .map(([cssVar, v]) => `${cssVar}: ${v.trim()};`)
     .join(' ');
   if (!decls) return '';

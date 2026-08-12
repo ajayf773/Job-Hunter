@@ -21,7 +21,7 @@
  * Run: node reconcile-pipeline.mjs [--dry-run] [--state <path>] [--pipeline <path>]
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, copyFileSync, realpathSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, copyFileSync, realpathSync, statSync, renameSync, unlinkSync } from 'fs';
 import { join, dirname, resolve, relative, isAbsolute } from 'path';
 import { fileURLToPath } from 'url';
 import { normalizeReportLink } from './tracker-links.mjs';
@@ -293,5 +293,12 @@ if (DRY_RUN) {
 }
 
 copyFileSync(PIPELINE_FILE, `${PIPELINE_FILE}.pre-reconcile.bak`);
-writeFileSync(PIPELINE_FILE, newContent);
+const tmpFile = `${PIPELINE_FILE}.${process.pid}.${Math.random().toString(36).slice(2)}.tmp`;
+try {
+  writeFileSync(tmpFile, newContent);
+  renameSync(tmpFile, PIPELINE_FILE);
+} catch (err) {
+  try { if (existsSync(tmpFile)) unlinkSync(tmpFile); } catch {}
+  throw err;
+}
 console.log(`✅ pipeline.md updated (backup: ${PIPELINE_FILE}.pre-reconcile.bak)`);

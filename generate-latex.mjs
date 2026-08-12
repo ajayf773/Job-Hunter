@@ -246,7 +246,7 @@ async function main() {
 
   const report = await compileLatexFile(absPath, content, outputPath || null, compileOnly);
   console.log(JSON.stringify(report, null, 2));
-  process.exit(report.compiled ? 0 : (report.valid ? 1 : 1));
+  process.exit(report.compiled ? 0 : (report.valid ? 2 : 1));
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {

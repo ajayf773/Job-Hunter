@@ -98,9 +98,13 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "apify-client": "^2.24.0",
+    "cheerio": "^1.2.0",
+    "cloakbrowser": "^0.5.7",
     "dotenv": "^17.0.0",
     "exceljs": "^4.4.0",
     "js-yaml": "^4.1.1",
-    "playwright": "1.62.1"
+    "playwright": "1.62.1",
+    "playwright-core": "^1.62.1",
+    "turndown": "^7.2.4"
   }
 }

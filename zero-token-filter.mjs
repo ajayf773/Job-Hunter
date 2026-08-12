@@ -103,14 +103,14 @@ for (const line of lines) {
   }
 
   // Check hard FAIL keywords first
-  const failMatch = FAIL_KEYWORDS.find(kw => notes.includes(kw));
+  const failMatch = FAIL_KEYWORDS.find(kw => new RegExp(`\\b${kw.trim()}\\b`).test(notes));
   if (failMatch) {
     discarded.push(`${id}\t${url}\t${noteParts.join(' ')}\ttitle-filter: "${failMatch}"`);
     continue;
   }
 
   // Check PASS keywords
-  const passMatch = PASS_KEYWORDS.find(kw => notes.includes(kw) || urlLower.includes(kw));
+  const passMatch = PASS_KEYWORDS.find(kw => new RegExp(`\\b${kw.trim()}\\b`).test(notes) || urlLower.includes(kw));
   if (passMatch) {
     candidates.push(line);
   } else {
